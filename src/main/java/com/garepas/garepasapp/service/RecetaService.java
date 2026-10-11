@@ -16,9 +16,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -64,7 +67,10 @@ public class RecetaService {
                 .toList();
 
         receta.getDetalles().addAll(detalles);
-        return RecetaResponse.desde(recetaRepository.save(receta));
+        aplicarInsumoProducido(receta, request, insumos);
+        Receta guardada = recetaRepository.save(receta);
+        recalcularPrecioProducido(guardada);
+        return RecetaResponse.desde(guardada);
     }
 
     @Transactional
@@ -81,6 +87,7 @@ public class RecetaService {
         receta.setDescripcion(request.descripcion());
 
         Map<Long, Insumo> insumos = cargarInsumos(request.detalles());
+        aplicarInsumoProducido(receta, request, insumos);
 
         // Reemplazo total pero conservando la lista existente para respetar orphanRemoval
         receta.getDetalles().clear();
@@ -93,7 +100,67 @@ public class RecetaService {
                     .build());
         }
 
-        return RecetaResponse.desde(recetaRepository.save(receta));
+        Receta guardada = recetaRepository.save(receta);
+        recalcularPrecioProducido(guardada);
+        return RecetaResponse.desde(guardada);
+    }
+
+    /**
+     * Recalcula el precio por gramo de todos los insumos fabricados (costo de su
+     * receta / rendimiento). Se invoca cuando cambia el precio de un ingrediente.
+     */
+    @Transactional
+    public void recalcularInsumosProducidos() {
+        for (Receta receta : recetaRepository.findByInsumoProducidoIsNotNull()) {
+            recalcularPrecioProducido(receta);
+        }
+    }
+
+    /** Precio por gramo automatico = Σ(cantidad × precio ingrediente) / rendimiento. */
+    private void recalcularPrecioProducido(Receta receta) {
+        Insumo producido = receta.getInsumoProducido();
+        if (producido == null) {
+            return;
+        }
+        BigDecimal costo = CostoService.costoDeReceta(receta);
+        producido.setPrecioPorGramo(costo.divide(receta.getRendimiento(), 6, RoundingMode.HALF_UP));
+        insumoRepository.save(producido);
+    }
+
+    /** Valida y asigna el insumo fabricado (o lo limpia si la receta es de producto). */
+    private void aplicarInsumoProducido(Receta receta, RecetaRequest request, Map<Long, Insumo> insumos) {
+        if (request.insumoProducidoId() == null) {
+            receta.setInsumoProducido(null);
+            receta.setRendimiento(null);
+            return;
+        }
+        if (request.rendimiento() == null || request.rendimiento().signum() <= 0) {
+            throw new OperacionInvalidaException(
+                    "El rendimiento debe ser mayor a cero para una receta que fabrica un insumo.");
+        }
+        Insumo producido = insumoRepository.findById(request.insumoProducidoId())
+                .orElseThrow(() -> new RecursoNoEncontradoException("Insumo", request.insumoProducidoId()));
+
+        for (DetalleRecetaRequest dr : request.detalles()) {
+            if (producido.getId().equals(dr.insumoId())) {
+                throw new OperacionInvalidaException(
+                        "El insumo fabricado no puede ser ingrediente de su propia receta.");
+            }
+            if (!recetaRepository.findByInsumoProducidoId(dr.insumoId()).isEmpty()) {
+                throw new OperacionInvalidaException("El ingrediente '" + insumos.get(dr.insumoId()).getNombre()
+                        + "' es un insumo fabricado; no puede usarse en una receta que tambien fabrica insumos.");
+            }
+        }
+
+        boolean fabricadoPorOtra = recetaRepository.findByInsumoProducidoId(producido.getId()).stream()
+                .anyMatch(r -> !Objects.equals(r.getId(), receta.getId()));
+        if (fabricadoPorOtra) {
+            throw new OperacionInvalidaException(
+                    "El insumo '" + producido.getNombre() + "' ya es fabricado por otra receta.");
+        }
+
+        receta.setInsumoProducido(producido);
+        receta.setRendimiento(request.rendimiento());
     }
 
     @Transactional

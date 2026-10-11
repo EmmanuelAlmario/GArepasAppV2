@@ -49,6 +49,8 @@ public class RecetaController {
         form.setId(receta.id());
         form.setNombre(receta.nombre());
         form.setDescripcion(receta.descripcion());
+        form.setInsumoProducidoId(receta.insumoProducidoId());
+        form.setRendimiento(receta.rendimiento());
         for (DetalleRecetaResponse detalle : receta.detalles()) {
             form.getInsumoId().add(detalle.insumoId());
             form.getCantidad().add(detalle.cantidad());

@@ -9,7 +9,9 @@ public record RecetaResponse(
         String nombre,
         String descripcion,
         List<DetalleRecetaResponse> detalles,
-        BigDecimal costoTotal
+        BigDecimal costoTotal,
+        Long insumoProducidoId,
+        BigDecimal rendimiento
 ) {
     public static RecetaResponse desde(Receta receta) {
         List<DetalleRecetaResponse> detalles = receta.getDetalles().stream()
@@ -23,7 +25,9 @@ public record RecetaResponse(
                 receta.getNombre(),
                 receta.getDescripcion(),
                 detalles,
-                costoTotal
+                costoTotal,
+                receta.getInsumoProducido() != null ? receta.getInsumoProducido().getId() : null,
+                receta.getRendimiento()
         );
     }
 }

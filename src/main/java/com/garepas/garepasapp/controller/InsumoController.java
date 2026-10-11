@@ -34,8 +34,19 @@ public class InsumoController {
     private final Formato formato;
 
     @GetMapping
-    public String listar(Model model) {
-        model.addAttribute("insumos", insumoService.listarTodos());
+    public String listar(@RequestParam(required = false) String q, Model model) {
+        List<InsumoResponse> insumos = insumoService.listarTodos();
+        if (q != null && !q.isBlank()) {
+            String texto = q.trim().toLowerCase();
+            insumos = insumos.stream()
+                    .filter(i -> (i.nombre() != null && i.nombre().toLowerCase().contains(texto))
+                            || (i.categoria() != null && i.categoria().toLowerCase().contains(texto))
+                            || (i.marca() != null && i.marca().toLowerCase().contains(texto))
+                            || (i.id() != null && String.valueOf(i.id()).contains(texto)))
+                    .toList();
+        }
+        model.addAttribute("insumos", insumos);
+        model.addAttribute("q", q);
         return "insumos/list";
     }
 

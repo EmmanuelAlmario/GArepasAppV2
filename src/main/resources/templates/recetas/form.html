@@ -36,6 +36,24 @@
                     </div>
                 </div>
 
+                <div class="row g-3 mt-1">
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="insumoProducidoId">Insumo que fabrica <span class="text-muted small">(opcional)</span></label>
+                        <select id="insumoProducidoId" th:field="*{insumoProducidoId}" class="form-select">
+                            <option value="">Ninguno (receta de producto)</option>
+                            <option th:each="i : ${insumos}" th:value="${i.id}" th:text="${i.nombre}">Insumo</option>
+                        </select>
+                        <div class="form-text">Ej.: "Masa preparada". Su precio por gramo se calcula solo a partir de esta receta.</div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="rendimiento">Rinde (g, ml o unidades por lote)</label>
+                        <input type="number" step="0.01" min="0.0001" id="rendimiento" th:field="*{rendimiento}" class="form-control"
+                               th:classappend="${#fields.hasErrors('rendimiento')} ? 'is-invalid'">
+                        <div class="invalid-feedback" th:errors="*{rendimiento}">Error</div>
+                        <div class="form-text">Cantidad total que sale del lote, en la unidad base del insumo.</div>
+                    </div>
+                </div>
+
                 <label class="form-label mt-4">Insumos de la receta</label>
                 <p class="text-muted small mb-2">
                     La cantidad se convierte a la unidad base del insumo (gramo, mililitro o unidad) al guardar.

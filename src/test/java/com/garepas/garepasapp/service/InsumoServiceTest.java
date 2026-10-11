@@ -30,7 +30,7 @@ class InsumoServiceTest {
     @BeforeEach
     void setUp() {
         insumoRepository = mock(InsumoRepository.class);
-        insumoService = new InsumoService(insumoRepository);
+        insumoService = new InsumoService(insumoRepository, mock(RecetaService.class));
     }
 
     private Insumo insumo(Long id, String nombre, String stock) {

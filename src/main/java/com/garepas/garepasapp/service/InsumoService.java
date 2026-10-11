@@ -25,6 +25,7 @@ import java.util.Map;
 public class InsumoService {
 
     private final InsumoRepository insumoRepository;
+    private final RecetaService recetaService;
 
     @Transactional(readOnly = true)
     public List<InsumoResponse> listarTodos() {
@@ -83,7 +84,11 @@ public class InsumoService {
         insumo.setPrecioPorGramo(request.precioPorGramo());
         insumo.setUnidadMedida(request.unidadMedida());
         insumo.setActivo(request.activo());
-        return InsumoResponse.desde(insumoRepository.save(insumo));
+        Insumo guardado = insumoRepository.save(insumo);
+        // Si cambia un ingrediente, el costo de los insumos fabricados debe actualizarse.
+        // Un insumo fabricado recalcula su precio aqui (el manual queda sobrescrito por el costo).
+        recetaService.recalcularInsumosProducidos();
+        return InsumoResponse.desde(guardado);
     }
 
     @Transactional

@@ -4,6 +4,7 @@ import com.garepas.garepasapp.dto.request.DetalleRecetaRequest;
 import com.garepas.garepasapp.dto.request.RecetaRequest;
 import com.garepas.garepasapp.enums.UnidadMedida;
 import com.garepas.garepasapp.util.UnidadUtil;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -31,6 +32,13 @@ public class RecetaForm {
     private List<BigDecimal> cantidad = new ArrayList<>();
     private List<UnidadMedida> unidadMedida = new ArrayList<>();
 
+    /** Opcional: insumo que fabrica la receta (ej.: masa preparada). */
+    private Long insumoProducidoId;
+
+    /** Rendimiento del lote en unidad base del insumo producido. */
+    @DecimalMin(value = "0.0001", message = "El rendimiento debe ser mayor a cero")
+    private BigDecimal rendimiento;
+
     /** Filas completas, convertidas a unidad base. */
     public List<DetalleRecetaRequest> filasValidas() {
         List<DetalleRecetaRequest> detalles = new ArrayList<>();
@@ -49,7 +57,23 @@ public class RecetaForm {
     }
 
     public RecetaRequest toRequest() {
-        return new RecetaRequest(nombre, descripcion, filasValidas());
+        return new RecetaRequest(nombre, descripcion, filasValidas(), insumoProducidoId, rendimiento);
+    }
+
+    public Long getInsumoProducidoId() {
+        return insumoProducidoId;
+    }
+
+    public void setInsumoProducidoId(Long insumoProducidoId) {
+        this.insumoProducidoId = insumoProducidoId;
+    }
+
+    public BigDecimal getRendimiento() {
+        return rendimiento;
+    }
+
+    public void setRendimiento(BigDecimal rendimiento) {
+        this.rendimiento = rendimiento;
     }
 
     public Long getId() {

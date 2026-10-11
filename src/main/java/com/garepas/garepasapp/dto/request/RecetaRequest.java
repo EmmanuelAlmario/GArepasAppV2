@@ -2,6 +2,7 @@ package com.garepas.garepasapp.dto.request;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
+import java.math.BigDecimal;
 import java.util.List;
 
 public record RecetaRequest(
@@ -15,5 +16,11 @@ public record RecetaRequest(
 
         @NotEmpty(message = "La receta debe tener al menos un detalle")
         @Valid
-        List<DetalleRecetaRequest> detalles
+        List<DetalleRecetaRequest> detalles,
+
+        /** Opcional: insumo que fabrica esta receta. Null = receta de producto. */
+        Long insumoProducidoId,
+
+        /** Obligatorio si insumoProducidoId tiene valor; mayor a cero. */
+        BigDecimal rendimiento
 ) {}

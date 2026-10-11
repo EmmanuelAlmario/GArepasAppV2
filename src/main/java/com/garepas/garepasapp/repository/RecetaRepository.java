@@ -20,4 +20,9 @@ public interface RecetaRepository extends JpaRepository<Receta, Long> {
     boolean existsByNombreIgnoreCase(String nombre);
 
     List<Receta> findByNombreContainingIgnoreCase(String nombre);
+
+    @EntityGraph(attributePaths = {"detalles", "detalles.insumo", "insumoProducido"})
+    List<Receta> findByInsumoProducidoIsNotNull();
+
+    List<Receta> findByInsumoProducidoId(Long insumoId);
 }

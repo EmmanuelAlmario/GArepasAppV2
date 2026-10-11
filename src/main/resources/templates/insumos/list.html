@@ -9,6 +9,29 @@
 <div th:fragment="contenido">
     <th:block th:replace="~{fragments/page-header :: pageHeader('Insumos', 'Materia prima del negocio. El costo se guarda por unidad base: gramo (g), mililitro (ml) o unidad (u).', ~{::acciones})}"></th:block>
 
+    <div class="card shadow-sm mb-3">
+        <div class="card-body">
+            <form method="get" th:action="@{/insumos}" class="row g-2 align-items-end">
+                <div class="col-12 col-md-6 col-lg-5">
+                    <label class="form-label small mb-1" for="q">Buscar insumo</label>
+                    <input type="search" id="q" name="q" class="form-control"
+                           placeholder="Nombre, categoria o marca..." th:value="${q}">
+                </div>
+                <div class="col-12 col-md-auto">
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-outline-primary">Buscar</button>
+                        <a th:if="${q != null && !q.isBlank()}" th:href="@{/insumos}"
+                           class="btn btn-outline-secondary">Limpiar</a>
+                    </div>
+                </div>
+            </form>
+            <p class="text-muted small mb-0 mt-2" th:if="${q != null && !q.isBlank()}">
+                <span th:text="${#lists.size(insumos)}">0</span> resultado(s) para
+                "<span th:text="${q}">texto</span>".
+            </p>
+        </div>
+    </div>
+
     <div class="card shadow-sm">
         <div class="table-responsive">
             <table class="table table-hover mb-0">
@@ -27,7 +50,10 @@
                 <tbody>
                 <tr th:if="${#lists.isEmpty(insumos)}">
                     <td colspan="7">
-                        <div th:replace="~{fragments/empty-state :: empty('No hay insumos registrados', 'Agrega el primer insumo para poder crear recetas y registrar producciones.')}"></div>
+                        <div th:if="${q != null && !q.isBlank()}"
+                             th:replace="~{fragments/empty-state :: empty('Sin resultados', 'Ningun insumo coincide con la busqueda. Prueba con otro nombre, categoria o marca.')}"></div>
+                        <div th:unless="${q != null && !q.isBlank()}"
+                             th:replace="~{fragments/empty-state :: empty('No hay insumos registrados', 'Agrega el primer insumo para poder crear recetas y registrar producciones.')}"></div>
                     </td>
                 </tr>
                 <tr th:each="i : ${insumos}">

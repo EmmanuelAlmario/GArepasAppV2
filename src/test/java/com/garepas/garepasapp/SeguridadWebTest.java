@@ -8,11 +8,14 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
@@ -114,6 +117,29 @@ class SeguridadWebTest {
         mockMvc.perform(get("/insumos")).andExpect(status().isOk());
         mockMvc.perform(get("/usuarios")).andExpect(status().isOk());
         mockMvc.perform(get("/ventas/historial")).andExpect(status().isOk());
+    }
+
+    /* ---------- Buscador de insumos ---------- */
+
+    @Test
+    @WithMockUser(username = "admin", roles = "ADMIN")
+    void busquedaDeInsumosFiltraPorNombreCategoriaOMarca() throws Exception {
+        mockMvc.perform(get("/insumos").param("q", "Mantequilla"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Mantequilla")))
+                .andExpect(content().string(not(containsString("Chocolate en polvo"))));
+
+        mockMvc.perform(get("/insumos").param("q", "Colanta"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Queso campesino")));
+    }
+
+    @Test
+    @WithMockUser(username = "admin", roles = "ADMIN")
+    void busquedaSinResultadosMuestraEstadoVacio() throws Exception {
+        mockMvc.perform(get("/insumos").param("q", "zzz-no-existe"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Sin resultados")));
     }
 
     /* ---------- Healthcheck ---------- */
