@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+<!--
+  Estado vacio o sin resultados.
+  Uso: th:replace="~{fragments/empty-state :: empty('Sin registros', 'Detalle opcional')}"
+-->
+<div th:fragment="empty(titulo, detalle)" class="ga-empty-state text-center text-muted py-4">
+    <p class="fw-semibold mb-1" th:text="${titulo}">Sin datos</p>
+    <p class="small mb-0"
+       th:if="${detalle != null and !#strings.isEmpty(detalle)}"
+       th:text="${detalle}">Detalle</p>
+</div>
+</body>
+</html>

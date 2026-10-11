@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(${form.id} == null ? 'Registrar gasto' : 'Editar gasto', 'gastos', ~{::contenido})}">
+<body>
+<th:block th:fragment="acciones">
+    <a th:href="@{/gastos}" class="btn btn-outline-secondary">Volver al listado</a>
+</th:block>
+<div th:fragment="contenido">
+    <th:block th:replace="~{fragments/page-header :: pageHeader(${form.id} == null ? 'Registrar gasto' : 'Editar gasto', null, ~{::acciones})}"></th:block>
+
+    <div class="card shadow-sm form-card">
+        <div class="card-body">
+            <th:block th:replace="~{fragments/form-alerts :: formAlerts}"></th:block>
+
+            <form method="post" th:object="${form}"
+                  th:action="${form.id} == null ? @{/gastos} : @{/gastos/{id}(id=${form.id})}">
+                <p class="form-text">Los campos marcados con <span class="text-danger">*</span> son obligatorios.</p>
+
+                <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('*')}">
+                    <p class="fw-semibold mb-1">Revisa los campos marcados:</p>
+                    <ul class="mb-0">
+                        <li th:each="e : ${#fields.errors('*')}" th:text="${e}">Error</li>
+                    </ul>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label" for="descripcion">Descripcion <span class="text-danger">*</span></label>
+                        <input type="text" id="descripcion" th:field="*{descripcion}" class="form-control" required
+                               th:classappend="${#fields.hasErrors('descripcion')} ? 'is-invalid'">
+                        <div class="invalid-feedback" th:errors="*{descripcion}">Error</div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="monto">Monto <span class="text-danger">*</span></label>
+                        <input type="number" step="1" min="0" id="monto" th:field="*{monto}" class="form-control" required
+                               th:classappend="${#fields.hasErrors('monto')} ? 'is-invalid'">
+                        <div class="invalid-feedback" th:errors="*{monto}">Error</div>
+                        <div class="form-text">En pesos sin decimales.</div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="categoria">Categoria <span class="text-danger">*</span></label>
+                        <select id="categoria" th:field="*{categoria}" class="form-select" required
+                                th:classappend="${#fields.hasErrors('categoria')} ? 'is-invalid'">
+                            <option value="">Selecciona una categoria...</option>
+                            <option th:each="c : ${categorias}" th:value="${c}" th:text="${c.etiqueta}">Categoria</option>
+                        </select>
+                        <div class="invalid-feedback" th:errors="*{categoria}">Error</div>
+                    </div>
+                    <div class="col-12 text-muted small">La fecha se registra automaticamente al guardar.</div>
+                    <div class="col-12 d-flex flex-wrap gap-2 pt-2">
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                        <a th:href="@{/gastos}" class="btn btn-outline-secondary">Cancelar</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

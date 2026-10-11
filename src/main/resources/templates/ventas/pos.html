@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout :: layout('Punto de venta', 'ventas', ~{::contenido})}">
+<body>
+<th:block th:fragment="acciones">
+    <a th:href="@{/ventas/historial}" class="btn btn-outline-secondary" sec:authorize="hasRole('ADMIN')">Historial de ventas</a>
+</th:block>
+<div th:fragment="contenido">
+    <th:block th:replace="~{fragments/page-header :: pageHeader('Punto de venta', 'Arma el pedido y registra la venta.', ~{::acciones})}"></th:block>
+
+    <th:block th:replace="~{fragments/form-alerts :: formAlerts}"></th:block>
+
+    <!-- Jornada de operacion (UC20 / UC22) -->
+    <div class="card shadow-sm mb-3 ga-jornada">
+        <div class="card-body d-flex flex-wrap align-items-center gap-3">
+            <div th:if="${jornada != null}" class="flex-grow-1">
+                <span class="badge text-bg-success me-2">Dia abierto</span>
+                <span class="text-muted">
+                    desde <span th:text="${#temporals.format(jornada.fechaApertura, 'dd/MM/yyyy HH:mm')}">fecha</span>
+                    · abrio <span th:text="${jornada.abiertaPor}">usuario</span>
+                    · <span th:text="${jornada.nroVentas} + ' venta(s)'">0</span>
+                    · <strong th:text="${fmt.moneda(jornada.totalVentas)}">$0</strong>
+                </span>
+            </div>
+            <form method="post" th:action="@{/ventas/jornada/cerrar}" th:if="${jornada != null}"
+                  data-confirm="¿Cerrar el dia? Se calcula el arqueo con las ventas de esta jornada y las ventas posteriores quedaran sin asociar.">
+                <button type="submit" class="btn btn-outline-danger">Cerrar dia</button>
+            </form>
+
+            <div th:if="${jornada == null}" class="flex-grow-1 text-muted">
+                No hay una jornada abierta. Puedes registrar ventas igual, pero quedaran sin asociar a un dia.
+            </div>
+            <form method="post" th:action="@{/ventas/jornada/abrir}" th:if="${jornada == null}">
+                <button type="submit" class="btn btn-outline-success">Abrir dia de operacion</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="ga-pos">
+        <!-- Catalogo -->
+        <section class="ga-pos__catalogo" aria-labelledby="tituloCatalogo">
+            <h2 class="h6 text-muted mb-2" id="tituloCatalogo">Productos disponibles</h2>
+
+            <div class="ga-pos__buscar">
+                <label class="form-label small mb-1" for="filtroProductos">Buscar producto</label>
+                <input type="search" id="filtroProductos" class="form-control form-control-lg"
+                       placeholder="Nombre del producto..." autocomplete="off">
+            </div>
+
+            <p th:if="${#lists.isEmpty(productos)}" class="text-muted small">
+                No hay productos activos con stock.
+                <span sec:authorize="hasRole('ADMIN')">
+                    Registra una <a th:href="@{/producciones/nuevo}">produccion</a>
+                    o <a th:href="@{/insumos/ajustar-stock}">ajusta el stock de insumos</a>.
+                </span>
+                <span sec:authorize="hasRole('VENTAS')">Pide al administrador que reponga el inventario.</span>
+            </p>
+
+            <div id="catalogo" class="ga-grid" role="group" aria-label="Catalogo de productos">
+                <div class="ga-grid__celda" data-producto-col th:each="p : ${productos}">
+                    <button type="button" class="ga-producto" data-producto
+                            th:attr="data-id=${p.id},data-nombre=${p.nombre},data-precio=${p.precioVenta},data-stock=${p.stockActual}">
+                        <span class="ga-producto__inicial" aria-hidden="true"
+                              th:text="${#strings.toUpperCase(#strings.substring(p.nombre, 0, 1))}">A</span>
+                        <span class="ga-producto__nombre" th:text="${p.nombre}">Producto</span>
+                        <span class="ga-producto__precio" th:text="${fmt.moneda(p.precioVenta)}">$0</span>
+                        <span class="ga-producto__stock" th:text="'Stock ' + ${p.stockActual}">Stock 0</span>
+                    </button>
+                </div>
+            </div>
+            <p id="sinResultadosCatalogo" class="text-muted small mt-2 mb-0 d-none">
+                Ningun producto coincide con la busqueda.
+            </p>
+        </section>
+
+        <!-- Pedido: panel lateral en escritorio y hoja inferior en movil -->
+        <aside class="ga-pedido" id="pedido" aria-labelledby="tituloPedido">
+            <div class="ga-pedido__cabecera">
+                <div id="posMensaje" class="ga-pos__aviso" role="status" aria-live="polite"></div>
+                <div class="ga-pedido__fila">
+                    <button type="button" class="ga-pedido__abrir" id="pedidoToggle"
+                            aria-expanded="false" aria-controls="pedidoCuerpo">
+                        <span>Pedido (<span id="pedidoCantidad">0</span>)</span>
+                        <i class="bi bi-chevron-up" aria-hidden="true"></i>
+                    </button>
+                    <div class="ga-pedido__totales">
+                        <span class="ga-pedido__etiqueta">Total</span>
+                        <span class="ga-pedido__total" id="totalCarrito">$0</span>
+                    </div>
+                    <button type="submit" form="formVenta" class="btn btn-primary btn-lg ga-pedido__cobrar"
+                            id="botonCobrar" disabled>Cobrar</button>
+                </div>
+            </div>
+
+            <div class="ga-pedido__cuerpo" id="pedidoCuerpo">
+                <h2 class="h6 text-muted mb-2" id="tituloPedido">Pedido actual</h2>
+                <p id="carritoVacio" class="text-muted small mb-3">Toca un producto para agregarlo al pedido.</p>
+                <ul id="carrito" class="ga-lineas" aria-label="Productos del pedido"></ul>
+
+                <form id="formVenta" method="post" th:action="@{/ventas}">
+                    <div id="camposCarrito"></div>
+                    <div>
+                        <label class="form-label" for="nombreCliente">Cliente (opcional)</label>
+                        <input type="text" id="nombreCliente" name="nombreCliente" class="form-control"
+                               maxlength="100" th:value="${form.nombreCliente}" autocomplete="off">
+                    </div>
+                    <p class="alert alert-warning py-2 small mt-3 mb-0" th:if="${jornada == null}">
+                        No hay dia abierto: esta venta quedara registrada sin asociarse a una jornada.
+                    </p>
+                </form>
+            </div>
+        </aside>
+    </div>
+
+    <script th:inline="javascript">
+        /* Pedido conservado por el servidor cuando la venta no se pudo registrar. */
+        window.carritoInicial = /*[[${carritoInicial}]]*/ [];
+    </script>
+    <script th:src="@{/js/pos-cart.js}"></script>
+</div>
+</body>
+</html>

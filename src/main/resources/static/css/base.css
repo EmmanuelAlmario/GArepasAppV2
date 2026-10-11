@@ -1,0 +1,61 @@
+/* =============================================================
+   GArepasAppV2 — base.css
+   Fundamento global: lienzo con textura sutil, tipografia (serif
+   de marca para titulos, sans para la interfaz), cifras y foco
+   de teclado. No contiene clases de componentes.
+   ============================================================= */
+
+body {
+    background-color: var(--ga-bg);
+    background-image: radial-gradient(rgba(var(--ga-ink-rgb), .06) 1px, transparent 1px);
+    background-size: 22px 22px;
+    line-height: var(--bs-body-line-height);
+    /* Render mas nitido, como en las interfaces de Apple. */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+::selection {
+    background: var(--ga-arena);
+    color: var(--ga-text);
+}
+
+/* Titulos en la serif de marca: calidez y jerarquia clara. */
+h1, .h1, h2, .h2, h3, .h3 {
+    color: var(--ga-burdeos);
+    font-family: var(--ga-font-display);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+}
+
+/* Cifras alineadas en tablas, montos e indicadores. */
+.table td,
+.table th,
+.h4,
+.fs-4,
+#totalCarrito,
+.ga-kpi__valor,
+.ga-pedido__total {
+    font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* Foco de teclado consistente fuera de los campos de texto. */
+:where(a, button, summary, [role="button"]):focus-visible,
+.btn:focus-visible,
+.dropdown-item:focus-visible {
+    outline: 2px solid var(--ga-brick);
+    outline-offset: 2px;
+}
+
+/* Quien usa animaciones reducidas no las recibe. */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

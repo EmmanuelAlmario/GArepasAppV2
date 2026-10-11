@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+<!--
+  Encabezado de pagina reutilizable.
+  Uso: th:replace="~{fragments/page-header :: pageHeader('Insumos', 'subtitulo', ~{::acciones})}"
+  El fragmento "acciones" se define fuera de "contenido" para que no se renderice dos veces.
+-->
+<div th:fragment="pageHeader(titulo, subtitulo, acciones)"
+     class="ga-page-header d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div>
+        <h1 class="h3 mb-0" th:text="${titulo}">Titulo</h1>
+        <p class="text-muted small mb-0"
+           th:if="${subtitulo != null and !#strings.isEmpty(subtitulo)}"
+           th:text="${subtitulo}">Subtitulo</p>
+    </div>
+    <div class="ga-page-header__actions d-flex flex-wrap gap-2">
+        <th:block th:replace="${acciones}"></th:block>
+    </div>
+</div>
+</body>
+</html>

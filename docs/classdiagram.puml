@@ -1,0 +1,164 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam classFontSize 13
+skinparam defaultFontSize 12
+
+enum UnidadMedida {
+  GRAMO
+  KILOGRAMO
+  MILILITRO
+  LITRO
+  UNIDAD
+  CUCHARADA
+  TAZA
+}
+
+enum CategoriaGasto {
+  MATERIA_PRIMA
+  SERVICIOS
+  TRANSPORTE
+  EQUIPAMIENTO
+  MANTENIMIENTO
+  OTROS
+}
+
+enum EstadoProduccion {
+  PENDIENTE
+  COMPLETADA
+}
+
+enum Rol {
+  ADMIN
+  VENTAS
+}
+
+class Insumo {
+  - id: Long
+  - nombre: String
+  - categoria: String
+  - marca: String
+  - stockActual: BigDecimal
+  - stockMinimo: BigDecimal
+  - precioPorGramo: BigDecimal
+  - unidadMedida: UnidadMedida
+  - activo: Boolean
+}
+
+class Receta {
+  - id: Long
+  - nombre: String
+  - descripcion: String
+  - detalles: List~DetalleReceta~
+  --
+  + getCosto(): BigDecimal
+}
+
+class DetalleReceta {
+  - id: Long
+  - receta: Receta
+  - insumo: Insumo
+  - cantidad: BigDecimal
+  - unidadMedida: UnidadMedida
+}
+
+class Producto {
+  - id: Long
+  - nombre: String
+  - stockActual: Integer
+  - stockMinimo: Integer
+  - precioVenta: BigDecimal
+  - receta: Receta
+  - activo: Boolean
+  --
+  + getCostoProduccion(): BigDecimal
+}
+
+class Produccion {
+  - id: Long
+  - producto: Producto
+  - cantidad: Integer
+  - fecha: LocalDateTime
+  - costoTotal: BigDecimal
+  - estado: EstadoProduccion
+  - detalles: List~DetalleProduccion~
+  --
+  + calcularInsumosRequeridos(): List~DetalleProduccion~
+  + verificarStock(): Boolean
+}
+
+class DetalleProduccion {
+  - id: Long
+  - produccion: Produccion
+  - insumo: Insumo
+  - cantidadRequerida: BigDecimal
+  - cantidadUsada: BigDecimal
+  - precioPorGramoSnapshot: BigDecimal
+  - costoLinea: BigDecimal
+  - suficiente: Boolean
+}
+
+class Venta {
+  - id: Long
+  - fecha: LocalDateTime
+  - total: BigDecimal
+  - nombreCliente: String
+  - jornadaId: Long
+  - detalles: List~DetalleVenta~
+  --
+  + calcularTotal(): BigDecimal
+}
+
+class DetalleVenta {
+  - id: Long
+  - venta: Venta
+  - producto: Producto
+  - cantidad: Integer
+  - precioUnitario: BigDecimal
+  - subtotal: BigDecimal
+  --
+  + calcularSubtotal(): BigDecimal
+}
+
+class Gasto {
+  - id: Long
+  - descripcion: String
+  - monto: BigDecimal
+  - categoria: CategoriaGasto
+  - fecha: LocalDateTime
+  - produccionId: Long
+}
+
+class Jornada {
+  - id: Long
+  - fechaApertura: LocalDateTime
+  - abiertaPor: String
+  - fechaCierre: LocalDateTime
+  - activa: Boolean
+}
+
+class Usuario {
+  - id: Long
+  - username: String
+  - password: String
+  - rol: Rol
+  - activo: Boolean
+}
+
+UnidadMedida <.. Insumo : usa
+UnidadMedida <.. DetalleReceta : usa
+CategoriaGasto <.. Gasto : usa
+EstadoProduccion <.. Produccion : usa
+Rol <.. Usuario : usa
+
+Producto "muchos" --> "0..1" Receta : usa
+Receta "1" *-- "muchos" DetalleReceta : contiene
+DetalleReceta "muchos" --> "1" Insumo : referencia
+
+Produccion "muchos" --> "1" Producto : produce
+Produccion "1" *-- "muchos" DetalleProduccion : contiene
+DetalleProduccion "muchos" --> "1" Insumo : consume
+
+Venta "1" *-- "muchos" DetalleVenta : contiene
+DetalleVenta "muchos" --> "1" Producto : incluye
+
+@enduml

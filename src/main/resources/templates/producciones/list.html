@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Producciones', 'producciones', ~{::contenido})}">
+<body>
+<th:block th:fragment="acciones">
+    <a th:href="@{/producciones/nuevo}" class="btn btn-primary">Registrar produccion</a>
+</th:block>
+<div th:fragment="contenido">
+    <th:block th:replace="~{fragments/page-header :: pageHeader('Producciones', 'Cada produccion descuenta insumos, suma stock del producto y registra el gasto de materia prima.', ~{::acciones})}"></th:block>
+
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <caption class="visually-hidden">Producciones ordenadas de la mas reciente a la mas antigua</caption>
+                <thead class="table-light">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Producto</th>
+                    <th scope="col" class="text-end">Cantidad</th>
+                    <th scope="col" class="text-end">Costo total</th>
+                    <th scope="col" class="text-end">Costo unitario</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col" class="text-end">Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${#lists.isEmpty(producciones)}">
+                    <td colspan="8">
+                        <div th:replace="~{fragments/empty-state :: empty('No hay producciones registradas', 'Registra una produccion para descontar insumos y sumar stock del producto.')}"></div>
+                    </td>
+                </tr>
+                <tr th:each="p : ${producciones}">
+                    <td th:text="'#' + ${p.id}">#</td>
+                    <td class="fw-semibold" th:text="${p.productoNombre}">Producto</td>
+                    <td class="text-end" th:text="${p.cantidad}">0</td>
+                    <td class="text-end" th:text="${fmt.moneda(p.costoTotal)}">$0</td>
+                    <td class="text-end" th:text="${fmt.moneda(p.costoUnitario)}">$0</td>
+                    <td>
+                        <span class="badge"
+                              th:classappend="${p.estado.name() == 'COMPLETADA'} ? 'text-bg-success' : 'text-bg-warning'"
+                              th:text="${p.estado.name() == 'COMPLETADA'} ? 'Completada' : 'Pendiente: faltan insumos'">Estado</span>
+                    </td>
+                    <td th:text="${#temporals.format(p.fecha, 'dd/MM/yyyy HH:mm')}">Fecha</td>
+                    <td class="text-end">
+                        <a class="btn btn-sm btn-outline-secondary"
+                           th:href="@{/producciones/{id}(id=${p.id})}"
+                           th:aria-label="'Ver detalle de la produccion ' + ${p.id}">Ver detalle</a>
+                        <form class="d-inline" method="post" th:if="${p.estado.name() == 'PENDIENTE'}"
+                              th:action="@{/producciones/{id}/verificar(id=${p.id})}">
+                            <button type="submit" class="btn btn-sm btn-outline-primary">Re-verificar</button>
+                        </form>
+                        <form class="d-inline" method="post"
+                              th:action="@{/producciones/{id}/eliminar(id=${p.id})}"
+                              data-confirm="¿Eliminar esta produccion? Si estaba completada se revierte el stock y se elimina el gasto de materia prima.">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

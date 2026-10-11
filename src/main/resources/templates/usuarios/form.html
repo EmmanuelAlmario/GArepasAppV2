@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(${form.id} == null ? 'Crear usuario' : 'Editar usuario', 'usuarios', ~{::contenido})}">
+<body>
+<th:block th:fragment="acciones">
+    <a th:href="@{/usuarios}" class="btn btn-outline-secondary">Volver al listado</a>
+</th:block>
+<div th:fragment="contenido">
+    <th:block th:replace="~{fragments/page-header :: pageHeader(${form.id} == null ? 'Crear usuario' : 'Editar usuario', null, ~{::acciones})}"></th:block>
+
+    <div class="card shadow-sm form-card">
+        <div class="card-body">
+            <th:block th:replace="~{fragments/form-alerts :: formAlerts}"></th:block>
+
+            <form method="post" th:object="${form}"
+                  th:action="${form.id} == null ? @{/usuarios} : @{/usuarios/{id}(id=${form.id})}">
+                <p class="form-text">Los campos marcados con <span class="text-danger">*</span> son obligatorios.</p>
+
+                <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('*')}">
+                    <p class="fw-semibold mb-1">Revisa los campos marcados:</p>
+                    <ul class="mb-0">
+                        <li th:each="e : ${#fields.errors('*')}" th:text="${e}">Error</li>
+                    </ul>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="username">Usuario <span class="text-danger">*</span></label>
+                        <input type="text" id="username" th:field="*{username}" class="form-control" required
+                               autocomplete="off" th:classappend="${#fields.hasErrors('username')} ? 'is-invalid'">
+                        <div class="invalid-feedback" th:errors="*{username}">Error</div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="password"
+                               th:text="${form.id} == null ? 'Contrasena *' : 'Nueva contrasena (vacia = no cambiar)'">Contrasena</label>
+                        <input type="password" id="password" th:field="*{password}" class="form-control"
+                               autocomplete="new-password"
+                               th:required="${form.id} == null"
+                               th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'">
+                        <div class="invalid-feedback" th:errors="*{password}">Error</div>
+                        <div class="form-text">Minimo 6 caracteres. Al editar, dejarla vacia conserva la actual.</div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="rol">Rol <span class="text-danger">*</span></label>
+                        <select id="rol" th:field="*{rol}" class="form-select" required
+                                th:classappend="${#fields.hasErrors('rol')} ? 'is-invalid'">
+                            <option th:each="r : ${roles}" th:value="${r}"
+                                    th:text="${r.name() == 'ADMIN'} ? 'Administrador' : 'Registrador de ventas'">Rol</option>
+                        </select>
+                        <div class="invalid-feedback" th:errors="*{rol}">Error</div>
+                        <div class="form-text">
+                            Administrador: inventario, produccion, gastos, reportes y usuarios.
+                            Registrador de ventas: punto de venta y jornadas.
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 d-flex align-items-end">
+                        <div class="form-check">
+                            <input type="checkbox" id="activo" th:field="*{activo}" class="form-check-input">
+                            <label class="form-check-label" for="activo">Activo (puede iniciar sesion)</label>
+                        </div>
+                    </div>
+                    <div class="col-12 d-flex flex-wrap gap-2 pt-2">
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                        <a th:href="@{/usuarios}" class="btn btn-outline-secondary">Cancelar</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

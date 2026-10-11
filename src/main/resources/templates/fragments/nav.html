@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<!--
+  Navegacion del sistema.
+  Escritorio: barra lateral fija con las secciones agrupadas por area.
+  Movil: barra superior de marca, barra inferior con los accesos diarios y
+  un menu completo ("Mas"). El enlace activo lleva aria-current="page" usando
+  la seccion que envia el layout. Las secciones visibles dependen del rol
+  (ver SecurityConfig).
+-->
+<div th:fragment="nav(seccion)" class="ga-chrome" sec:authorize="isAuthenticated()">
+
+    <aside class="ga-sidebar" aria-label="Menu principal">
+        <a class="ga-marca" th:href="@{/}">
+            <img th:src="@{/images/gordo_arepas_logo.png}" alt="" width="40" height="40">
+            <span>
+                <span class="ga-marca__nombre">Gordo Arepas</span>
+                <span class="ga-marca__sub">Sistema de gestion</span>
+            </span>
+        </a>
+
+        <div th:replace="~{fragments/nav :: enlaces(${seccion})}"></div>
+
+        <div class="ga-sidebar__pie">
+            <div class="ga-sidebar__usuario">
+                <span class="ga-sidebar__nombre" sec:authentication="name">usuario</span>
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="btn btn-sm btn-outline-light">Cerrar sesion</button>
+                </form>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Movil: barra superior de marca -->
+    <header class="ga-topbar">
+        <a class="ga-marca" th:href="@{/}">
+            <img th:src="@{/images/gordo_arepas_logo.png}" alt="" width="32" height="32">
+            <span class="ga-marca__nombre">Gordo Arepas</span>
+        </a>
+    </header>
+
+    <!-- Movil: accesos diarios -->
+    <nav class="ga-tabbar" aria-label="Accesos rapidos">
+        <a class="ga-tab" th:href="@{/reportes}" sec:authorize="hasRole('ADMIN')"
+           th:classappend="${seccion == 'reportes'} ? 'is-active'"
+           th:aria-current="${seccion == 'reportes'} ? 'page' : null">
+            <i class="bi bi-graph-up-arrow" aria-hidden="true"></i><span>Reportes</span>
+        </a>
+        <a class="ga-tab" th:href="@{/ventas}"
+           th:classappend="${seccion == 'ventas'} ? 'is-active'"
+           th:aria-current="${seccion == 'ventas'} ? 'page' : null">
+            <i class="bi bi-cart3" aria-hidden="true"></i><span>Vender</span>
+        </a>
+        <button type="button" class="ga-tab" data-bs-toggle="offcanvas" data-bs-target="#gaMenuMovil"
+                aria-controls="gaMenuMovil"
+                th:classappend="${seccion != 'reportes' and seccion != 'ventas'} ? 'is-active'">
+            <i class="bi bi-grid-3x3-gap" aria-hidden="true"></i><span>Mas</span>
+        </button>
+    </nav>
+
+    <!-- Movil: menu completo -->
+    <div class="offcanvas offcanvas-start ga-offcanvas" tabindex="-1" id="gaMenuMovil"
+         aria-labelledby="gaMenuMovilTitulo">
+        <div class="offcanvas-header">
+            <h2 class="offcanvas-title h5" id="gaMenuMovilTitulo">Gordo Arepas</h2>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+                    aria-label="Cerrar menu"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div th:replace="~{fragments/nav :: enlaces(${seccion})}"></div>
+            <div class="ga-sidebar__pie">
+                <div class="ga-sidebar__usuario">
+                    <span class="ga-sidebar__nombre" sec:authentication="name">usuario</span>
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="btn btn-sm btn-outline-light">Cerrar sesion</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Enlaces por secciones: se reutiliza en la barra lateral y en el menu movil.
+     El Punto de venta es para todos; el resto de areas solo para ADMIN. -->
+<div th:fragment="enlaces(seccion)" class="ga-nav">
+    <div class="ga-nav__seccion">
+        <p class="ga-nav__grupo">Venta</p>
+        <ul class="ga-nav__lista">
+            <li>
+                <a class="ga-nav__link" th:href="@{/ventas}"
+                   th:classappend="${seccion == 'ventas'} ? 'is-active'"
+                   th:aria-current="${seccion == 'ventas'} ? 'page' : null">
+                    <i class="bi bi-cart3" aria-hidden="true"></i><span>Punto de venta</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="ga-nav__seccion" sec:authorize="hasRole('ADMIN')">
+        <p class="ga-nav__grupo">Panel</p>
+        <ul class="ga-nav__lista">
+            <li>
+                <a class="ga-nav__link" th:href="@{/reportes}"
+                   th:classappend="${seccion == 'reportes'} ? 'is-active'"
+                   th:aria-current="${seccion == 'reportes'} ? 'page' : null">
+                    <i class="bi bi-graph-up-arrow" aria-hidden="true"></i><span>Reportes</span>
+                </a>
+            </li>
+            <li>
+                <a class="ga-nav__link" th:href="@{/gastos}"
+                   th:classappend="${seccion == 'gastos'} ? 'is-active'"
+                   th:aria-current="${seccion == 'gastos'} ? 'page' : null">
+                    <i class="bi bi-receipt" aria-hidden="true"></i><span>Gastos</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="ga-nav__seccion" sec:authorize="hasRole('ADMIN')">
+        <p class="ga-nav__grupo">Inventario</p>
+        <ul class="ga-nav__lista">
+            <li>
+                <a class="ga-nav__link" th:href="@{/insumos}"
+                   th:classappend="${seccion == 'insumos'} ? 'is-active'"
+                   th:aria-current="${seccion == 'insumos'} ? 'page' : null">
+                    <i class="bi bi-basket2" aria-hidden="true"></i><span>Insumos</span>
+                </a>
+            </li>
+            <li>
+                <a class="ga-nav__link" th:href="@{/recetas}"
+                   th:classappend="${seccion == 'recetas'} ? 'is-active'"
+                   th:aria-current="${seccion == 'recetas'} ? 'page' : null">
+                    <i class="bi bi-journal-text" aria-hidden="true"></i><span>Recetas</span>
+                </a>
+            </li>
+            <li>
+                <a class="ga-nav__link" th:href="@{/productos}"
+                   th:classappend="${seccion == 'productos'} ? 'is-active'"
+                   th:aria-current="${seccion == 'productos'} ? 'page' : null">
+                    <i class="bi bi-cup-hot" aria-hidden="true"></i><span>Productos</span>
+                </a>
+            </li>
+            <li>
+                <a class="ga-nav__link" th:href="@{/producciones}"
+                   th:classappend="${seccion == 'producciones'} ? 'is-active'"
+                   th:aria-current="${seccion == 'producciones'} ? 'page' : null">
+                    <i class="bi bi-gear-wide-connected" aria-hidden="true"></i><span>Producciones</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="ga-nav__seccion" sec:authorize="hasRole('ADMIN')">
+        <p class="ga-nav__grupo">Sistema</p>
+        <ul class="ga-nav__lista">
+            <li>
+                <a class="ga-nav__link" th:href="@{/usuarios}"
+                   th:classappend="${seccion == 'usuarios'} ? 'is-active'"
+                   th:aria-current="${seccion == 'usuarios'} ? 'page' : null">
+                    <i class="bi bi-people" aria-hidden="true"></i><span>Usuarios</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>

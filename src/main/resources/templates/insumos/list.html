@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Insumos', 'insumos', ~{::contenido})}">
+<body>
+<th:block th:fragment="acciones">
+    <a th:href="@{/insumos/ajustar-stock}" class="btn btn-outline-secondary">Ajustar stock</a>
+    <a th:href="@{/insumos/nuevo}" class="btn btn-primary">Agregar insumo</a>
+</th:block>
+<div th:fragment="contenido">
+    <th:block th:replace="~{fragments/page-header :: pageHeader('Insumos', 'Materia prima del negocio. El costo se guarda por unidad base: gramo (g), mililitro (ml) o unidad (u).', ~{::acciones})}"></th:block>
+
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <caption class="visually-hidden">Insumos registrados con su stock y costo por unidad base</caption>
+                <thead class="table-light">
+                <tr>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Categoria</th>
+                    <th scope="col">Marca</th>
+                    <th scope="col" class="text-end">Stock</th>
+                    <th scope="col" class="text-end">Costo por unidad base</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col" class="text-end">Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${#lists.isEmpty(insumos)}">
+                    <td colspan="7">
+                        <div th:replace="~{fragments/empty-state :: empty('No hay insumos registrados', 'Agrega el primer insumo para poder crear recetas y registrar producciones.')}"></div>
+                    </td>
+                </tr>
+                <tr th:each="i : ${insumos}">
+                    <td class="fw-semibold" th:text="${i.nombre}">Nombre</td>
+                    <td th:text="${i.categoria}">Categoria</td>
+                    <td th:text="${i.marca}">Marca</td>
+                    <td class="text-end">
+                        <span th:text="${fmt.cantidad(i.stockPresentacion()) + ' ' + i.unidadMedida.etiqueta}">0 g</span>
+                        <span th:if="${i.stockBajo}" class="badge text-bg-danger ms-1">Bajo</span>
+                    </td>
+                    <td class="text-end"
+                        th:text="'$' + ${fmt.precio(i.precioPorGramo)} + ' / ' + ${i.unidadBaseEtiqueta()}">$0 / g</td>
+                    <td>
+                        <span class="badge" th:classappend="${i.activo} ? 'text-bg-success' : 'text-bg-secondary'"
+                              th:text="${i.activo} ? 'Activo' : 'Inactivo'">Activo</span>
+                    </td>
+                    <td class="text-end">
+                        <a class="btn btn-sm btn-outline-secondary"
+                           th:href="@{/insumos/{id}/editar(id=${i.id})}"
+                           th:aria-label="'Editar ' + ${i.nombre}">Editar</a>
+                        <form class="d-inline" method="post"
+                              th:action="@{/insumos/{id}/eliminar(id=${i.id})}"
+                              data-confirm="¿Eliminar este insumo? No se puede si esta en uso en una receta.">
+                            <button type="submit" class="btn btn-sm btn-outline-danger"
+                                    th:aria-label="'Eliminar ' + ${i.nombre}">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

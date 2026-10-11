@@ -1,0 +1,132 @@
+// =============================================================
+// GArepasAppV2 — Modelo Entidad-Relación
+// Codigo para dbdiagram.io (https://dbdiagram.io)
+// Motor: PostgreSQL
+//
+// Modulo: gestion de inventario, produccion, ventas,
+// ingresos y egresos de GArepas.
+//
+// Nota: la nomina de empleados NO forma parte del alcance.
+// =============================================================
+
+Table insumo {
+  id bigserial [pk, increment]
+  nombre varchar(60) [unique, not null]
+  categoria varchar(30) [not null]
+  marca varchar(30) [not null]
+  stock_actual decimal(15,4) [not null]
+  stock_minimo decimal(15,4)
+  precio_por_gramo decimal(15,6) [not null]
+  unidad_medida varchar(20) [not null]
+  activo boolean [not null]
+  version bigint
+  Note: 'precio_por_gramo = precio por unidad base (gramo, mililitro o unidad).'
+}
+
+Table receta {
+  id bigserial [pk, increment]
+  nombre varchar(50) [unique, not null]
+  descripcion varchar(150)
+}
+
+Table detalle_receta {
+  id bigserial [pk, increment]
+  receta_id bigint [not null]
+  insumo_id bigint [not null]
+  cantidad decimal(15,4) [not null]
+  unidad_medida varchar(20) [not null]
+  Note: 'cantidad se almacena en unidad base para permitir calculos de costo directos.'
+}
+
+Table producto {
+  id bigserial [pk, increment]
+  nombre varchar(50) [unique, not null]
+  stock_actual integer [not null]
+  stock_minimo integer
+  precio_venta decimal(12,2) [not null]
+  receta_id bigint
+  activo boolean [not null]
+  version bigint
+}
+
+Table produccion {
+  id bigserial [pk, increment]
+  producto_id bigint [not null]
+  cantidad integer [not null]
+  fecha timestamp [not null]
+  costo_total decimal(15,4) [not null]
+  estado varchar(15) [not null]
+  Note: 'estado: PENDIENTE (insumos insuficientes) o COMPLETADA (stock descontado y gasto creado).'
+}
+
+Table detalle_produccion {
+  id bigserial [pk, increment]
+  produccion_id bigint [not null]
+  insumo_id bigint [not null]
+  cantidad_requerida decimal(15,4) [not null]
+  cantidad_usada decimal(15,4)
+  precio_por_gramo_snapshot decimal(15,6)
+  costo_linea decimal(15,4)
+  suficiente boolean [not null]
+  Note: 'precio_por_gramo_snapshot preserva el costo historico del insumo.'
+}
+
+Table venta {
+  id bigserial [pk, increment]
+  fecha timestamp [not null]
+  total decimal(12,2) [not null]
+  nombre_cliente varchar(100)
+  jornada_id bigint
+}
+
+Table detalle_venta {
+  id bigserial [pk, increment]
+  venta_id bigint [not null]
+  producto_id bigint [not null]
+  cantidad integer [not null]
+  precio_unitario decimal(12,2) [not null]
+  subtotal decimal(12,2) [not null]
+}
+
+Table gasto {
+  id bigserial [pk, increment]
+  descripcion varchar(150) [not null]
+  monto decimal(12,2) [not null]
+  categoria varchar(30) [not null]
+  fecha timestamp [not null]
+  produccion_id bigint
+  Note: 'categoria: MATERIA_PRIMA, SERVICIOS, TRANSPORTE, EQUIPAMIENTO, MANTENIMIENTO, OTROS.'
+}
+
+Table jornada {
+  id bigserial [pk, increment]
+  fecha_apertura timestamp [not null]
+  abierta_por varchar(60) [not null]
+  fecha_cierre timestamp
+  activa boolean [not null]
+  Note: 'Solo puede existir una jornada activa a la vez.'
+}
+
+Table usuario {
+  id bigserial [pk, increment]
+  username varchar(50) [unique, not null]
+  password varchar(255) [not null]
+  rol varchar(20) [not null]
+  activo boolean [not null]
+  Note: 'rol: ADMIN (administrador) o VENTAS (registrador de ventas).'
+}
+
+// -------------------------------------------------------------
+// Relaciones
+// -------------------------------------------------------------
+
+Ref: detalle_receta.receta_id > receta.id [delete: cascade]
+Ref: detalle_receta.insumo_id > insumo.id
+Ref: producto.receta_id > receta.id
+Ref: produccion.producto_id > producto.id
+Ref: detalle_produccion.produccion_id > produccion.id [delete: cascade]
+Ref: detalle_produccion.insumo_id > insumo.id
+Ref: detalle_venta.venta_id > venta.id [delete: cascade]
+Ref: detalle_venta.producto_id > producto.id
+Ref: gasto.produccion_id > produccion.id
+Ref: venta.jornada_id > jornada.id

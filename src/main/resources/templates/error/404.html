@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/head :: head('Pagina no encontrada')}"></head>
+<body>
+<div class="ga-centered-container ga-error-container py-5 text-center">
+    <p class="display-6 fw-bold text-ga-burdeos mb-1">404</p>
+    <h1 class="h4 mb-3">La pagina que buscas no existe</h1>
+    <p class="text-muted">Puede que el enlace este mal escrito o que la seccion haya cambiado de direccion.</p>
+    <div class="d-flex flex-wrap justify-content-center gap-2">
+        <a th:href="@{/}" class="btn btn-primary" sec:authorize="isAuthenticated()">Volver al inicio</a>
+        <a th:href="@{/login}" class="btn btn-primary" sec:authorize="!isAuthenticated()">Iniciar sesion</a>
+    </div>
+</div>
+</body>
+</html>

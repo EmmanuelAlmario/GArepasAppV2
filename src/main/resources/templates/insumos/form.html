@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(${form.id} == null ? 'Agregar insumo' : 'Editar insumo', 'insumos', ~{::contenido})}">
+<body>
+<th:block th:fragment="acciones">
+    <a th:href="@{/insumos}" class="btn btn-outline-secondary">Volver al listado</a>
+</th:block>
+<div th:fragment="contenido">
+    <th:block th:replace="~{fragments/page-header :: pageHeader(${form.id} == null ? 'Agregar insumo' : 'Editar insumo', null, ~{::acciones})}"></th:block>
+
+    <div class="card shadow-sm form-card">
+        <div class="card-body">
+            <th:block th:replace="~{fragments/form-alerts :: formAlerts}"></th:block>
+
+            <form method="post" th:object="${form}"
+                  th:action="${form.id} == null ? @{/insumos} : @{/insumos/{id}(id=${form.id})}">
+                <p class="form-text">Los campos marcados con <span class="text-danger">*</span> son obligatorios.</p>
+
+                <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('*')}">
+                    <p class="fw-semibold mb-1">Revisa los campos marcados:</p>
+                    <ul class="mb-0">
+                        <li th:each="e : ${#fields.errors('*')}" th:text="${e}">Error</li>
+                    </ul>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="nombre">Nombre <span class="text-danger">*</span></label>
+                        <input type="text" id="nombre" th:field="*{nombre}" class="form-control" required
+                               th:classappend="${#fields.hasErrors('nombre')} ? 'is-invalid'"
+                               th:attr="aria-describedby=${#fields.hasErrors('nombre')} ? 'nombre-error' : null">
+                        <div class="invalid-feedback" id="nombre-error" th:errors="*{nombre}">Error</div>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <label class="form-label" for="categoria">Categoria <span class="text-danger">*</span></label>
+                        <input type="text" id="categoria" th:field="*{categoria}" class="form-control" required
+                               th:classappend="${#fields.hasErrors('categoria')} ? 'is-invalid'">
+                        <div class="invalid-feedback" th:errors="*{categoria}">Error</div>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <label class="form-label" for="marca">Marca <span class="text-danger">*</span></label>
+                        <input type="text" id="marca" th:field="*{marca}" class="form-control" required
+                               th:classappend="${#fields.hasErrors('marca')} ? 'is-invalid'">
+                        <div class="invalid-feedback" th:errors="*{marca}">Error</div>
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                        <label class="form-label" for="stockActual">Stock actual <span class="text-danger">*</span></label>
+                        <input type="number" step="0.01" min="0" id="stockActual" th:field="*{stockActual}"
+                               class="form-control" required
+                               th:classappend="${#fields.hasErrors('stockActual')} ? 'is-invalid'">
+                        <div class="invalid-feedback" th:errors="*{stockActual}">Error</div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <label class="form-label" for="unidadMedida">Unidad de medida <span class="text-danger">*</span></label>
+                        <select id="unidadMedida" th:field="*{unidadMedida}" class="form-select" required
+                                th:classappend="${#fields.hasErrors('unidadMedida')} ? 'is-invalid'">
+                            <option th:each="u : ${unidades}" th:value="${u}" th:text="${u.etiqueta}">unidad</option>
+                        </select>
+                        <div class="invalid-feedback" th:errors="*{unidadMedida}">Error</div>
+                        <div class="form-text">Se usa para ingresar stock y precio; internamente se guarda en la unidad base.</div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <label class="form-label" for="stockMinimo">Stock minimo (alerta)</label>
+                        <input type="number" step="0.01" min="0" id="stockMinimo" th:field="*{stockMinimo}"
+                               class="form-control" placeholder="Opcional"
+                               th:classappend="${#fields.hasErrors('stockMinimo')} ? 'is-invalid'">
+                        <div class="invalid-feedback" th:errors="*{stockMinimo}">Error</div>
+                        <div class="form-text">Si el stock baja de este valor se muestra la alerta "Bajo".</div>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="precioCompra">Precio de compra <span class="text-danger">*</span></label>
+                        <input type="number" step="1" min="0" id="precioCompra" th:field="*{precioCompra}"
+                               class="form-control" required
+                               th:classappend="${#fields.hasErrors('precioCompra')} ? 'is-invalid'">
+                        <div class="invalid-feedback" th:errors="*{precioCompra}">Error</div>
+                        <div class="form-text">Precio de la presentacion elegida, en pesos sin decimales (ej.: precio por kg).</div>
+                    </div>
+                    <div class="col-12 col-md-6 d-flex align-items-end">
+                        <div class="form-check">
+                            <input type="checkbox" id="activo" th:field="*{activo}" class="form-check-input">
+                            <label class="form-check-label" for="activo">Activo (disponible para recetas)</label>
+                        </div>
+                    </div>
+
+                    <div class="col-12 d-flex flex-wrap gap-2 pt-2">
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                        <a th:href="@{/insumos}" class="btn btn-outline-secondary">Cancelar</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

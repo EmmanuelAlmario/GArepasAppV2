@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(${form.id} == null ? 'Agregar receta' : 'Editar receta', 'recetas', ~{::contenido})}">
+<body>
+<th:block th:fragment="acciones">
+    <a th:href="@{/recetas}" class="btn btn-outline-secondary">Volver al listado</a>
+</th:block>
+<div th:fragment="contenido">
+    <th:block th:replace="~{fragments/page-header :: pageHeader(${form.id} == null ? 'Agregar receta' : 'Editar receta', null, ~{::acciones})}"></th:block>
+
+    <div class="card shadow-sm form-card-lg">
+        <div class="card-body">
+            <th:block th:replace="~{fragments/form-alerts :: formAlerts}"></th:block>
+
+            <form method="post" th:object="${form}"
+                  th:action="${form.id} == null ? @{/recetas} : @{/recetas/{id}(id=${form.id})}">
+                <p class="form-text">Los campos marcados con <span class="text-danger">*</span> son obligatorios.</p>
+
+                <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('*')}">
+                    <p class="fw-semibold mb-1">Revisa los campos marcados:</p>
+                    <ul class="mb-0">
+                        <li th:each="e : ${#fields.errors('*')}" th:text="${e}">Error</li>
+                    </ul>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="nombre">Nombre <span class="text-danger">*</span></label>
+                        <input type="text" id="nombre" th:field="*{nombre}" class="form-control" required
+                               th:classappend="${#fields.hasErrors('nombre')} ? 'is-invalid'">
+                        <div class="invalid-feedback" th:errors="*{nombre}">Error</div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="descripcion">Descripcion</label>
+                        <input type="text" id="descripcion" th:field="*{descripcion}" class="form-control">
+                    </div>
+                </div>
+
+                <label class="form-label mt-4">Insumos de la receta</label>
+                <p class="text-muted small mb-2">
+                    La cantidad se convierte a la unidad base del insumo (gramo, mililitro o unidad) al guardar.
+                    Las filas sin insumo o sin cantidad mayor a cero no se guardan.
+                </p>
+
+                <div id="filasReceta">
+                    <div data-fila class="row g-2 mb-2" th:each="fila, it : ${form.insumoId}">
+                        <div class="col-12 col-md-5">
+                            <label class="form-label small mb-1" th:for="'insumoId' + ${it.index}">Insumo</label>
+                            <select name="insumoId" class="form-select" th:id="'insumoId' + ${it.index}">
+                                <option value="">Selecciona un insumo...</option>
+                                <option th:each="i : ${insumos}" th:value="${i.id}"
+                                        th:selected="${form.insumoId[it.index] == i.id}"
+                                        th:text="${i.nombre}">Insumo</option>
+                            </select>
+                        </div>
+                        <div class="col-8 col-md-3">
+                            <label class="form-label small mb-1" th:for="'cantidad' + ${it.index}">Cantidad</label>
+                            <input type="number" step="0.01" min="0" name="cantidad" class="form-control"
+                                   th:id="'cantidad' + ${it.index}" th:value="${form.cantidad[it.index]}" placeholder="0">
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <label class="form-label small mb-1" th:for="'unidad' + ${it.index}">Unidad</label>
+                            <select name="unidadMedida" class="form-select" th:id="'unidad' + ${it.index}">
+                                <option value="">Unidad...</option>
+                                <option th:each="u : ${unidades}" th:value="${u}"
+                                        th:selected="${form.unidadMedida[it.index] == u}"
+                                        th:text="${u.etiqueta}">unidad</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-1 d-flex align-items-end">
+                            <button type="button" data-quitar class="btn btn-outline-danger w-100"
+                                    aria-label="Quitar fila">&times;</button>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-outline-secondary btn-sm mb-4"
+                        data-agregar="#plantillaFilaReceta" data-contenedor="#filasReceta">+ Agregar insumo</button>
+
+                <div class="d-flex flex-wrap gap-2">
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <a th:href="@{/recetas}" class="btn btn-outline-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <template id="plantillaFilaReceta">
+        <div data-fila class="row g-2 mb-2">
+            <div class="col-12 col-md-5">
+                <label class="form-label small mb-1">Insumo</label>
+                <select name="insumoId" class="form-select" aria-label="Insumo">
+                    <option value="">Selecciona un insumo...</option>
+                    <option th:each="i : ${insumos}" th:value="${i.id}" th:text="${i.nombre}">Insumo</option>
+                </select>
+            </div>
+            <div class="col-8 col-md-3">
+                <label class="form-label small mb-1">Cantidad</label>
+                <input type="number" step="0.01" min="0" name="cantidad" class="form-control"
+                       placeholder="0" aria-label="Cantidad">
+            </div>
+            <div class="col-12 col-md-3">
+                <label class="form-label small mb-1">Unidad</label>
+                <select name="unidadMedida" class="form-select" aria-label="Unidad de medida">
+                    <option value="">Unidad...</option>
+                    <option th:each="u : ${unidades}" th:value="${u}" th:text="${u.etiqueta}">unidad</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-1 d-flex align-items-end">
+                <button type="button" data-quitar class="btn btn-outline-danger w-100" aria-label="Quitar fila">&times;</button>
+            </div>
+        </div>
+    </template>
+
+    <script th:src="@{/js/filas.js}"></script>
+</div>
+</body>
+</html>

@@ -1,0 +1,99 @@
+/* =============================================================
+   GArepasAppV2 — tokens.css
+   Unica fuente de verdad del diseno: paleta de marca, tipografias,
+   medidas, radios, sombras y foco, mas el mapeo a Bootstrap.
+   Cambiar aqui cambia todo el sistema; los demas archivos solo
+   consumen estos tokens.
+   ============================================================= */
+
+:root {
+    /* ---------- Superficies ---------- */
+    --ga-bg: #F3EEE4;
+    --ga-surface: #FFFDF9;
+    --ga-surface-muted: #F6F0E4;
+    --ga-border: #E6DCCB;
+    --ga-border-strong: #CBB9A0;
+    --ga-input-border: #9C8A76;
+    --ga-input-bg: #FFFFFF;
+
+    /* ---------- Marca ---------- */
+    --ga-ink: #2A0F0A;
+    --ga-ink-rgb: 42, 15, 10;
+    --ga-sidebar: #3A1610;
+    --ga-sidebar-hover: rgba(254, 208, 95, .1);
+    --ga-sidebar-activo: rgba(254, 208, 95, .16);
+    --ga-burdeos: #56241C;
+    --ga-burdeos-rgb: 86, 36, 28;
+    --ga-brick: #C0430B;
+    --ga-brick-rgb: 192, 67, 11;
+    --ga-brick-oscuro: #9E3709;
+    --ga-brick-activo: #8A2F07;
+    --ga-orange: #F67D14;
+    --ga-gold: #FED05F;
+    --ga-arena: #FEF6AA;
+    --ga-terracota: #E19C71;
+    --ga-on-brand: #FDFCF7;
+    --ga-on-ink: #F7EBD9;
+    --ga-on-ink-muted: rgba(247, 235, 217, .72);
+
+    /* ---------- Texto, enlaces y estados ---------- */
+    --ga-text: #1A0A06;
+    --ga-text-muted: #6B5F57;
+    --ga-link: #A33A09;
+    --ga-link-rgb: 163, 58, 9;
+    --ga-link-hover: #83300A;
+    --ga-link-hover-rgb: 131, 48, 10;
+    --ga-success: #198754;
+    --ga-danger: #DC3545;
+    --ga-danger-text: #A81E2C;
+    --ga-warning-text: #4A3A00;
+    --ga-info-text: #6B3A12;
+    --ga-info-bg: #FDF1E3;
+
+    /* ---------- Graficos: contraste entre si, no solo por color ---------- */
+    --ga-chart-ingresos: #C0430B;
+    --ga-chart-gastos: #3A1610;
+
+    /* ---------- Medidas ---------- */
+    --ga-space-1: .25rem;
+    --ga-space-2: .5rem;
+    --ga-space-3: 1rem;
+    --ga-space-4: 1.5rem;
+    --ga-space-5: 2rem;
+    --ga-space-6: 3rem;
+    --ga-radius-sm: .5rem;
+    --ga-radius-md: .75rem;
+    --ga-radius-lg: 1rem;
+    --ga-radius-xl: 1.5rem;
+    --ga-radius-pill: 999px;
+    --ga-sidebar-w: 16.5rem;
+    --ga-tabbar-h: 4.25rem;
+    --ga-touch: 2.75rem;
+    --ga-focus-ring: rgba(var(--ga-brick-rgb), .28);
+    --ga-shadow-sm: 0 1px 2px rgba(var(--ga-ink-rgb), .07);
+    --ga-shadow-md: 0 16px 36px -16px rgba(var(--ga-ink-rgb), .35);
+
+    /* ---------- Tipografia ---------- */
+    --ga-font-ui: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        "Helvetica Neue", Arial, sans-serif;
+    --ga-font-display: "Fraunces", "Iowan Old Style", Georgia, "Times New Roman", serif;
+
+    /* ---------- Mapeo a Bootstrap ---------- */
+    --bs-font-sans-serif: var(--ga-font-ui);
+    --bs-body-bg: var(--ga-bg);
+    --bs-body-color: var(--ga-text);
+    --bs-body-line-height: 1.5;
+    --bs-secondary-color: var(--ga-text-muted);
+    --bs-border-color: var(--ga-border);
+    --bs-border-radius: var(--ga-radius-md);
+    --bs-border-radius-sm: var(--ga-radius-sm);
+    --bs-border-radius-lg: var(--ga-radius-lg);
+    --bs-border-radius-xl: var(--ga-radius-xl);
+    --bs-link-color: var(--ga-link);
+    --bs-link-color-rgb: var(--ga-link-rgb);
+    --bs-link-hover-color: var(--ga-link-hover);
+    --bs-link-hover-color-rgb: var(--ga-link-hover-rgb);
+    --bs-focus-ring-color: var(--ga-focus-ring);
+    --bs-box-shadow-sm: var(--ga-shadow-sm);
+    --bs-box-shadow: var(--ga-shadow-md);
+}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:fragment="layout(titulo, seccion, contenido)">
+<head th:replace="~{fragments/head :: head(${titulo})}"></head>
+<body class="ga-shell">
+<a class="visually-hidden-focusable" href="#contenido">Saltar al contenido</a>
+
+<div th:replace="~{fragments/nav :: nav(${seccion})}"></div>
+
+<main id="contenido" class="ga-app-main">
+    <div th:replace="~{fragments/alert :: alert}"></div>
+    <div th:replace="${contenido}"></div>
+</main>
+
+<div th:replace="~{fragments/confirm-modal :: confirmModal}"></div>
+
+<!-- Guia de instalacion en iPhone: Safari no dispara ningun prompt, el usuario
+     instala desde Compartir -> Agregar a pantalla de inicio. Solo se muestra en
+     Safari (no en la app ya instalada) y se puede descartar. -->
+<div id="iosInstallHint" class="ios-install-hint" role="status" hidden>
+    <span class="ios-install-hint__texto">
+        Para instalar la app: toca <strong>Compartir</strong> y elige
+        <strong>Agregar a pantalla de inicio</strong>.
+    </span>
+    <button type="button" class="btn-close btn-close-white" id="iosInstallHintCerrar"
+            aria-label="Ocultar aviso"></button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+<script th:src="@{/js/ui-feedback.js}"></script>
+<script th:src="@{/js/tablas-moviles.js}"></script>
+<script>
+    // Muestra la guia solo en Safari del iPhone/iPad y aun no instalada.
+    (function () {
+        const aviso = document.getElementById('iosInstallHint');
+        if (!aviso) return;
+
+        const esIpadDesktop = /MacIntel/.test(navigator.platform) && navigator.maxTouchPoints > 1;
+        const esIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || esIpadDesktop;
+        const yaInstalada = window.matchMedia('(display-mode: standalone)').matches
+            || navigator.standalone === true;
+        const descartado = localStorage.getItem('gaAvisoInstalar') === 'no';
+
+        if (esIOS && !yaInstalada && !descartado) {
+            aviso.hidden = false;
+        }
+
+        const cerrar = document.getElementById('iosInstallHintCerrar');
+        if (cerrar) {
+            cerrar.addEventListener('click', () => {
+                aviso.hidden = true;
+                localStorage.setItem('gaAvisoInstalar', 'no');
+            });
+        }
+    })();
+</script>
+</body>
+</html>

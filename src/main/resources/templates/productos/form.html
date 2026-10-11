@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(${form.id} == null ? 'Agregar producto' : 'Editar producto', 'productos', ~{::contenido})}">
+<body>
+<th:block th:fragment="acciones">
+    <a th:href="@{/productos}" class="btn btn-outline-secondary">Volver al listado</a>
+</th:block>
+<div th:fragment="contenido">
+    <th:block th:replace="~{fragments/page-header :: pageHeader(${form.id} == null ? 'Agregar producto' : 'Editar producto', null, ~{::acciones})}"></th:block>
+
+    <div class="card shadow-sm form-card">
+        <div class="card-body">
+            <th:block th:replace="~{fragments/form-alerts :: formAlerts}"></th:block>
+
+            <form method="post" th:object="${form}"
+                  th:action="${form.id} == null ? @{/productos} : @{/productos/{id}(id=${form.id})}">
+                <p class="form-text">Los campos marcados con <span class="text-danger">*</span> son obligatorios.</p>
+
+                <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('*')}">
+                    <p class="fw-semibold mb-1">Revisa los campos marcados:</p>
+                    <ul class="mb-0">
+                        <li th:each="e : ${#fields.errors('*')}" th:text="${e}">Error</li>
+                    </ul>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="nombre">Nombre <span class="text-danger">*</span></label>
+                        <input type="text" id="nombre" th:field="*{nombre}" class="form-control" required
+                               th:classappend="${#fields.hasErrors('nombre')} ? 'is-invalid'">
+                        <div class="invalid-feedback" th:errors="*{nombre}">Error</div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <label class="form-label" for="stockActual">Stock actual <span class="text-danger">*</span></label>
+                        <input type="number" step="1" min="0" id="stockActual" th:field="*{stockActual}"
+                               class="form-control" required
+                               th:classappend="${#fields.hasErrors('stockActual')} ? 'is-invalid'">
+                        <div class="invalid-feedback" th:errors="*{stockActual}">Error</div>
+                        <div class="form-text">El flujo normal lo actualizan ventas y producciones.</div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <label class="form-label" for="stockMinimo">Stock minimo (alerta)</label>
+                        <input type="number" step="1" min="0" id="stockMinimo" th:field="*{stockMinimo}"
+                               class="form-control" placeholder="Opcional"
+                               th:classappend="${#fields.hasErrors('stockMinimo')} ? 'is-invalid'">
+                        <div class="invalid-feedback" th:errors="*{stockMinimo}">Error</div>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="precioVenta">Precio de venta <span class="text-danger">*</span></label>
+                        <input type="number" step="1" min="0" id="precioVenta" th:field="*{precioVenta}"
+                               class="form-control" required
+                               th:classappend="${#fields.hasErrors('precioVenta')} ? 'is-invalid'">
+                        <div class="invalid-feedback" th:errors="*{precioVenta}">Error</div>
+                        <div class="form-text">En pesos sin decimales.</div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="recetaId">Receta</label>
+                        <select id="recetaId" th:field="*{recetaId}" class="form-select">
+                            <option value="">Sin receta</option>
+                            <option th:each="r : ${recetas}" th:value="${r.id}" th:text="${r.nombre}">Receta</option>
+                        </select>
+                        <div class="form-text">Necesaria para registrar producciones y calcular costo y margen.</div>
+                    </div>
+
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-outline-primary" data-sin-carga
+                                th:formaction="@{/productos/sugerir-precio}">
+                            Sugerir precio (recargo 40% sobre el costo)
+                        </button>
+                        <div class="form-text">Calcula el precio pero no lo guarda: revisa el valor y pulsa Guardar.</div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="form-check">
+                            <input type="checkbox" id="activo" th:field="*{activo}" class="form-check-input">
+                            <label class="form-check-label" for="activo">Activo (visible en el punto de venta)</label>
+                        </div>
+                    </div>
+
+                    <div class="col-12 d-flex flex-wrap gap-2 pt-2">
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                        <a th:href="@{/productos}" class="btn btn-outline-secondary">Cancelar</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

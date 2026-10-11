@@ -1,0 +1,211 @@
+/* =============================================================
+   GArepasAppV2 — components.css
+   Ajustes de marca sobre componentes de Bootstrap: superficies,
+   tablas, botones, formularios, alertas y dialogos.
+   Todos consumen los tokens de tokens.css.
+   ============================================================= */
+
+/* ---------- Superficies ---------- */
+.card {
+    --bs-card-border-radius: var(--ga-radius-lg);
+    border: 1px solid var(--ga-border);
+    border-radius: var(--ga-radius-lg);
+    background-color: var(--ga-surface);
+}
+
+.card.shadow-sm {
+    box-shadow: var(--ga-shadow-sm);
+}
+
+.card-header {
+    background-color: var(--ga-surface-muted);
+    border-color: var(--ga-border);
+}
+
+/* ---------- Tablas ---------- */
+.table {
+    --bs-table-color: var(--ga-text);
+    --bs-table-cell-padding-y: .8rem;
+    --bs-table-cell-padding-x: 1rem;
+    --bs-table-hover-bg: rgba(var(--ga-brick-rgb), .05);
+    --bs-table-hover-color: var(--ga-text);
+}
+
+.table td,
+.table th {
+    vertical-align: middle;
+}
+
+.table > :not(caption) > * > * {
+    border-color: var(--ga-border);
+}
+
+/* Encabezados como etiquetas pequenas: la lectura va a los datos. */
+.table thead th {
+    color: var(--ga-text-muted);
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.table-light {
+    --bs-table-bg: var(--ga-surface-muted);
+    --bs-table-color: var(--ga-text-muted);
+    --bs-table-border-color: var(--ga-border);
+}
+
+/* ---------- Botones ---------- */
+.btn {
+    font-weight: 600;
+    letter-spacing: -0.005em;
+}
+
+.btn-lg {
+    --bs-btn-padding-y: .8rem;
+    --bs-btn-padding-x: 1.5rem;
+    --bs-btn-font-size: 1.05rem;
+}
+
+.btn-sm {
+    --bs-btn-padding-y: .35rem;
+    --bs-btn-padding-x: .8rem;
+    --bs-btn-font-size: .85rem;
+}
+
+.btn-primary {
+    --bs-btn-bg: var(--ga-brick);
+    --bs-btn-border-color: var(--ga-brick);
+    --bs-btn-hover-bg: var(--ga-brick-oscuro);
+    --bs-btn-hover-border-color: var(--ga-brick-oscuro);
+    --bs-btn-active-bg: var(--ga-brick-activo);
+    --bs-btn-active-border-color: var(--ga-brick-activo);
+    --bs-btn-disabled-bg: var(--ga-brick);
+    --bs-btn-disabled-border-color: var(--ga-brick);
+    --bs-btn-focus-shadow-rgb: var(--ga-brick-rgb);
+    box-shadow: 0 8px 18px -10px rgba(var(--ga-brick-rgb), .9);
+}
+
+.btn-primary:disabled {
+    box-shadow: none;
+}
+
+.btn-outline-primary {
+    --bs-btn-color: var(--ga-link);
+    --bs-btn-border-color: var(--ga-link);
+    --bs-btn-hover-bg: var(--ga-brick);
+    --bs-btn-hover-border-color: var(--ga-brick);
+    --bs-btn-active-bg: var(--ga-brick-oscuro);
+    --bs-btn-active-border-color: var(--ga-brick-oscuro);
+    --bs-btn-focus-shadow-rgb: var(--ga-brick-rgb);
+}
+
+/* Secundario en tono marron, no gris: la app conserva su calidez. */
+.btn-outline-secondary {
+    --bs-btn-color: var(--ga-burdeos);
+    --bs-btn-border-color: var(--ga-border-strong);
+    --bs-btn-hover-color: var(--ga-burdeos);
+    --bs-btn-hover-bg: var(--ga-surface-muted);
+    --bs-btn-hover-border-color: var(--ga-border-strong);
+    --bs-btn-active-color: var(--ga-burdeos);
+    --bs-btn-active-bg: var(--ga-border);
+    --bs-btn-active-border-color: var(--ga-border-strong);
+    --bs-btn-focus-shadow-rgb: var(--ga-brick-rgb);
+}
+
+/* ---------- Formularios ---------- */
+.form-control,
+.form-select {
+    background-color: var(--ga-input-bg);
+    border-color: var(--ga-input-border);
+}
+
+.form-control:not(.form-control-sm),
+.form-select:not(.form-select-sm) {
+    min-height: var(--ga-touch);
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--ga-text);
+}
+
+.form-text {
+    color: var(--ga-text-muted);
+    line-height: 1.45;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--ga-brick);
+    box-shadow: 0 0 0 .25rem var(--ga-focus-ring);
+}
+
+/* Los estados de validacion conservan su color semantico. */
+.form-control.is-invalid:focus,
+.form-select.is-invalid:focus {
+    border-color: var(--bs-form-invalid-border-color);
+    box-shadow: 0 0 0 .25rem rgba(var(--bs-danger-rgb), .25);
+}
+
+.form-control.is-valid:focus,
+.form-select.is-valid:focus {
+    border-color: var(--bs-form-valid-border-color);
+    box-shadow: 0 0 0 .25rem rgba(var(--bs-success-rgb), .25);
+}
+
+.form-control:hover:not(:focus):not(.is-invalid):not(.is-valid),
+.form-select:hover:not(:focus):not(.is-invalid):not(.is-valid) {
+    border-color: var(--ga-text-muted);
+}
+
+.form-check-input {
+    border-color: var(--ga-input-border);
+}
+
+.form-check-input:checked {
+    background-color: var(--ga-brick);
+    border-color: var(--ga-brick);
+}
+
+.form-check-input:focus {
+    border-color: var(--ga-brick);
+    box-shadow: 0 0 0 .25rem var(--ga-focus-ring);
+}
+
+/* ---------- Insignias ---------- */
+.badge {
+    padding: .4em .7em;
+    border-radius: var(--ga-radius-pill);
+    font-weight: 600;
+}
+
+/* ---------- Alertas ---------- */
+.alert {
+    border-radius: var(--ga-radius-md);
+}
+
+.alert-warning {
+    --bs-alert-color: var(--ga-warning-text);
+    --bs-alert-bg: var(--ga-arena);
+    --bs-alert-border-color: var(--ga-gold);
+}
+
+.alert-info {
+    --bs-alert-color: var(--ga-info-text);
+    --bs-alert-bg: var(--ga-info-bg);
+    --bs-alert-border-color: var(--ga-terracota);
+}
+
+/* ---------- Dialogos ---------- */
+.modal-content {
+    border: 0;
+    border-radius: var(--ga-radius-xl);
+    box-shadow: var(--ga-shadow-md);
+}
+
+.modal-header,
+.modal-footer {
+    border-color: var(--ga-border);
+}

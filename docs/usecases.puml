@@ -1,0 +1,402 @@
+=============================================================
+  GArepasAppV2 — Casos de Uso
+  Proyecto de aula: aplicativo web para la gestion de
+  inventario, ingresos y egresos de GArepas.
+=============================================================
+
+Actores:
+  - Administrador (ADMIN): dueño/encargado del negocio. Gestiona
+    inventario, produccion, ventas, gastos, usuarios y reportes.
+  - Registrador de ventas (VENTAS): empleado de mostrador. Solo
+    registra ventas y opera la jornada.
+  - Cliente: persona sin autenticacion que consulta el menu publico.
+
+=============================================================
+  INVENTARIO — INSUMOS
+=============================================================
+
+UC1  Listar insumos
+  Actor: Administrador
+  Precondicion: El administrador esta autenticado.
+  Flujo principal:
+    1. El administrador navega a la seccion de Insumos.
+    2. El sistema muestra una tabla con todos los insumos:
+       nombre, categoria, marca, stock actual, unidad de medida
+       y estado (activo/inactivo).
+  Postcondicion: El administrador visualiza la lista de insumos.
+
+UC2  Crear insumo
+  Actor: Administrador
+  Precondicion: UC1.
+  Flujo principal:
+    1. El administrador pulsa "Agregar insumo".
+    2. El sistema muestra un formulario: nombre, categoria, marca,
+       stock actual, stock minimo (opcional), precio de compra,
+       unidad de medida y estado.
+    3. El administrador completa el formulario y lo envia.
+    4. El sistema valida los datos, calcula el precio por unidad
+       base segun la unidad seleccionada y guarda el insumo.
+    5. El sistema redirige a la lista con mensaje de exito.
+  Flujos alternativos:
+    3a. Nombre duplicado -> error "Ya existe un insumo con ese nombre".
+    3b. Datos invalidos -> el formulario muestra el error por campo.
+
+UC3  Modificar insumo
+  Actor: Administrador
+  Precondicion: UC1, existe al menos un insumo.
+  Flujo principal:
+    1. El administrador pulsa "Editar" sobre un insumo.
+    2. El sistema muestra el formulario con los datos actuales.
+    3. El administrador modifica y envia.
+    4. El sistema valida y guarda los cambios.
+    5. El sistema redirige a la lista con mensaje de exito.
+
+UC4  Eliminar insumo
+  Actor: Administrador
+  Precondicion: UC1, existe al menos un insumo.
+  Flujo principal:
+    1. El administrador pulsa "Eliminar" sobre un insumo.
+    2. El sistema solicita confirmacion.
+    3. El administrador confirma.
+    4. El sistema elimina el insumo.
+    5. El sistema redirige a la lista con mensaje de exito.
+
+UC5  Ajustar stock de insumos
+  Actor: Administrador
+  Precondicion: UC1.
+  Flujo principal:
+    1. El administrador pulsa "Ajustar stock".
+    2. El sistema muestra un formulario con filas agregables:
+       insumo + cantidad (positiva repone, negativa consume).
+    3. El administrador completa las filas y envia.
+    4. El sistema ajusta el stock de todos los insumos indicados
+       en una sola transaccion.
+    5. El sistema redirige a la lista con mensaje de exito.
+  Flujos alternativos:
+    4a. El stock resultante seria negativo -> error indicando
+        el insumo afectado; no se aplica ningun cambio.
+
+=============================================================
+  INVENTARIO — PRODUCTOS
+=============================================================
+
+UC6  Listar productos
+  Actor: Administrador
+  Precondicion: El administrador esta autenticado.
+  Flujo principal:
+    1. El administrador navega a la seccion de Productos.
+    2. El sistema muestra una tabla: nombre, stock, precio de venta,
+       costo unitario, margen %, receta asociada y estado.
+
+UC7  Crear producto
+  Actor: Administrador
+  Precondicion: UC6.
+  Flujo principal:
+    1. El administrador pulsa "Agregar producto".
+    2. El sistema muestra un formulario: nombre, stock actual,
+       stock minimo (opcional), precio de venta, receta (opcional)
+       y estado.
+    3. El administrador completa y envia.
+    4. El sistema guarda el producto.
+    5. El sistema redirige a la lista con mensaje de exito.
+
+UC8  Modificar producto
+  Actor: Administrador
+  Precondicion: UC6, existe al menos un producto.
+  Flujo principal: analogo a UC3.
+
+UC9  Eliminar producto
+  Actor: Administrador
+  Precondicion: UC6, existe al menos un producto.
+  Flujo principal: analogo a UC4.
+
+UC10 Sugerir precio de venta
+  Actor: Administrador
+  Precondicion: UC7 o UC8, el producto tiene receta con insumos.
+  Flujo principal:
+    1. El administrador pulsa "Sugerir precio" en el formulario.
+    2. El sistema calcula el costo unitario segun la receta y
+       aplica un margen objetivo (por defecto 40%).
+    3. El sistema muestra el precio sugerido en el campo de
+       precio de venta.
+
+=============================================================
+  INVENTARIO — RECETAS
+=============================================================
+
+UC11 Listar recetas
+  Actor: Administrador
+  Precondicion: El administrador esta autenticado.
+  Flujo principal:
+    1. El administrador navega a la seccion de Recetas.
+    2. El sistema muestra una tabla: nombre, descripcion, cantidad
+       de insumos y costo total calculado.
+
+UC12 Crear receta
+  Actor: Administrador
+  Precondicion: UC11, existen insumos registrados.
+  Flujo principal:
+    1. El administrador pulsa "Agregar receta".
+    2. El sistema muestra un formulario: nombre, descripcion y una
+       seccion dinamica de detalles (insumo + cantidad + unidad).
+    3. El administrador agrega uno o mas detalles y envia.
+    4. El sistema convierte las cantidades a unidad base y guarda.
+    5. El sistema redirige a la lista con mensaje de exito.
+
+UC13 Modificar receta
+  Actor: Administrador
+  Precondicion: UC11, existe al menos una receta.
+  Flujo principal: analogo a UC3, con detalles editables.
+
+UC14 Eliminar receta
+  Actor: Administrador
+  Precondicion: UC11, existe al menos una receta.
+  Flujo principal: analogo a UC4.
+
+=============================================================
+  PRODUCCION
+=============================================================
+
+UC15 Listar producciones
+  Actor: Administrador
+  Precondicion: El administrador esta autenticado.
+  Flujo principal:
+    1. El administrador navega a la seccion de Producciones.
+    2. El sistema muestra una tabla: numero, producto, cantidad,
+       costo total, costo unitario, estado (SUFICIENTE /
+       INSUFICIENTE) y fecha.
+
+UC16 Registrar produccion
+  Actor: Administrador
+  Precondicion: UC15, existe al menos un producto con receta.
+  Flujo principal:
+    1. El administrador pulsa "Registrar produccion".
+    2. El sistema muestra un formulario: producto (solo los que
+       tienen receta) y cantidad a producir.
+    3. El administrador selecciona y envia.
+    4. El sistema calcula los insumos requeridos segun la receta
+       multiplicada por la cantidad.
+    5. Si todos los insumos son suficientes:
+       5a. Descuenta el stock de insumos.
+       5b. Aumenta el stock del producto.
+       5c. Registra un gasto automatico de MATERIA_PRIMA.
+       5d. Estado = COMPLETADA.
+    6. Si algun insumo es insuficiente:
+       6a. Estado = PENDIENTE. No se descuenta stock.
+    7. El sistema redirige a la lista con mensaje de exito o
+       advertencia de insuficiencia.
+
+UC17 Re-verificar produccion pendiente
+  Actor: Administrador
+  Precondicion: UC15, existe una produccion en estado PENDIENTE.
+  Flujo principal:
+    1. El administrador pulsa "Re-verificar" sobre la produccion.
+    2. El sistema recalcula la suficiencia con el stock actual.
+    3. Si ahora son suficientes -> completa la produccion
+       (pasos 5a a 5d de UC16).
+    4. Si aun faltan insumos -> muestra advertencia.
+    5. El sistema redirige a la lista.
+
+UC18 Ver insumos faltantes
+  Actor: Administrador
+  Precondicion: UC15, existe una produccion PENDIENTE.
+  Flujo principal:
+    1. El administrador pulsa sobre el estado "INSUFICIENTE".
+    2. El sistema muestra una tabla por insumo: nombre, cantidad
+       requerida, stock disponible y cantidad faltante.
+    3. Los insumos insuficientes se resaltan.
+
+UC19 Eliminar produccion
+  Actor: Administrador
+  Precondicion: UC15, existe al menos una produccion.
+  Flujo principal:
+    1. El administrador pulsa "Eliminar" sobre una produccion.
+    2. El sistema solicita confirmacion.
+    3. Si la produccion estaba COMPLETADA:
+       3a. Revierte el stock de insumos.
+       3b. Revierte el stock del producto.
+       3c. Elimina el gasto de MATERIA_PRIMA asociado.
+    4. El sistema elimina la produccion.
+    5. El sistema redirige a la lista.
+
+=============================================================
+  VENTAS
+=============================================================
+
+UC20 Abrir jornada de operacion
+  Actor: Administrador, Registrador de ventas
+  Precondicion: El usuario esta autenticado. No hay jornada activa.
+  Flujo principal:
+    1. En el punto de venta el usuario pulsa "Abrir dia".
+    2. El sistema crea una jornada activa con la fecha/hora actual
+       y el nombre del usuario.
+    3. El sistema muestra el indicador de "Dia abierto".
+  Flujos alternativos:
+    1a. Ya existe una jornada activa -> error.
+
+UC21 Registrar venta (punto de venta)
+  Actor: Administrador, Registrador de ventas
+  Precondicion: El usuario esta autenticado. Existen productos
+    activos con stock.
+  Flujo principal:
+    1. El usuario visualiza el catalogo de productos activos.
+    2. El usuario selecciona productos y cantidades (carrito).
+    3. Opcionalmente ingresa el nombre del cliente.
+    4. El usuario pulsa "Cobrar".
+    5. El sistema valida stock suficiente para cada producto.
+    6. El sistema descuenta stock, calcula totales y guarda la venta.
+    7. Si hay jornada activa, la venta queda asociada a ella.
+    8. El sistema vacia el carrito y confirma el registro.
+  Flujos alternativos:
+    5a. Stock insuficiente -> error indicando el producto; no se
+        registra la venta.
+
+UC22 Cerrar jornada de operacion
+  Actor: Administrador, Registrador de ventas
+  Precondicion: Hay una jornada activa.
+  Flujo principal:
+    1. El usuario pulsa "Cerrar dia".
+    2. El sistema cierra la jornada y calcula el arqueo
+       (numero de ventas y total vendido).
+    3. El sistema muestra el arqueo.
+
+UC23 Consultar historial de ventas
+  Actor: Administrador
+  Precondicion: El administrador esta autenticado.
+  Flujo principal:
+    1. El administrador navega al historial de ventas.
+    2. El sistema muestra una tabla: numero, fecha, cliente,
+       productos y total.
+    3. El administrador puede buscar por cliente, producto o numero.
+
+UC24 Eliminar venta
+  Actor: Administrador
+  Precondicion: UC23, existe al menos una venta.
+  Flujo principal:
+    1. El administrador pulsa "Eliminar" sobre una venta.
+    2. El sistema solicita confirmacion.
+    3. El sistema revierte el stock de los productos vendidos.
+    4. El sistema elimina la venta.
+    5. El sistema redirige al historial.
+
+=============================================================
+  FINANZAS — GASTOS
+=============================================================
+
+UC25 Listar gastos
+  Actor: Administrador
+  Precondicion: El administrador esta autenticado.
+  Flujo principal:
+    1. El administrador navega a la seccion de Gastos.
+    2. El sistema muestra una tabla: descripcion, categoria,
+       monto y fecha.
+
+UC26 Registrar gasto
+  Actor: Administrador
+  Precondicion: UC25.
+  Flujo principal:
+    1. El administrador pulsa "Registrar gasto".
+    2. El sistema muestra un formulario: descripcion, monto,
+       categoria y fecha.
+    3. El administrador completa y envia.
+    4. El sistema guarda el gasto.
+    5. El sistema redirige a la lista con mensaje de exito.
+
+UC27 Modificar gasto
+  Actor: Administrador
+  Precondicion: UC25, existe al menos un gasto.
+  Flujo principal: analogo a UC3.
+
+UC28 Eliminar gasto
+  Actor: Administrador
+  Precondicion: UC25, existe al menos un gasto.
+  Flujo principal: analogo a UC4.
+
+=============================================================
+  FINANZAS — REPORTES
+=============================================================
+
+UC29 Ver resumen de rentabilidad
+  Actor: Administrador
+  Precondicion: El administrador esta autenticado.
+  Flujo principal:
+    1. El administrador navega a la seccion de Reportes.
+    2. El sistema muestra:
+       - Indicadores: ingresos totales, gastos totales,
+         utilidad neta y margen %.
+       - Selector de rango de fechas (hoy, 7 dias, mes, año,
+         personalizado).
+       - Grafico de barras: ingresos vs gastos por dia.
+       - Top 5 de productos mas vendidos.
+       - Gastos agrupados por categoria.
+    3. El administrador cambia el rango y el sistema actualiza
+       la informacion.
+
+UC30 Exportar reporte CSV
+  Actor: Administrador
+  Precondicion: UC29.
+  Flujo principal:
+    1. El administrador pulsa "Exportar CSV".
+    2. El sistema genera un archivo CSV con los datos del rango.
+    3. El navegador descarga el archivo.
+
+=============================================================
+  COSTOS
+=============================================================
+
+UC31 Consultar costo de producto
+  Actor: Administrador
+  Precondicion: UC6, el producto tiene receta con insumos.
+  Flujo principal:
+    1. En la lista de productos el sistema muestra las columnas
+       calculadas de costo unitario y margen %.
+    2. El sistema calcula estos valores a partir de la receta del
+       producto y los precios de los insumos.
+
+=============================================================
+  MENU PUBLICO
+=============================================================
+
+UC32 Ver menu de productos
+  Actor: Cliente (sin autenticacion)
+  Precondicion: Ninguna.
+  Flujo principal:
+    1. El cliente accede a la URL publica /menu.
+    2. El sistema muestra los productos activos: nombre y precio.
+    3. Los productos con stock 0 se muestran como "Agotado".
+
+=============================================================
+  ADMINISTRACION
+=============================================================
+
+UC33 Gestionar usuarios
+  Actor: Administrador
+  Precondicion: El administrador esta autenticado.
+  Flujo principal:
+    1. El administrador navega a la seccion de Usuarios.
+    2. El sistema muestra una tabla: usuario, rol y estado.
+    3. El administrador puede crear, modificar o eliminar usuarios.
+    4. Al crear se asigna rol (ADMIN o VENTAS) y contrasena.
+    5. Al modificar se puede cambiar rol, contrasena y estado.
+    6. El usuario "admin" no se puede eliminar.
+
+UC34 Iniciar sesion
+  Actor: Administrador, Registrador de ventas
+  Precondicion: El usuario tiene credenciales validas.
+  Flujo principal:
+    1. El usuario accede a la pagina de inicio de sesion.
+    2. Ingresa usuario y contrasena.
+    3. El sistema valida las credenciales.
+    4. Si son validas, crea la sesion y redirige segun rol:
+       - ADMIN -> /reportes
+       - VENTAS -> /ventas
+  Flujos alternativos:
+    3a. Credenciales invalidas -> mensaje de error en el formulario.
+
+UC35 Cerrar sesion
+  Actor: Administrador, Registrador de ventas
+  Precondicion: El usuario esta autenticado.
+  Flujo principal:
+    1. El usuario pulsa "Cerrar sesion".
+    2. El sistema invalida la sesion.
+    3. El sistema redirige a /login.

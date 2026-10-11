@@ -1,0 +1,10 @@
+target/
+.git/
+.gitignore
+.env
+.playwright-mcp/
+docs/
+*.md
+*.log
+.idea/
+.vscode/

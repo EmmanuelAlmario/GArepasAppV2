@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/head :: head('Acceso denegado')}"></head>
+<body>
+<div class="ga-centered-container ga-error-container py-5 text-center">
+    <p class="display-6 fw-bold text-ga-burdeos mb-1">403</p>
+    <h1 class="h4 mb-3">No tienes permisos para acceder a esta pagina</h1>
+    <p class="text-muted">
+        Esta seccion esta reservada a otro rol. Si crees que es un error, cierra sesion y entra
+        con una cuenta autorizada.
+    </p>
+    <div class="d-flex flex-wrap justify-content-center gap-2">
+        <a th:href="@{/}" class="btn btn-primary" sec:authorize="isAuthenticated()">Volver al inicio</a>
+        <a th:href="@{/login}" class="btn btn-primary" sec:authorize="!isAuthenticated()">Iniciar sesion</a>
+    </div>
+</div>
+</body>
+</html>

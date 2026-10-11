@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout :: layout('Historial de ventas', 'ventas', ~{::contenido})}">
+<body>
+<th:block th:fragment="acciones">
+    <a th:href="@{/ventas}" class="btn btn-outline-secondary">Ir al punto de venta</a>
+</th:block>
+<div th:fragment="contenido">
+    <th:block th:replace="~{fragments/page-header :: pageHeader('Historial de ventas', 'Solo el administrador puede consultar y eliminar ventas.', ~{::acciones})}"></th:block>
+
+    <div class="card shadow-sm mb-3">
+        <div class="card-body">
+            <form method="get" th:action="@{/ventas/historial}" class="row g-2 align-items-end">
+                <div class="col-12 col-md-6 col-lg-5">
+                    <label class="form-label small mb-1" for="q">Buscar venta</label>
+                    <input type="search" id="q" name="q" class="form-control"
+                           placeholder="Numero, cliente o producto..." th:value="${q}">
+                </div>
+                <div class="col-12 col-md-auto">
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-outline-primary">Buscar</button>
+                        <a th:if="${q != null && !q.isBlank()}" th:href="@{/ventas/historial}"
+                           class="btn btn-outline-secondary">Limpiar</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <caption class="visually-hidden">Ventas registradas, de la mas reciente a la mas antigua</caption>
+                <thead class="table-light">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Cliente</th>
+                    <th scope="col">Productos</th>
+                    <th scope="col" class="text-end">Total</th>
+                    <th scope="col" class="text-end">Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${#lists.isEmpty(ventas)}">
+                    <td colspan="6">
+                        <div th:if="${q != null && !q.isBlank()}">
+                            <div th:replace="~{fragments/empty-state :: empty('Sin resultados para esta busqueda', 'Prueba con otro numero, cliente o producto, o limpia el filtro.')}"></div>
+                        </div>
+                        <div th:unless="${q != null && !q.isBlank()}">
+                            <div th:replace="~{fragments/empty-state :: empty('No hay ventas registradas', 'Las ventas apareceran aqui cuando se registren en el punto de venta.')}"></div>
+                        </div>
+                    </td>
+                </tr>
+                <tr th:each="v : ${ventas}">
+                    <td th:text="'#' + ${v.id}">#</td>
+                    <td th:text="${#temporals.format(v.fecha, 'dd/MM/yyyy HH:mm')}">Fecha</td>
+                    <td th:text="${v.nombreCliente} ?: '—'">Cliente</td>
+                    <td>
+                        <span th:each="d, it : ${v.detalles}"
+                              th:text="${d.productoNombre} + ' x' + ${d.cantidad} + ${it.last ? '' : ', '}">Producto</span>
+                    </td>
+                    <td class="text-end" th:text="${fmt.moneda(v.total)}">$0</td>
+                    <td class="text-end">
+                        <form class="d-inline" method="post"
+                              th:action="@{/ventas/{id}/eliminar(id=${v.id})}"
+                              data-confirm="¿Eliminar esta venta? Se revertira el stock de los productos vendidos.">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>
