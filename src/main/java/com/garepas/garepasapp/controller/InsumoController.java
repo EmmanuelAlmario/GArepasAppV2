@@ -122,7 +122,7 @@ public class InsumoController {
             redirect.addFlashAttribute("mensaje", "Insumo eliminado.");
         } catch (DataIntegrityViolationException ex) {
             redirect.addFlashAttribute("mensaje",
-                    "No se puede eliminar el insumo porque esta en uso en una o mas recetas.");
+                    "No se puede eliminar el insumo porque está en uso en una o más recetas.");
             redirect.addFlashAttribute("tipo", "danger");
         }
         return "redirect:/insumos";

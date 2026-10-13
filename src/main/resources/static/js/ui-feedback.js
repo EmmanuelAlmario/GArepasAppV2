@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
             disparador = document.activeElement;
             form.dataset.confirmado = 'true';
             if (mensajeEl) {
-                mensajeEl.textContent = form.dataset.confirm || '¿Confirmas esta accion?';
+                mensajeEl.textContent = form.dataset.confirm || '¿Confirmas esta acción?';
             }
             modal.show();
             return;

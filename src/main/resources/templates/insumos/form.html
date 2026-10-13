@@ -32,7 +32,7 @@
                         <div class="invalid-feedback" id="nombre-error" th:errors="*{nombre}">Error</div>
                     </div>
                     <div class="col-12 col-md-3">
-                        <label class="form-label" for="categoria">Categoria <span class="text-danger">*</span></label>
+                        <label class="form-label" for="categoria">Categoría <span class="text-danger">*</span></label>
                         <input type="text" id="categoria" th:field="*{categoria}" class="form-control" required
                                th:classappend="${#fields.hasErrors('categoria')} ? 'is-invalid'">
                         <div class="invalid-feedback" th:errors="*{categoria}">Error</div>
@@ -58,15 +58,13 @@
                             <option th:each="u : ${unidades}" th:value="${u}" th:text="${u.etiqueta}">unidad</option>
                         </select>
                         <div class="invalid-feedback" th:errors="*{unidadMedida}">Error</div>
-                        <div class="form-text">Se usa para ingresar stock y precio; internamente se guarda en la unidad base.</div>
                     </div>
                     <div class="col-12 col-md-4">
-                        <label class="form-label" for="stockMinimo">Stock minimo (alerta)</label>
+                        <label class="form-label" for="stockMinimo">Stock mínimo (alerta)</label>
                         <input type="number" step="0.01" min="0" id="stockMinimo" th:field="*{stockMinimo}"
                                class="form-control" placeholder="Opcional"
                                th:classappend="${#fields.hasErrors('stockMinimo')} ? 'is-invalid'">
                         <div class="invalid-feedback" th:errors="*{stockMinimo}">Error</div>
-                        <div class="form-text">Si el stock baja de este valor se muestra la alerta "Bajo".</div>
                     </div>
 
                     <div class="col-12 col-md-6">
@@ -75,7 +73,6 @@
                                class="form-control" required
                                th:classappend="${#fields.hasErrors('precioCompra')} ? 'is-invalid'">
                         <div class="invalid-feedback" th:errors="*{precioCompra}">Error</div>
-                        <div class="form-text">Precio de la presentacion elegida, en pesos sin decimales (ej.: precio por kg).</div>
                     </div>
                     <div class="col-12 col-md-6 d-flex align-items-end">
                         <div class="form-check">

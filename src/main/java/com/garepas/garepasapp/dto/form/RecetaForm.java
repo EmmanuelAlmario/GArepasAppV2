@@ -25,7 +25,7 @@ public class RecetaForm {
     @Size(max = 50, message = "El nombre no puede superar 50 caracteres")
     private String nombre;
 
-    @Size(max = 150, message = "La descripcion no puede superar 150 caracteres")
+    @Size(max = 150, message = "La descripción no puede superar 150 caracteres")
     private String descripcion;
 
     private List<Long> insumoId = new ArrayList<>();

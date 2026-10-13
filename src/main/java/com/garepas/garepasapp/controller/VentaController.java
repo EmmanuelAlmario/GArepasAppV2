@@ -68,7 +68,7 @@ public class VentaController {
         try {
             jornadaService.abrir(auth != null ? auth.getName() : null);
             redirect.addFlashAttribute("mensaje",
-                    "Dia abierto. Las ventas de ahora en adelante se contabilizan en esta jornada.");
+                    "Día abierto. Las ventas de ahora en adelante se contabilizan en esta jornada.");
         } catch (OperacionInvalidaException ex) {
             redirect.addFlashAttribute("mensaje", ex.getMessage());
             redirect.addFlashAttribute("tipo", "warning");
@@ -86,7 +86,7 @@ public class VentaController {
         }
         JornadaResponse arqueo = jornadaService.cerrar(activa.id());
         redirect.addFlashAttribute("mensaje",
-                "Dia cerrado — " + arqueo.nroVentas() + " venta(s) · total " + formato.moneda(arqueo.totalVentas()) + ".");
+                "Día cerrado — " + arqueo.nroVentas() + " venta(s) · total " + formato.moneda(arqueo.totalVentas()) + ".");
         return "redirect:/ventas";
     }
 

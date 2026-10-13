@@ -3,15 +3,15 @@
       th:replace="~{layout :: layout('Producciones', 'producciones', ~{::contenido})}">
 <body>
 <th:block th:fragment="acciones">
-    <a th:href="@{/producciones/nuevo}" class="btn btn-primary">Registrar produccion</a>
+    <a th:href="@{/producciones/nuevo}" class="btn btn-primary">Registrar producción</a>
 </th:block>
 <div th:fragment="contenido">
-    <th:block th:replace="~{fragments/page-header :: pageHeader('Producciones', 'Cada produccion descuenta insumos, suma stock del producto y registra el gasto de materia prima.', ~{::acciones})}"></th:block>
+    <th:block th:replace="~{fragments/page-header :: pageHeader('Producciones', 'Cada producción descuenta insumos, suma stock del producto y registra el gasto de materia prima.', ~{::acciones})}"></th:block>
 
     <div class="card shadow-sm">
         <div class="table-responsive">
             <table class="table table-hover mb-0">
-                <caption class="visually-hidden">Producciones ordenadas de la mas reciente a la mas antigua</caption>
+                <caption class="visually-hidden">Producciones ordenadas de la más reciente a la más antigua</caption>
                 <thead class="table-light">
                 <tr>
                     <th scope="col">#</th>
@@ -27,7 +27,7 @@
                 <tbody>
                 <tr th:if="${#lists.isEmpty(producciones)}">
                     <td colspan="8">
-                        <div th:replace="~{fragments/empty-state :: empty('No hay producciones registradas', 'Registra una produccion para descontar insumos y sumar stock del producto.')}"></div>
+                        <div th:replace="~{fragments/empty-state :: empty('No hay producciones registradas', 'Registra una producción para descontar insumos y sumar stock del producto.')}"></div>
                     </td>
                 </tr>
                 <tr th:each="p : ${producciones}">
@@ -45,14 +45,14 @@
                     <td class="text-end">
                         <a class="btn btn-sm btn-outline-secondary"
                            th:href="@{/producciones/{id}(id=${p.id})}"
-                           th:aria-label="'Ver detalle de la produccion ' + ${p.id}">Ver detalle</a>
+                           th:aria-label="'Ver detalle de la producción ' + ${p.id}">Ver detalle</a>
                         <form class="d-inline" method="post" th:if="${p.estado.name() == 'PENDIENTE'}"
                               th:action="@{/producciones/{id}/verificar(id=${p.id})}">
                             <button type="submit" class="btn btn-sm btn-outline-primary">Re-verificar</button>
                         </form>
                         <form class="d-inline" method="post"
                               th:action="@{/producciones/{id}/eliminar(id=${p.id})}"
-                              data-confirm="¿Eliminar esta produccion? Si estaba completada se revierte el stock y se elimina el gasto de materia prima.">
+                              data-confirm="¿Eliminar esta producción? Si estaba completada se revierte el stock y se elimina el gasto de materia prima.">
                             <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
                         </form>
                     </td>

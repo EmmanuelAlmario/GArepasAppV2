@@ -2,21 +2,21 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body>
 <!--
-  Navegacion del sistema.
-  Escritorio: barra lateral fija con las secciones agrupadas por area.
-  Movil: barra superior de marca, barra inferior con los accesos diarios y
-  un menu completo ("Mas"). El enlace activo lleva aria-current="page" usando
-  la seccion que envia el layout. Las secciones visibles dependen del rol
+  Navegación del sistema.
+  Escritorio: barra lateral fija con las secciones agrupadas por área.
+  Móvil: barra superior de marca, barra inferior con los accesos diarios y
+  un menú completo ("Más"). El enlace activo lleva aria-current="page" usando
+  la sección que envía el layout. Las secciones visibles dependen del rol
   (ver SecurityConfig).
 -->
 <div th:fragment="nav(seccion)" class="ga-chrome" sec:authorize="isAuthenticated()">
 
-    <aside class="ga-sidebar" aria-label="Menu principal">
+    <aside class="ga-sidebar" aria-label="Menú principal">
         <a class="ga-marca" th:href="@{/}">
             <img th:src="@{/images/gordo_arepas_logo.png}" alt="" width="40" height="40">
             <span>
                 <span class="ga-marca__nombre">Gordo Arepas</span>
-                <span class="ga-marca__sub">Sistema de gestion</span>
+                <span class="ga-marca__sub">Sistema de gestión</span>
             </span>
         </a>
 
@@ -26,13 +26,13 @@
             <div class="ga-sidebar__usuario">
                 <span class="ga-sidebar__nombre" sec:authentication="name">usuario</span>
                 <form th:action="@{/logout}" method="post">
-                    <button type="submit" class="btn btn-sm btn-outline-light">Cerrar sesion</button>
+                    <button type="submit" class="btn btn-sm btn-outline-light">Cerrar sesión</button>
                 </form>
             </div>
         </div>
     </aside>
 
-    <!-- Movil: barra superior de marca -->
+    <!-- Móvil: barra superior de marca -->
     <header class="ga-topbar">
         <a class="ga-marca" th:href="@{/}">
             <img th:src="@{/images/gordo_arepas_logo.png}" alt="" width="32" height="32">
@@ -40,8 +40,8 @@
         </a>
     </header>
 
-    <!-- Movil: accesos diarios -->
-    <nav class="ga-tabbar" aria-label="Accesos rapidos">
+    <!-- Móvil: accesos diarios -->
+    <nav class="ga-tabbar" aria-label="Accesos rápidos">
         <a class="ga-tab" th:href="@{/reportes}" sec:authorize="hasRole('ADMIN')"
            th:classappend="${seccion == 'reportes'} ? 'is-active'"
            th:aria-current="${seccion == 'reportes'} ? 'page' : null">
@@ -55,17 +55,17 @@
         <button type="button" class="ga-tab" data-bs-toggle="offcanvas" data-bs-target="#gaMenuMovil"
                 aria-controls="gaMenuMovil"
                 th:classappend="${seccion != 'reportes' and seccion != 'ventas'} ? 'is-active'">
-            <i class="bi bi-grid-3x3-gap" aria-hidden="true"></i><span>Mas</span>
+            <i class="bi bi-grid-3x3-gap" aria-hidden="true"></i><span>Más</span>
         </button>
     </nav>
 
-    <!-- Movil: menu completo -->
+    <!-- Móvil: menú completo -->
     <div class="offcanvas offcanvas-start ga-offcanvas" tabindex="-1" id="gaMenuMovil"
          aria-labelledby="gaMenuMovilTitulo">
         <div class="offcanvas-header">
             <h2 class="offcanvas-title h5" id="gaMenuMovilTitulo">Gordo Arepas</h2>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
-                    aria-label="Cerrar menu"></button>
+                    aria-label="Cerrar menú"></button>
         </div>
         <div class="offcanvas-body">
             <div th:replace="~{fragments/nav :: enlaces(${seccion})}"></div>
@@ -73,7 +73,7 @@
                 <div class="ga-sidebar__usuario">
                     <span class="ga-sidebar__nombre" sec:authentication="name">usuario</span>
                     <form th:action="@{/logout}" method="post">
-                        <button type="submit" class="btn btn-sm btn-outline-light">Cerrar sesion</button>
+                        <button type="submit" class="btn btn-sm btn-outline-light">Cerrar sesión</button>
                     </form>
                 </div>
             </div>
@@ -81,8 +81,8 @@
     </div>
 </div>
 
-<!-- Enlaces por secciones: se reutiliza en la barra lateral y en el menu movil.
-     El Punto de venta es para todos; el resto de areas solo para ADMIN. -->
+<!-- Enlaces por secciones: se reutiliza en la barra lateral y en el menú móvil.
+     El Punto de venta es para todos; el resto de áreas solo para ADMIN. -->
 <div th:fragment="enlaces(seccion)" class="ga-nav">
     <div class="ga-nav__seccion">
         <p class="ga-nav__grupo">Venta</p>

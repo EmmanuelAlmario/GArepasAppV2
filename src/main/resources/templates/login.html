@@ -1,41 +1,46 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/head :: head('Iniciar sesion')}"></head>
+<head th:replace="~{fragments/head :: head('Iniciar sesión')}"></head>
 <body class="ga-login">
 <section class="ga-login__marca" aria-label="Gordo Arepas">
     <div>
         <img class="ga-login__logo" th:src="@{/images/gordo_arepas_logo.png}" alt="" width="48" height="48">
-        <span class="ga-login__sub">Sistema de gestion</span>
+        <span class="ga-login__sub">Sistema de gestión</span>
     </div>
 
     <div>
         <h1 class="ga-login__titulo">Gordo<br>Arepas</h1>
-        <p class="ga-login__lema">Produccion, ventas, inventario y reportes de tu negocio en un solo lugar.</p>
+        <p class="ga-login__lema">Producción, ventas, inventario y reportes de tu negocio en un solo lugar.</p>
+        <ul class="ga-login__caracteristicas">
+            <li><i class="bi bi-cart3" aria-hidden="true"></i><span>Punto de venta rápido y táctil</span></li>
+            <li><i class="bi bi-basket2" aria-hidden="true"></i><span>Inventario, recetas y producciones</span></li>
+            <li><i class="bi bi-graph-up-arrow" aria-hidden="true"></i><span>Reportes de ventas y utilidad</span></li>
+        </ul>
     </div>
 
 </section>
 
 <main class="ga-login__panel">
     <div class="ga-login__caja">
-        <h2 class="h3 mb-1">Iniciar sesion</h2>
+        <h2 class="h3 mb-1">Iniciar sesión</h2>
         <p class="text-muted mb-4">Entra con tu usuario del negocio.</p>
 
         <div th:if="${param.error}" class="alert alert-danger" role="alert">
-            Usuario o contrasena incorrectos.
+            Usuario o contraseña incorrectos.
         </div>
         <div th:if="${param.logout}" class="alert alert-success" role="status">
-            Sesion cerrada correctamente.
+            Sesión cerrada correctamente.
         </div>
 
         <form th:action="@{/login}" method="post">
             <div class="mb-3">
                 <label for="username" class="form-label">Usuario</label>
-                <input type="text" id="username" name="username" class="form-control" required autofocus
+                <input type="text" id="username" name="username" class="form-control form-control-lg" required autofocus
                        autocomplete="username">
             </div>
             <div class="mb-4">
-                <label for="password" class="form-label">Contrasena</label>
-                <input type="password" id="password" name="password" class="form-control" required
+                <label for="password" class="form-label">Contraseña</label>
+                <input type="password" id="password" name="password" class="form-control form-control-lg" required
                        autocomplete="current-password">
             </div>
             <button type="submit" class="btn btn-primary btn-lg w-100">Ingresar</button>

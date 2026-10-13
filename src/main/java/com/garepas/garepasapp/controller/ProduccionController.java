@@ -51,11 +51,11 @@ public class ProduccionController {
             ProduccionResponse produccion = produccionService.registrar(form.toRequest());
             if (produccion.estado() == EstadoProduccion.PENDIENTE) {
                 redirect.addFlashAttribute("mensaje",
-                        "Produccion registrada como INSUFICIENTE: faltan insumos. Re-verificala cuando repongas stock.");
+                        "Producción registrada como INSUFICIENTE: faltan insumos. Re-verifícala cuando repongas stock.");
                 redirect.addFlashAttribute("tipo", "warning");
             } else {
                 redirect.addFlashAttribute("mensaje",
-                        "Produccion completada: stock descontado y gasto de materia prima registrado.");
+                        "Producción completada: stock descontado y gasto de materia prima registrado.");
             }
         } catch (RecursoNoEncontradoException | OperacionInvalidaException ex) {
             model.addAttribute("error", ex.getMessage());
@@ -87,9 +87,9 @@ public class ProduccionController {
         ProduccionResponse produccion = produccionService.verificarYCompletar(id);
         if (produccion.estado() == EstadoProduccion.COMPLETADA) {
             redirect.addFlashAttribute("mensaje",
-                    "Produccion completada: stock descontado y gasto de materia prima registrado.");
+                    "Producción completada: stock descontado y gasto de materia prima registrado.");
         } else {
-            redirect.addFlashAttribute("mensaje", "Aun faltan insumos para completar la produccion.");
+            redirect.addFlashAttribute("mensaje", "Aún faltan insumos para completar la producción.");
             redirect.addFlashAttribute("tipo", "warning");
         }
         return "redirect:/producciones";
@@ -98,7 +98,7 @@ public class ProduccionController {
     @PostMapping("/{id}/eliminar")
     public String eliminar(@PathVariable Long id, RedirectAttributes redirect) {
         produccionService.eliminar(id);
-        redirect.addFlashAttribute("mensaje", "Produccion eliminada.");
+        redirect.addFlashAttribute("mensaje", "Producción eliminada.");
         return "redirect:/producciones";
     }
 

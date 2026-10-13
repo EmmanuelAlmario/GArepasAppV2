@@ -132,7 +132,7 @@ public class ProductoController {
                 .setScale(0, RoundingMode.HALF_UP);
         form.setPrecioVenta(sugerido);
         model.addAttribute("aviso", "Precio sugerido con un recargo del 40% sobre un costo de $"
-                + costo.setScale(0, RoundingMode.HALF_UP) + ". Aun no se ha guardado.");
+                + costo.setScale(0, RoundingMode.HALF_UP) + ". Aún no se ha guardado.");
         return "productos/form";
     }
 

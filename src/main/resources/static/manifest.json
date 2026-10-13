@@ -1,7 +1,7 @@
 {
-    "name": "Gordo Arepas · Sistema de gestion",
+    "name": "Gordo Arepas · Sistema de gestión",
     "short_name": "Gordo Arepas",
-    "description": "Gestion de produccion, ventas, inventario y reportes de Gordo Arepas.",
+    "description": "Gestión de producción, ventas, inventario y reportes de Gordo Arepas.",
     "id": "/",
     "start_url": "/",
     "scope": "/",

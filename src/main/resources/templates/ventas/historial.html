@@ -14,7 +14,7 @@
                 <div class="col-12 col-md-6 col-lg-5">
                     <label class="form-label small mb-1" for="q">Buscar venta</label>
                     <input type="search" id="q" name="q" class="form-control"
-                           placeholder="Numero, cliente o producto..." th:value="${q}">
+                           placeholder="Número, cliente o producto..." th:value="${q}">
                 </div>
                 <div class="col-12 col-md-auto">
                     <div class="d-flex gap-2">
@@ -30,7 +30,7 @@
     <div class="card shadow-sm">
         <div class="table-responsive">
             <table class="table table-hover mb-0">
-                <caption class="visually-hidden">Ventas registradas, de la mas reciente a la mas antigua</caption>
+                <caption class="visually-hidden">Ventas registradas, de la más reciente a la más antigua</caption>
                 <thead class="table-light">
                 <tr>
                     <th scope="col">#</th>
@@ -45,10 +45,10 @@
                 <tr th:if="${#lists.isEmpty(ventas)}">
                     <td colspan="6">
                         <div th:if="${q != null && !q.isBlank()}">
-                            <div th:replace="~{fragments/empty-state :: empty('Sin resultados para esta busqueda', 'Prueba con otro numero, cliente o producto, o limpia el filtro.')}"></div>
+                            <div th:replace="~{fragments/empty-state :: empty('Sin resultados para esta búsqueda', 'Prueba con otro número, cliente o producto, o limpia el filtro.')}"></div>
                         </div>
                         <div th:unless="${q != null && !q.isBlank()}">
-                            <div th:replace="~{fragments/empty-state :: empty('No hay ventas registradas', 'Las ventas apareceran aqui cuando se registren en el punto de venta.')}"></div>
+                            <div th:replace="~{fragments/empty-state :: empty('No hay ventas registradas', 'Las ventas aparecerán aquí cuando se registren en el punto de venta.')}"></div>
                         </div>
                     </td>
                 </tr>
@@ -64,7 +64,7 @@
                     <td class="text-end">
                         <form class="d-inline" method="post"
                               th:action="@{/ventas/{id}/eliminar(id=${v.id})}"
-                              data-confirm="¿Eliminar esta venta? Se revertira el stock de los productos vendidos.">
+                              data-confirm="¿Eliminar esta venta? Se revertirá el stock de los productos vendidos.">
                             <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
                         </form>
                     </td>

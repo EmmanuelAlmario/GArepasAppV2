@@ -57,7 +57,7 @@ public class UsuarioController {
     public String crear(@Valid @ModelAttribute("form") UsuarioForm form,
                         BindingResult result, Model model, RedirectAttributes redirect) {
         if (form.getPassword() == null || form.getPassword().isBlank()) {
-            result.rejectValue("password", "password.vacia", "La contrasena es obligatoria para crear un usuario.");
+            result.rejectValue("password", "password.vacia", "La contraseña es obligatoria para crear un usuario.");
         }
         if (result.hasErrors()) {
             model.addAttribute("roles", Rol.values());

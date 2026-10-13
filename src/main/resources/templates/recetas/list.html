@@ -6,7 +6,7 @@
     <a th:href="@{/recetas/nuevo}" class="btn btn-primary">Agregar receta</a>
 </th:block>
 <div th:fragment="contenido">
-    <th:block th:replace="~{fragments/page-header :: pageHeader('Recetas', 'Composicion de cada producto y su costo calculado con los precios actuales de los insumos.', ~{::acciones})}"></th:block>
+    <th:block th:replace="~{fragments/page-header :: pageHeader('Recetas', 'Composición de cada producto y su costo calculado con los precios actuales de los insumos.', ~{::acciones})}"></th:block>
 
     <div class="card shadow-sm">
         <div class="table-responsive">
@@ -15,7 +15,7 @@
                 <thead class="table-light">
                 <tr>
                     <th scope="col">Nombre</th>
-                    <th scope="col">Descripcion</th>
+                    <th scope="col">Descripción</th>
                     <th scope="col" class="text-end">Insumos</th>
                     <th scope="col" class="text-end">Costo total</th>
                     <th scope="col" class="text-end">Acciones</th>
@@ -29,7 +29,7 @@
                 </tr>
                 <tr th:each="r : ${recetas}">
                     <td class="fw-semibold" th:text="${r.nombre}">Nombre</td>
-                    <td th:text="${r.descripcion} ?: '—'">Descripcion</td>
+                    <td th:text="${r.descripcion} ?: '—'">Descripción</td>
                     <td class="text-end" th:text="${#lists.size(r.detalles)}">0</td>
                     <td class="text-end" th:text="${fmt.moneda(r.costoTotal)}">$0</td>
                     <td class="text-end">
@@ -38,7 +38,7 @@
                            th:aria-label="'Editar receta ' + ${r.nombre}">Editar</a>
                         <form class="d-inline" method="post"
                               th:action="@{/recetas/{id}/eliminar(id=${r.id})}"
-                              data-confirm="¿Eliminar esta receta? No se puede si esta asociada a un producto.">
+                              data-confirm="¿Eliminar esta receta? No se puede si está asociada a un producto.">
                             <button type="submit" class="btn btn-sm btn-outline-danger"
                                     th:aria-label="'Eliminar receta ' + ${r.nombre}">Eliminar</button>
                         </form>

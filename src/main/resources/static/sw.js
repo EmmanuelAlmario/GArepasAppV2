@@ -12,7 +12,7 @@
  * Solo se manejan peticiones GET: los formularios POST nunca se cachean.
  * Cambiar CACHE_VERSION fuerza la limpieza de la cache vieja en el install.
  */
-const CACHE_VERSION = 'v2';
+const CACHE_VERSION = 'v3';
 const CACHE_NAME = `garepas-${CACHE_VERSION}`;
 
 const OFFLINE_URL = '/offline.html';

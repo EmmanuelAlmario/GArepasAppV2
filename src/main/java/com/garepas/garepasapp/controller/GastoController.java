@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
- * Gastos operativos (UC25-UC28). Los gastos generados automaticamente por una
+ * Gastos operativos (UC25-UC28). Los gastos generados automáticamente por una
  * produccion (categoria MATERIA_PRIMA) no se editan ni eliminan desde aqui.
  */
 @Controller
@@ -44,7 +44,7 @@ public class GastoController {
         GastoResponse gasto = gastoService.buscarPorId(id);
         if (gasto.produccionId() != null) {
             redirect.addFlashAttribute("mensaje",
-                    "Este gasto fue generado automaticamente por una produccion y no se puede editar.");
+                    "Este gasto fue generado automáticamente por una producción y no se puede editar.");
             redirect.addFlashAttribute("tipo", "warning");
             return "redirect:/gastos";
         }
@@ -94,7 +94,7 @@ public class GastoController {
         GastoResponse gasto = gastoService.buscarPorId(id);
         if (gasto.produccionId() != null) {
             redirect.addFlashAttribute("mensaje",
-                    "No se puede eliminar: es el gasto de materia prima de una produccion. Elimina la produccion para revertirlo.");
+                    "No se puede eliminar: es el gasto de materia prima de una producción. Elimina la producción para revertirlo.");
             redirect.addFlashAttribute("tipo", "warning");
         } else {
             gastoService.eliminar(id);

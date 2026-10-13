@@ -36,10 +36,9 @@
                                class="form-control" required
                                th:classappend="${#fields.hasErrors('stockActual')} ? 'is-invalid'">
                         <div class="invalid-feedback" th:errors="*{stockActual}">Error</div>
-                        <div class="form-text">El flujo normal lo actualizan ventas y producciones.</div>
                     </div>
                     <div class="col-6 col-md-3">
-                        <label class="form-label" for="stockMinimo">Stock minimo (alerta)</label>
+                        <label class="form-label" for="stockMinimo">Stock mínimo (alerta)</label>
                         <input type="number" step="1" min="0" id="stockMinimo" th:field="*{stockMinimo}"
                                class="form-control" placeholder="Opcional"
                                th:classappend="${#fields.hasErrors('stockMinimo')} ? 'is-invalid'">
@@ -52,7 +51,6 @@
                                class="form-control" required
                                th:classappend="${#fields.hasErrors('precioVenta')} ? 'is-invalid'">
                         <div class="invalid-feedback" th:errors="*{precioVenta}">Error</div>
-                        <div class="form-text">En pesos sin decimales.</div>
                     </div>
                     <div class="col-12 col-md-6">
                         <label class="form-label" for="recetaId">Receta</label>
@@ -60,7 +58,6 @@
                             <option value="">Sin receta</option>
                             <option th:each="r : ${recetas}" th:value="${r.id}" th:text="${r.nombre}">Receta</option>
                         </select>
-                        <div class="form-text">Necesaria para registrar producciones y calcular costo y margen.</div>
                     </div>
 
                     <div class="col-12">

@@ -15,7 +15,7 @@
                 <div class="col-12 col-md-6 col-lg-5">
                     <label class="form-label small mb-1" for="q">Buscar insumo</label>
                     <input type="search" id="q" name="q" class="form-control"
-                           placeholder="Nombre, categoria o marca..." th:value="${q}">
+                           placeholder="Nombre, categoría o marca..." th:value="${q}">
                 </div>
                 <div class="col-12 col-md-auto">
                     <div class="d-flex gap-2">
@@ -39,7 +39,7 @@
                 <thead class="table-light">
                 <tr>
                     <th scope="col">Nombre</th>
-                    <th scope="col">Categoria</th>
+                    <th scope="col">Categoría</th>
                     <th scope="col">Marca</th>
                     <th scope="col" class="text-end">Stock</th>
                     <th scope="col" class="text-end">Costo por unidad base</th>
@@ -51,14 +51,14 @@
                 <tr th:if="${#lists.isEmpty(insumos)}">
                     <td colspan="7">
                         <div th:if="${q != null && !q.isBlank()}"
-                             th:replace="~{fragments/empty-state :: empty('Sin resultados', 'Ningun insumo coincide con la busqueda. Prueba con otro nombre, categoria o marca.')}"></div>
+                             th:replace="~{fragments/empty-state :: empty('Sin resultados', 'Ningún insumo coincide con la búsqueda. Prueba con otro nombre, categoría o marca.')}"></div>
                         <div th:unless="${q != null && !q.isBlank()}"
                              th:replace="~{fragments/empty-state :: empty('No hay insumos registrados', 'Agrega el primer insumo para poder crear recetas y registrar producciones.')}"></div>
                     </td>
                 </tr>
                 <tr th:each="i : ${insumos}">
                     <td class="fw-semibold" th:text="${i.nombre}">Nombre</td>
-                    <td th:text="${i.categoria}">Categoria</td>
+                    <td th:text="${i.categoria}">Categoría</td>
                     <td th:text="${i.marca}">Marca</td>
                     <td class="text-end">
                         <span th:text="${fmt.cantidad(i.stockPresentacion()) + ' ' + i.unidadMedida.etiqueta}">0 g</span>
@@ -76,7 +76,7 @@
                            th:aria-label="'Editar ' + ${i.nombre}">Editar</a>
                         <form class="d-inline" method="post"
                               th:action="@{/insumos/{id}/eliminar(id=${i.id})}"
-                              data-confirm="¿Eliminar este insumo? No se puede si esta en uso en una receta.">
+                              data-confirm="¿Eliminar este insumo? No se puede si está en uso en una receta.">
                             <button type="submit" class="btn btn-sm btn-outline-danger"
                                     th:aria-label="'Eliminar ' + ${i.nombre}">Eliminar</button>
                         </form>

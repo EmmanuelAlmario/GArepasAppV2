@@ -890,6 +890,8 @@
 
 /* =============================================================
    Acceso
+   Split-screen: panel de marca con textura cálida y formulario
+   en tarjeta flotante.
    ============================================================= */
 .ga-login {
     display: grid;
@@ -900,13 +902,35 @@
 }
 
 .ga-login__marca {
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     gap: 2rem;
+    overflow: hidden;
     padding: calc(1.5rem + env(safe-area-inset-top)) clamp(1.5rem, 5vw, 4rem) 2rem;
-    background: var(--ga-sidebar);
+    /* Textura "arepa": puntos dorados sobre degradados cálidos. */
+    background-image:
+        radial-gradient(rgba(254, 208, 95, .14) 1.5px, transparent 1.6px),
+        radial-gradient(46rem 46rem at -15% -25%, rgba(254, 208, 95, .16), transparent 60%),
+        radial-gradient(52rem 52rem at 125% 135%, rgba(192, 67, 11, .38), transparent 58%);
+    background-size: 1.6rem 1.6rem, auto, auto;
+    background-color: var(--ga-sidebar);
     color: var(--ga-on-ink);
+}
+
+/* Arepa decorativa: aro dorado que asoma por la esquina inferior. */
+.ga-login__marca::after {
+    content: "";
+    position: absolute;
+    right: -6.5rem;
+    bottom: -9.5rem;
+    width: 22rem;
+    height: 22rem;
+    border: 2px solid rgba(254, 208, 95, .32);
+    border-radius: 50%;
+    box-shadow: 0 0 0 1.1rem rgba(254, 208, 95, .07);
+    pointer-events: none;
 }
 
 .ga-login__logo {
@@ -939,6 +963,37 @@
     color: var(--ga-on-ink-muted);
 }
 
+/* Beneficios con icono en chip dorado. */
+.ga-login__caracteristicas {
+    display: flex;
+    flex-direction: column;
+    gap: .9rem;
+    max-width: 26rem;
+    margin: 1.9rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.ga-login__caracteristicas li {
+    display: flex;
+    align-items: center;
+    gap: .85rem;
+    font-weight: 500;
+    color: var(--ga-on-ink-muted);
+}
+
+.ga-login__caracteristicas i {
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    width: 2.35rem;
+    height: 2.35rem;
+    border-radius: 50%;
+    background: rgba(254, 208, 95, .16);
+    color: var(--ga-gold);
+    font-size: 1.1rem;
+}
+
 .ga-login__panel {
     display: flex;
     align-items: center;
@@ -946,8 +1001,22 @@
     padding: 2rem 1rem 3rem;
 }
 
+/* Tarjeta flotante del formulario. */
 .ga-login__caja {
-    width: min(100%, 24rem);
+    width: min(100%, 25rem);
+    padding: 2.25rem 2rem;
+    border: 1px solid var(--ga-border);
+    border-radius: var(--ga-radius-xl);
+    background: var(--ga-surface);
+    box-shadow: var(--ga-shadow-md);
+}
+
+@media (max-width: 767.98px) {
+    /* En pantallas pequeñas el panel de marca se compacta:
+       los beneficios no aportan al inicio de sesión en móvil. */
+    .ga-login__caracteristicas {
+        display: none;
+    }
 }
 
 @media (min-width: 992px) {

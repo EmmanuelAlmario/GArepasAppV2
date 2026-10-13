@@ -14,7 +14,7 @@
 
 <div th:replace="~{fragments/confirm-modal :: confirmModal}"></div>
 
-<!-- Guia de instalacion en iPhone: Safari no dispara ningun prompt, el usuario
+<!-- Guía de instalación en iPhone: Safari no dispara ningún prompt, el usuario
      instala desde Compartir -> Agregar a pantalla de inicio. Solo se muestra en
      Safari (no en la app ya instalada) y se puede descartar. -->
 <div id="iosInstallHint" class="ios-install-hint" role="status" hidden>
@@ -32,7 +32,7 @@
 <script th:src="@{/js/ui-feedback.js}"></script>
 <script th:src="@{/js/tablas-moviles.js}"></script>
 <script>
-    // Muestra la guia solo en Safari del iPhone/iPad y aun no instalada.
+    // Muestra la guía solo en Safari del iPhone/iPad y aún no instalada.
     (function () {
         const aviso = document.getElementById('iosInstallHint');
         if (!aviso) return;

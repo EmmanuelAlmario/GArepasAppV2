@@ -23,7 +23,7 @@
                 <tbody>
                 <tr th:if="${#lists.isEmpty(usuarios)}">
                     <td colspan="4">
-                        <div th:replace="~{fragments/empty-state :: empty('No hay usuarios registrados', 'Crea un usuario para que pueda iniciar sesion.')}"></div>
+                        <div th:replace="~{fragments/empty-state :: empty('No hay usuarios registrados', 'Crea un usuario para que pueda iniciar sesión.')}"></div>
                     </td>
                 </tr>
                 <tr th:each="u : ${usuarios}">
@@ -39,7 +39,7 @@
                            th:aria-label="'Editar usuario ' + ${u.username}">Editar</a>
                         <form class="d-inline" method="post" th:if="${u.username != 'admin'}"
                               th:action="@{/usuarios/{id}/eliminar(id=${u.id})}"
-                              data-confirm="¿Eliminar este usuario? No podra iniciar sesion de nuevo.">
+                              data-confirm="¿Eliminar este usuario? No podrá iniciar sesión de nuevo.">
                             <button type="submit" class="btn btn-sm btn-outline-danger"
                                     th:aria-label="'Eliminar usuario ' + ${u.username}">Eliminar</button>
                         </form>

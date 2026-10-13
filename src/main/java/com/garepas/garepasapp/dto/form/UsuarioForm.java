@@ -15,7 +15,7 @@ public class UsuarioForm {
     private String username;
 
     /** Obligatoria al crear; opcional al editar (vacia = no cambiar). */
-    @Size(min = 6, max = 100, message = "La contrasena debe tener al menos 6 caracteres")
+    @Size(min = 6, max = 100, message = "La contraseña debe tener al menos 6 caracteres")
     private String password;
 
     @NotNull(message = "El rol es obligatorio")

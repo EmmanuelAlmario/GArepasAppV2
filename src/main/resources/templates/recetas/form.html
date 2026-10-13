@@ -31,7 +31,7 @@
                         <div class="invalid-feedback" th:errors="*{nombre}">Error</div>
                     </div>
                     <div class="col-12 col-md-6">
-                        <label class="form-label" for="descripcion">Descripcion</label>
+                        <label class="form-label" for="descripcion">Descripción</label>
                         <input type="text" id="descripcion" th:field="*{descripcion}" class="form-control">
                     </div>
                 </div>
@@ -43,14 +43,12 @@
                             <option value="">Ninguno (receta de producto)</option>
                             <option th:each="i : ${insumos}" th:value="${i.id}" th:text="${i.nombre}">Insumo</option>
                         </select>
-                        <div class="form-text">Ej.: "Masa preparada". Su precio por gramo se calcula solo a partir de esta receta.</div>
                     </div>
                     <div class="col-12 col-md-6">
                         <label class="form-label" for="rendimiento">Rinde (g, ml o unidades por lote)</label>
                         <input type="number" step="any" min="0.0001" id="rendimiento" th:field="*{rendimiento}" class="form-control"
                                th:classappend="${#fields.hasErrors('rendimiento')} ? 'is-invalid'">
                         <div class="invalid-feedback" th:errors="*{rendimiento}">Error</div>
-                        <div class="form-text">Cantidad total que sale del lote, en la unidad base del insumo.</div>
                     </div>
                 </div>
 

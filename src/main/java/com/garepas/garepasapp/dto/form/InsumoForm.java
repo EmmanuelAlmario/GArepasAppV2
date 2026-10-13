@@ -21,8 +21,8 @@ public class InsumoForm {
     @Size(max = 60, message = "El nombre no puede superar 60 caracteres")
     private String nombre;
 
-    @NotBlank(message = "La categoria es obligatoria")
-    @Size(max = 30, message = "La categoria no puede superar 30 caracteres")
+    @NotBlank(message = "La categoría es obligatoria")
+    @Size(max = 30, message = "La categoría no puede superar 30 caracteres")
     private String categoria;
 
     @NotBlank(message = "La marca es obligatoria")
@@ -33,7 +33,7 @@ public class InsumoForm {
     @DecimalMin(value = "0.0", message = "El stock no puede ser negativo")
     private BigDecimal stockActual;
 
-    @DecimalMin(value = "0.0", message = "El stock minimo no puede ser negativo")
+    @DecimalMin(value = "0.0", message = "El stock mínimo no puede ser negativo")
     private BigDecimal stockMinimo;
 
     @NotNull(message = "El precio de compra es obligatorio")

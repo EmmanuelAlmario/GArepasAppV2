@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      th:replace="~{layout :: layout('Registrar produccion', 'producciones', ~{::contenido})}">
+      th:replace="~{layout :: layout('Registrar producción', 'producciones', ~{::contenido})}">
 <body>
 <th:block th:fragment="acciones">
     <a th:href="@{/producciones}" class="btn btn-outline-secondary">Volver al listado</a>
 </th:block>
 <div th:fragment="contenido">
-    <th:block th:replace="~{fragments/page-header :: pageHeader('Registrar produccion', null, ~{::acciones})}"></th:block>
+    <th:block th:replace="~{fragments/page-header :: pageHeader('Registrar producción', null, ~{::acciones})}"></th:block>
 
     <div class="card shadow-sm form-card">
         <div class="card-body">
             <th:block th:replace="~{fragments/form-alerts :: formAlerts}"></th:block>
 
             <p class="text-muted small">
-                Solo aparecen productos con receta asignada. Si faltan insumos, la produccion queda
+                Solo aparecen productos con receta asignada. Si faltan insumos, la producción queda
                 <strong>pendiente</strong>: no descuenta stock ni registra gasto, y puedes re-verificarla
                 cuando repongas el inventario.
             </p>
@@ -21,7 +21,7 @@
             <div class="alert alert-warning" role="alert" th:if="${#lists.isEmpty(productos)}">
                 No hay productos activos con receta. Para poder producir:
                 <a th:href="@{/recetas/nuevo}">crea una receta</a> y
-                <a th:href="@{/productos/nuevo}">asignala a un producto</a>.
+                <a th:href="@{/productos/nuevo}">asígnala a un producto</a>.
             </div>
 
             <form method="post" th:action="@{/producciones}" th:object="${form}">
@@ -50,7 +50,7 @@
                         <div class="invalid-feedback" th:errors="*{cantidad}">Error</div>
                     </div>
                     <div class="col-12 d-flex flex-wrap gap-2 pt-2">
-                        <button type="submit" class="btn btn-primary">Registrar produccion</button>
+                        <button type="submit" class="btn btn-primary">Registrar producción</button>
                         <a th:href="@{/producciones}" class="btn btn-outline-secondary">Cancelar</a>
                     </div>
                 </div>

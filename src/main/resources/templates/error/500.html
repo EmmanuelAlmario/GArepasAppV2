@@ -4,14 +4,14 @@
 <body>
 <div class="ga-centered-container ga-error-container py-5 text-center">
     <p class="display-6 fw-bold text-ga-burdeos mb-1">500</p>
-    <h1 class="h4 mb-3">Algo salio mal</h1>
+    <h1 class="h4 mb-3">Algo salió mal</h1>
     <p class="text-muted">
-        No pudimos completar la operacion. Vuelve a intentarlo; si el problema continua,
-        avisa al administrador e indica que hacias cuando ocurrio.
+        No pudimos completar la operación. Vuelve a intentarlo; si el problema continúa,
+        avisa al administrador e indica qué hacías cuando ocurrió.
     </p>
     <div class="d-flex flex-wrap justify-content-center gap-2">
         <a th:href="@{/}" class="btn btn-primary" sec:authorize="isAuthenticated()">Volver al inicio</a>
-        <a th:href="@{/login}" class="btn btn-primary" sec:authorize="!isAuthenticated()">Iniciar sesion</a>
+        <a th:href="@{/login}" class="btn btn-primary" sec:authorize="!isAuthenticated()">Iniciar sesión</a>
     </div>
 </div>
 </body>

@@ -7,15 +7,15 @@
     <meta name="theme-color" content="#3A1610">
     <title th:text="${titulo} + ' · Gordo Arepas'">Gordo Arepas</title>
     <!-- PWA instalable: manifest, iconos y metas para agregar a pantalla de inicio.
-         Se usa .json (y no .webmanifest) porque asi Spring lo sirve con MIME
+         Se usa .json (y no .webmanifest) porque así Spring lo sirve con MIME
          application/json, que es lo que los navegadores exigen para parsearlo. -->
     <link rel="manifest" th:href="@{/manifest.json}">
     <link rel="apple-touch-icon" th:href="@{/images/apple-touch-icon.png}">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Gordo Arepas">
-    <!-- Tipografia: Fraunces para los titulos de marca e Inter para la interfaz.
-         Si el CDN no esta disponible, cae a las fuentes del sistema. -->
+    <!-- Tipografía: Fraunces para los títulos de marca e Inter para la interfaz.
+         Si el CDN no está disponible, cae a las fuentes del sistema. -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400..700&display=swap"
@@ -23,7 +23,7 @@
     <link rel="icon" type="image/png" th:href="@{/images/gordo_arepas_logo.png}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <!-- Iconos de la navegacion (Bootstrap Icons 1.11.3, con SRI). -->
+    <!-- Iconos de la navegación (Bootstrap Icons 1.11.3, con SRI). -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"
           integrity="sha384-XGjxtQfXaH2tnPFa9x+ruJTuLE3Aa6LhHSWRr1XeTyhezb4abCG4ccI5AkVDxqC+" crossorigin="anonymous">
     <!-- Estilos propios por capas: tokens → base → componentes → layout. -->
@@ -31,7 +31,7 @@
     <link rel="stylesheet" th:href="@{/css/base.css}">
     <link rel="stylesheet" th:href="@{/css/components.css}">
     <link rel="stylesheet" th:href="@{/css/layout.css}">
-    <!-- Registro del service worker: habilita el modo standalone y el acceso sin conexion. -->
+    <!-- Registro del service worker: habilita el modo standalone y el acceso sin conexión. -->
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {

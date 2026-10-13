@@ -32,13 +32,12 @@
                     </div>
                     <div class="col-12 col-md-6">
                         <label class="form-label" for="password"
-                               th:text="${form.id} == null ? 'Contrasena *' : 'Nueva contrasena (vacia = no cambiar)'">Contrasena</label>
+                               th:text="${form.id} == null ? 'Contraseña *' : 'Nueva contraseña (vacía = no cambiar)'">Contraseña</label>
                         <input type="password" id="password" th:field="*{password}" class="form-control"
                                autocomplete="new-password"
                                th:required="${form.id} == null"
                                th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'">
                         <div class="invalid-feedback" th:errors="*{password}">Error</div>
-                        <div class="form-text">Minimo 6 caracteres. Al editar, dejarla vacia conserva la actual.</div>
                     </div>
                     <div class="col-12 col-md-6">
                         <label class="form-label" for="rol">Rol <span class="text-danger">*</span></label>
@@ -48,15 +47,11 @@
                                     th:text="${r.name() == 'ADMIN'} ? 'Administrador' : 'Registrador de ventas'">Rol</option>
                         </select>
                         <div class="invalid-feedback" th:errors="*{rol}">Error</div>
-                        <div class="form-text">
-                            Administrador: inventario, produccion, gastos, reportes y usuarios.
-                            Registrador de ventas: punto de venta y jornadas.
-                        </div>
                     </div>
                     <div class="col-12 col-md-6 d-flex align-items-end">
                         <div class="form-check">
                             <input type="checkbox" id="activo" th:field="*{activo}" class="form-check-input">
-                            <label class="form-check-label" for="activo">Activo (puede iniciar sesion)</label>
+                            <label class="form-check-label" for="activo">Activo (puede iniciar sesión)</label>
                         </div>
                     </div>
                     <div class="col-12 d-flex flex-wrap gap-2 pt-2">

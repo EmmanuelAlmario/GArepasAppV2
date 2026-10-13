@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout :: layout('Produccion #' + ${p.id}, 'producciones', ~{::contenido})}">
+      th:replace="~{layout :: layout('Producción #' + ${p.id}, 'producciones', ~{::contenido})}">
 <body>
 <th:block th:fragment="acciones">
     <form method="post" th:if="${p.estado.name() == 'PENDIENTE'}"
@@ -10,7 +10,7 @@
     <a th:href="@{/producciones}" class="btn btn-outline-secondary">Volver al listado</a>
 </th:block>
 <div th:fragment="contenido">
-    <th:block th:replace="~{fragments/page-header :: pageHeader('Produccion #' + ${p.id}, null, ~{::acciones})}"></th:block>
+    <th:block th:replace="~{fragments/page-header :: pageHeader('Producción #' + ${p.id}, null, ~{::acciones})}"></th:block>
     <p class="text-muted mb-3">
         <span class="fw-semibold" th:text="${p.productoNombre}">Producto</span> ·
         <span th:text="${p.cantidad} + ' unidades'">0</span> ·
@@ -18,13 +18,13 @@
     </p>
 
     <div class="alert alert-success" role="status" th:if="${p.estado.name() == 'PENDIENTE' and tieneStockAhora}">
-        El stock actual ya alcanza para completar esta produccion. Pulsa <strong>Re-verificar ahora</strong>
+        El stock actual ya alcanza para completar esta producción. Pulsa <strong>Re-verificar ahora</strong>
         para descontar insumos, sumar stock del producto y registrar el gasto de materia prima.
     </div>
     <div class="alert alert-warning" role="status" th:if="${p.estado.name() == 'PENDIENTE' and !tieneStockAhora}">
-        Esta produccion quedo pendiente: al momento de verificarla faltaban insumos. La columna
+        Esta producción quedó pendiente: al momento de verificarla faltaban insumos. La columna
         <strong>Stock actual</strong> muestra el inventario de hoy y <strong>Faltante actual</strong>
-        cuanto falta con ese stock. Vuelve a verificar cuando lo repongas.
+        cuánto falta con ese stock. Vuelve a verificar cuando lo repongas.
     </div>
 
     <div class="row g-3 mb-3">
@@ -55,7 +55,7 @@
                     <span th:text="${insumosOk}">0</span>
                     <span th:text="'/' + ${#lists.size(p.detalles)}">/0</span>
                 </p>
-                <p class="text-muted small mb-0">Segun la ultima verificacion</p>
+                <p class="text-muted small mb-0">Según la última verificación</p>
             </div></div>
         </div>
     </div>
@@ -65,14 +65,14 @@
             <h2 class="h6 text-muted mb-3">Insumos requeridos</h2>
             <div class="table-responsive">
                 <table class="table table-sm mb-0">
-                    <caption class="visually-hidden">Insumos requeridos por la produccion, stock actual y ultima verificacion</caption>
+                    <caption class="visually-hidden">Insumos requeridos por la producción, stock actual y última verificación</caption>
                     <thead>
                     <tr>
                         <th scope="col">Insumo</th>
                         <th scope="col" class="text-end">Requerido</th>
                         <th scope="col" class="text-end">Stock actual</th>
                         <th scope="col" class="text-end">Faltante actual</th>
-                        <th scope="col">Ultima verificacion</th>
+                        <th scope="col">Última verificación</th>
                     </tr>
                     </thead>
                     <tbody>

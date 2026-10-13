@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <body>
-<!-- Modal unico de confirmacion. Los formularios lo activan con data-confirm. -->
+<!-- Modal único de confirmación. Los formularios lo activan con data-confirm. -->
 <div th:fragment="confirmModal">
     <div class="modal fade" id="modalConfirmacion" tabindex="-1"
          aria-labelledby="modalConfirmacionTitulo" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2 class="modal-title fs-5" id="modalConfirmacionTitulo">Confirmar accion</h2>
+                    <h2 class="modal-title fs-5" id="modalConfirmacionTitulo">Confirmar acción</h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body">
-                    <p class="mb-0" id="modalConfirmacionMensaje">¿Confirmas esta accion?</p>
+                    <p class="mb-0" id="modalConfirmacionMensaje">¿Confirmas esta acción?</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>

@@ -17,7 +17,7 @@ public class ProductoForm {
     @Min(value = 0, message = "El stock no puede ser negativo")
     private Integer stockActual;
 
-    @Min(value = 0, message = "El stock minimo no puede ser negativo")
+    @Min(value = 0, message = "El stock mínimo no puede ser negativo")
     private Integer stockMinimo;
 
     @NotNull(message = "El precio de venta es obligatorio")

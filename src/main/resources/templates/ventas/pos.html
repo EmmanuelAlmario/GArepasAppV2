@@ -10,34 +10,34 @@
 
     <th:block th:replace="~{fragments/form-alerts :: formAlerts}"></th:block>
 
-    <!-- Jornada de operacion (UC20 / UC22) -->
+    <!-- Jornada de operación (UC20 / UC22) -->
     <div class="card shadow-sm mb-3 ga-jornada">
         <div class="card-body d-flex flex-wrap align-items-center gap-3">
             <div th:if="${jornada != null}" class="flex-grow-1">
-                <span class="badge text-bg-success me-2">Dia abierto</span>
+                <span class="badge text-bg-success me-2">Día abierto</span>
                 <span class="text-muted">
                     desde <span th:text="${#temporals.format(jornada.fechaApertura, 'dd/MM/yyyy HH:mm')}">fecha</span>
-                    · abrio <span th:text="${jornada.abiertaPor}">usuario</span>
+                    · abrió <span th:text="${jornada.abiertaPor}">usuario</span>
                     · <span th:text="${jornada.nroVentas} + ' venta(s)'">0</span>
                     · <strong th:text="${fmt.moneda(jornada.totalVentas)}">$0</strong>
                 </span>
             </div>
             <form method="post" th:action="@{/ventas/jornada/cerrar}" th:if="${jornada != null}"
-                  data-confirm="¿Cerrar el dia? Se calcula el arqueo con las ventas de esta jornada y las ventas posteriores quedaran sin asociar.">
-                <button type="submit" class="btn btn-outline-danger">Cerrar dia</button>
+                  data-confirm="¿Cerrar el día? Se calcula el arqueo con las ventas de esta jornada y las ventas posteriores quedarán sin asociar.">
+                <button type="submit" class="btn btn-outline-danger">Cerrar día</button>
             </form>
 
             <div th:if="${jornada == null}" class="flex-grow-1 text-muted">
-                No hay una jornada abierta. Puedes registrar ventas igual, pero quedaran sin asociar a un dia.
+                No hay una jornada abierta. Puedes registrar ventas igual, pero quedarán sin asociar a un día.
             </div>
             <form method="post" th:action="@{/ventas/jornada/abrir}" th:if="${jornada == null}">
-                <button type="submit" class="btn btn-outline-success">Abrir dia de operacion</button>
+                <button type="submit" class="btn btn-outline-success">Abrir día de operación</button>
             </form>
         </div>
     </div>
 
     <div class="ga-pos">
-        <!-- Catalogo -->
+        <!-- Catálogo -->
         <section class="ga-pos__catalogo" aria-labelledby="tituloCatalogo">
             <h2 class="h6 text-muted mb-2" id="tituloCatalogo">Productos disponibles</h2>
 
@@ -50,13 +50,13 @@
             <p th:if="${#lists.isEmpty(productos)}" class="text-muted small">
                 No hay productos activos con stock.
                 <span sec:authorize="hasRole('ADMIN')">
-                    Registra una <a th:href="@{/producciones/nuevo}">produccion</a>
+                    Registra una <a th:href="@{/producciones/nuevo}">producción</a>
                     o <a th:href="@{/insumos/ajustar-stock}">ajusta el stock de insumos</a>.
                 </span>
                 <span sec:authorize="hasRole('VENTAS')">Pide al administrador que reponga el inventario.</span>
             </p>
 
-            <div id="catalogo" class="ga-grid" role="group" aria-label="Catalogo de productos">
+            <div id="catalogo" class="ga-grid" role="group" aria-label="Catálogo de productos">
                 <div class="ga-grid__celda" data-producto-col th:each="p : ${productos}">
                     <button type="button" class="ga-producto" data-producto
                             th:attr="data-id=${p.id},data-nombre=${p.nombre},data-precio=${p.precioVenta},data-stock=${p.stockActual}">
@@ -69,11 +69,11 @@
                 </div>
             </div>
             <p id="sinResultadosCatalogo" class="text-muted small mt-2 mb-0 d-none">
-                Ningun producto coincide con la busqueda.
+                Ningún producto coincide con la búsqueda.
             </p>
         </section>
 
-        <!-- Pedido: panel lateral en escritorio y hoja inferior en movil -->
+        <!-- Pedido: panel lateral en escritorio y hoja inferior en móvil -->
         <aside class="ga-pedido" id="pedido" aria-labelledby="tituloPedido">
             <div class="ga-pedido__cabecera">
                 <div id="posMensaje" class="ga-pos__aviso" role="status" aria-live="polite"></div>
@@ -105,7 +105,7 @@
                                maxlength="100" th:value="${form.nombreCliente}" autocomplete="off">
                     </div>
                     <p class="alert alert-warning py-2 small mt-3 mb-0" th:if="${jornada == null}">
-                        No hay dia abierto: esta venta quedara registrada sin asociarse a una jornada.
+                        No hay día abierto: esta venta quedará registrada sin asociarse a una jornada.
                     </p>
                 </form>
             </div>

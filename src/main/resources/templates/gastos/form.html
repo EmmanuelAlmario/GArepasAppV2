@@ -25,7 +25,7 @@
 
                 <div class="row g-3">
                     <div class="col-12">
-                        <label class="form-label" for="descripcion">Descripcion <span class="text-danger">*</span></label>
+                        <label class="form-label" for="descripcion">Descripción <span class="text-danger">*</span></label>
                         <input type="text" id="descripcion" th:field="*{descripcion}" class="form-control" required
                                th:classappend="${#fields.hasErrors('descripcion')} ? 'is-invalid'">
                         <div class="invalid-feedback" th:errors="*{descripcion}">Error</div>
@@ -35,18 +35,17 @@
                         <input type="number" step="1" min="0" id="monto" th:field="*{monto}" class="form-control" required
                                th:classappend="${#fields.hasErrors('monto')} ? 'is-invalid'">
                         <div class="invalid-feedback" th:errors="*{monto}">Error</div>
-                        <div class="form-text">En pesos sin decimales.</div>
                     </div>
                     <div class="col-12 col-md-6">
-                        <label class="form-label" for="categoria">Categoria <span class="text-danger">*</span></label>
+                        <label class="form-label" for="categoria">Categoría <span class="text-danger">*</span></label>
                         <select id="categoria" th:field="*{categoria}" class="form-select" required
                                 th:classappend="${#fields.hasErrors('categoria')} ? 'is-invalid'">
-                            <option value="">Selecciona una categoria...</option>
-                            <option th:each="c : ${categorias}" th:value="${c}" th:text="${c.etiqueta}">Categoria</option>
+                            <option value="">Selecciona una categoría...</option>
+                            <option th:each="c : ${categorias}" th:value="${c}" th:text="${c.etiqueta}">Categoría</option>
                         </select>
                         <div class="invalid-feedback" th:errors="*{categoria}">Error</div>
                     </div>
-                    <div class="col-12 text-muted small">La fecha se registra automaticamente al guardar.</div>
+                    <div class="col-12 text-muted small">La fecha se registra automáticamente al guardar.</div>
                     <div class="col-12 d-flex flex-wrap gap-2 pt-2">
                         <button type="submit" class="btn btn-primary">Guardar</button>
                         <a th:href="@{/gastos}" class="btn btn-outline-secondary">Cancelar</a>

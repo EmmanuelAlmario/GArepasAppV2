@@ -13,13 +13,13 @@
             <div class="row g-3 align-items-end">
                 <div class="col-12 col-lg-auto">
                     <span class="form-label d-block mb-1">Rango</span>
-                    <div class="btn-group flex-wrap" role="group" aria-label="Rangos rapidos">
+                    <div class="btn-group flex-wrap" role="group" aria-label="Rangos rápidos">
                         <a th:href="@{/reportes(rango='hoy')}" class="btn btn-sm"
                            th:classappend="${rangoActivo == 'hoy'} ? 'btn-primary' : 'btn-outline-secondary'"
                            th:aria-current="${rangoActivo == 'hoy'} ? 'page' : null">Hoy</a>
                         <a th:href="@{/reportes(rango='7d')}" class="btn btn-sm"
                            th:classappend="${rangoActivo == '7d'} ? 'btn-primary' : 'btn-outline-secondary'"
-                           th:aria-current="${rangoActivo == '7d'} ? 'page' : null">7 dias</a>
+                           th:aria-current="${rangoActivo == '7d'} ? 'page' : null">7 días</a>
                         <a th:href="@{/reportes(rango='mes')}" class="btn btn-sm"
                            th:classappend="${rangoActivo == 'mes'} ? 'btn-primary' : 'btn-outline-secondary'"
                            th:aria-current="${rangoActivo == 'mes'} ? 'page' : null">Mes</a>
@@ -87,15 +87,15 @@
 
     <div class="card shadow-sm mb-3">
         <div class="card-body">
-            <h2 class="h6 text-muted mb-3">Ingresos vs gastos por dia</h2>
+            <h2 class="h6 text-muted mb-3">Ingresos vs gastos por día</h2>
             <canvas id="grafico" height="90" role="img"
-                    aria-label="Grafico de barras comparando ingresos y gastos por dia en el periodo"></canvas>
+                    aria-label="Gráfico de barras comparando ingresos y gastos por día en el periodo"></canvas>
 
             <details class="mt-3">
-                <summary class="text-muted small">Ver los datos del grafico en una tabla</summary>
+                <summary class="text-muted small">Ver los datos del gráfico en una tabla</summary>
                 <div class="table-responsive mt-2">
                     <table class="table table-sm mb-0">
-                        <caption class="visually-hidden">Ingresos y gastos por dia del periodo</caption>
+                        <caption class="visually-hidden">Ingresos y gastos por día del periodo</caption>
                         <thead>
                         <tr>
                             <th scope="col">Fecha</th>
@@ -124,7 +124,7 @@
                     <p th:if="${#lists.isEmpty(r.topProductos)}" class="text-muted small mb-0">Sin ventas en el rango.</p>
                     <div class="table-responsive" th:unless="${#lists.isEmpty(r.topProductos)}">
                         <table class="table table-sm mb-0">
-                            <caption class="visually-hidden">Productos mas vendidos en el periodo</caption>
+                            <caption class="visually-hidden">Productos más vendidos en el periodo</caption>
                             <thead>
                             <tr>
                                 <th scope="col">Producto</th>
@@ -147,20 +147,20 @@
         <div class="col-12 col-lg-6">
             <div class="card shadow-sm h-100">
                 <div class="card-body">
-                    <h2 class="h6 text-muted mb-3">Gastos por categoria</h2>
+                    <h2 class="h6 text-muted mb-3">Gastos por categoría</h2>
                     <p th:if="${#lists.isEmpty(r.gastosPorCategoria)}" class="text-muted small mb-0">Sin gastos en el rango.</p>
                     <div class="table-responsive" th:unless="${#lists.isEmpty(r.gastosPorCategoria)}">
                         <table class="table table-sm mb-0">
-                            <caption class="visually-hidden">Gastos agrupados por categoria en el periodo</caption>
+                            <caption class="visually-hidden">Gastos agrupados por categoría en el periodo</caption>
                             <thead>
                             <tr>
-                                <th scope="col">Categoria</th>
+                                <th scope="col">Categoría</th>
                                 <th scope="col" class="text-end">Monto</th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr th:each="g : ${r.gastosPorCategoria}">
-                                <td th:text="${g.categoria}">Categoria</td>
+                                <td th:text="${g.categoria}">Categoría</td>
                                 <td class="text-end" th:text="${fmt.moneda(g.monto)}">$0</td>
                             </tr>
                             </tbody>
