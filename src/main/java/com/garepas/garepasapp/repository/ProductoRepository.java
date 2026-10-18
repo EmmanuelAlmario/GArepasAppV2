@@ -21,6 +21,9 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
     @EntityGraph(attributePaths = {"receta", "receta.detalles", "receta.detalles.insumo"})
     List<Producto> findByActivoTrue();
 
+    // Menu publico: solo columnas escalares, sin cargar recetas.
+    List<Producto> findByActivoTrueOrderByNombreAsc();
+
     @EntityGraph(attributePaths = {"receta", "receta.detalles", "receta.detalles.insumo"})
     Optional<Producto> findById(Long id);
 

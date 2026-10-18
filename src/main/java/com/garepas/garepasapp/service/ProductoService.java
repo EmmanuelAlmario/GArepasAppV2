@@ -1,6 +1,7 @@
 package com.garepas.garepasapp.service;
 
 import com.garepas.garepasapp.dto.request.ProductoRequest;
+import com.garepas.garepasapp.dto.response.MenuPublicoItemResponse;
 import com.garepas.garepasapp.dto.response.ProductoResponse;
 import com.garepas.garepasapp.entity.Producto;
 import com.garepas.garepasapp.entity.Receta;
@@ -35,6 +36,14 @@ public class ProductoService {
         return productoRepository.findByActivoTrue()
                 .stream()
                 .map(ProductoResponse::desde)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<MenuPublicoItemResponse> listarMenuPublico() {
+        return productoRepository.findByActivoTrueOrderByNombreAsc()
+                .stream()
+                .map(MenuPublicoItemResponse::desde)
                 .toList();
     }
 
