@@ -115,13 +115,17 @@ document.addEventListener('DOMContentLoaded', () => {
         cantidadEl.textContent = unidades();
     }
 
+    function bajoPedido(productoDate) {
+        return productoDate && productoDate.dataset.bajoPedido === 'true';
+    }
+
     function agregar(producto) {
         const id = producto.dataset.id;
         const existente = carrito.get(id);
         const stock = Number(producto.dataset.stock);
         const cantidadActual = existente ? existente.cantidad : 0;
 
-        if (cantidadActual >= stock) {
+        if (!bajoPedido(producto) && cantidadActual >= stock) {
             mostrarMensaje('Stock insuficiente para ' + producto.dataset.nombre + '.', 'warning');
             return;
         }
@@ -133,7 +137,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 nombre: producto.dataset.nombre,
                 precio: Number(producto.dataset.precio),
                 cantidad: 1,
-                stock: stock
+                stock: stock,
+                bajoPedido: bajoPedido(producto)
             });
         }
         render();
@@ -153,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!item) return;
 
         if (accion.dataset.accion === 'mas') {
-            if (item.cantidad >= item.stock) {
+            if (!item.bajoPedido && item.cantidad >= item.stock) {
                 mostrarMensaje('Stock insuficiente para ' + item.nombre + '.', 'warning');
                 return;
             }
@@ -220,7 +225,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 nombre: dato.nombre,
                 precio: Number(dato.precio),
                 cantidad: Number(dato.cantidad),
-                stock: Number(dato.stock)
+                stock: Number(dato.stock),
+                bajoPedido: dato.bajoPedido === true
             });
         });
     }

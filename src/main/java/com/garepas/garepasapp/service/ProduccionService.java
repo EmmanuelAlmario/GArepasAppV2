@@ -61,35 +61,92 @@ public class ProduccionService {
                     "El producto '" + producto.getNombre() + "' no tiene una receta asignada");
         }
 
+        // Sin ventaId (produccion manual). Si faltan insumos queda PENDIENTE,
+        // para completarla luego con verificarYCompletar cuando haya stock.
+        return ProduccionResponse.desde(
+                crearYAplicar(producto, request.cantidad(), null, false));
+    }
+
+    /**
+     * Produccion automatica generada al vender un producto bajo pedido.
+     * Pasa por el mismo pipeline de costo/descuento que una produccion manual
+     * (una sola fuente de verdad para el consumo de insumos), pero exige
+     * insumos suficientes: una venta no puede quedar PENDIENTE. Lanza
+     * OperacionInvalidaException con los faltantes si no alcanza el stock.
+     */
+    @Transactional
+    public Produccion registrarParaVenta(Long productoId, Integer cantidad, Long ventaId) {
+        Producto producto = productoRepository.findByIdConLock(productoId)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Producto", productoId));
+
+        if (!Boolean.TRUE.equals(producto.getBajoPedido()) || producto.getReceta() == null) {
+            throw new OperacionInvalidaException(
+                    "El producto '" + producto.getNombre() + "' no es un producto bajo pedido con receta");
+        }
+        return crearYAplicar(producto, cantidad, ventaId, true);
+    }
+
+    /**
+     * Revierte las producciones automaticas asociadas a una venta anulada:
+     * devuelve los insumos y elimina el gasto de materia prima. No devuelve
+     * stock de producto porque la produccion automatica no lo afecta (la
+     * venta lo descuenta y el stock bruto queda igual que antes).
+     */
+    @Transactional
+    public void revertirDeVenta(Long ventaId) {
+        for (Produccion produccion : produccionRepository.findByVentaId(ventaId)) {
+            if (produccion.getEstado() == EstadoProduccion.COMPLETADA) {
+                revertirCompletada(produccion, false);
+            }
+            produccionRepository.deleteById(produccion.getId());
+        }
+    }
+
+    private Produccion crearYAplicar(Producto producto, Integer cantidad, Long ventaId,
+                                     boolean exigirSuficiencia) {
         Produccion produccion = Produccion.builder()
                 .producto(producto)
-                .cantidad(request.cantidad())
+                .cantidad(cantidad)
                 .fecha(LocalDateTime.now())
                 .costoTotal(BigDecimal.ZERO)
                 .estado(EstadoProduccion.PENDIENTE)
+                .ventaId(ventaId)
                 .build();
 
         // Calcular detalles, suficiencia y costo (sin descontar stock aún)
-        List<DetalleProduccion> detalles = construirDetalles(produccion, producto, request.cantidad());
+        List<DetalleProduccion> detalles = construirDetalles(produccion, producto, cantidad);
         BigDecimal costoTotal = detalles.stream()
                 .map(DetalleProduccion::getCostoLinea)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         produccion.setDetalles(detalles);
         produccion.setCostoTotal(costoTotal);
-        produccion.setEstado(EstadoProduccion.PENDIENTE);
+
+        boolean todosSuficientes = detalles.stream().allMatch(DetalleProduccion::getSuficiente);
+        if (!todosSuficientes && exigirSuficiencia) {
+            throw new OperacionInvalidaException(mensajeInsumosInsuficientes(producto, detalles));
+        }
 
         // Se guarda primero para que la produccion tenga id: el gasto de materia
         // prima generado la referencia (produccionId) y la menciona en su descripcion.
         Produccion guardada = produccionRepository.save(produccion);
 
-        boolean todosSuficientes = detalles.stream().allMatch(DetalleProduccion::getSuficiente);
         if (todosSuficientes) {
             aplicarProduccion(guardada);
             guardada.setEstado(EstadoProduccion.COMPLETADA);
             guardada = produccionRepository.save(guardada);
         }
-        return ProduccionResponse.desde(guardada);
+        return guardada;
+    }
+
+    private String mensajeInsumosInsuficientes(Producto producto, List<DetalleProduccion> detalles) {
+        String faltantes = detalles.stream()
+                .filter(d -> !Boolean.TRUE.equals(d.getSuficiente()))
+                .map(d -> d.getInsumo().getNombre())
+                .distinct()
+                .collect(java.util.stream.Collectors.joining(", "));
+        return "Insumos insuficientes para '" + producto.getNombre()
+                + "'. Faltan: " + faltantes + ". Reabastece el inventario antes de vender.";
     }
 
     /**
@@ -176,8 +233,13 @@ public class ProduccionService {
             insumoRepository.save(insumo);
         }
 
-        producto.setStockActual(producto.getStockActual() + produccion.getCantidad());
-        productoRepository.save(producto);
+        // Las producciones automaticas de ventas no tocan el stock del
+        // producto (el inventario real de un producto bajo pedido son sus
+        // insumos); solo las producciones manuales lo aumentan.
+        if (produccion.getVentaId() == null) {
+            producto.setStockActual(producto.getStockActual() + produccion.getCantidad());
+            productoRepository.save(producto);
+        }
 
         BigDecimal costoTotal = produccion.getCostoTotal();
         if (costoTotal != null && costoTotal.compareTo(BigDecimal.ZERO) > 0) {
@@ -200,21 +262,33 @@ public class ProduccionService {
 
         // Solo se revierte stock si la producción estaba COMPLETADA
         if (produccion.getEstado() == EstadoProduccion.COMPLETADA) {
-            for (DetalleProduccion detalle : produccion.getDetalles()) {
-                Insumo insumo = insumoRepository.findByIdConLock(detalle.getInsumo().getId())
-                        .orElseThrow(() -> new RecursoNoEncontradoException("Insumo", detalle.getInsumo().getId()));
-                insumo.setStockActual(insumo.getStockActual().add(detalle.getCantidadUsada()));
-                insumoRepository.save(insumo);
-            }
+            revertirCompletada(produccion, true);
+        }
 
+        produccionRepository.deleteById(id);
+    }
+
+    /**
+     * Revierte los efectos de una producción COMPLETADA: devuelve el stock de
+     * los insumos usados, (opcionalmente) el stock del producto y elimina el
+     * gasto de materia prima asociado. Para producciones automáticas de ventas
+     * el stock del producto no se devuelve (la venta lo reintegra).
+     */
+    private void revertirCompletada(Produccion produccion, boolean devolverProducto) {
+        for (DetalleProduccion detalle : produccion.getDetalles()) {
+            Insumo insumo = insumoRepository.findByIdConLock(detalle.getInsumo().getId())
+                    .orElseThrow(() -> new RecursoNoEncontradoException("Insumo", detalle.getInsumo().getId()));
+            insumo.setStockActual(insumo.getStockActual().add(detalle.getCantidadUsada()));
+            insumoRepository.save(insumo);
+        }
+
+        if (devolverProducto) {
             Producto producto = productoRepository.findByIdConLock(produccion.getProducto().getId())
                     .orElseThrow(() -> new RecursoNoEncontradoException("Producto", produccion.getProducto().getId()));
             producto.setStockActual(producto.getStockActual() - produccion.getCantidad());
             productoRepository.save(producto);
-
-            gastoRepository.deleteByProduccionId(id);
         }
 
-        produccionRepository.deleteById(id);
+        gastoRepository.deleteByProduccionId(produccion.getId());
     }
 }

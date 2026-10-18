@@ -55,6 +55,7 @@ public class ProductoController {
         form.setStockMinimo(producto.stockMinimo());
         form.setPrecioVenta(formato.pesos(producto.precioVenta()));
         form.setRecetaId(producto.recetaId());
+        form.setBajoPedido(producto.bajoPedido());
         form.setActivo(producto.activo());
         model.addAttribute("form", form);
         cargarRecetas(model);

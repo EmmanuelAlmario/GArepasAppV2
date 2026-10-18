@@ -22,6 +22,8 @@ public record ProductoRequest(
 
         Long recetaId,
 
+        Boolean bajoPedido,
+
         @NotNull(message = "El estado activo es obligatorio")
         Boolean activo
 ) {}

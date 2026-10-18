@@ -28,6 +28,7 @@ public class VentaService {
     private final VentaRepository ventaRepository;
     private final ProductoRepository productoRepository;
     private final JornadaRepository jornadaRepository;
+    private final ProduccionService produccionService;
 
     @Transactional(readOnly = true)
     public List<VentaResponse> listarTodas() {
@@ -64,16 +65,9 @@ public class VentaService {
             throw new OperacionInvalidaException("La venta debe incluir al menos un detalle");
         }
 
-        Venta venta = Venta.builder()
-                .fecha(LocalDateTime.now())
-                .total(BigDecimal.ZERO)
-                .nombreCliente(request.nombreCliente())
-                .jornadaId(obtenerJornadaActivaId())
-                .build();
-
-        List<DetalleVenta> detalles = new ArrayList<>();
-        BigDecimal total = BigDecimal.ZERO;
-
+        // Pre-validacion: productos activos y stock suficiente (productos con
+        // stock) antes de tocar la base, para que una venta invalida no deje rastro.
+        List<Producto> productos = new ArrayList<>();
         for (var detalleRequest : request.detalles()) {
             Producto producto = productoRepository.findByIdConLock(detalleRequest.productoId())
                     .orElseThrow(() -> new RecursoNoEncontradoException("Producto", detalleRequest.productoId()));
@@ -83,19 +77,47 @@ public class VentaService {
                         "El producto '" + producto.getNombre() + "' no está activo");
             }
 
-            if (producto.getStockActual() < detalleRequest.cantidad()) {
+            if (!esBajoPedido(producto) && producto.getStockActual() < detalleRequest.cantidad()) {
                 throw new OperacionInvalidaException(
                         "Stock insuficiente para el producto '" + producto.getNombre() +
                                 "'. Disponible: " + producto.getStockActual() +
                                 ", Solicitado: " + detalleRequest.cantidad());
             }
+            productos.add(producto);
+        }
+
+        Venta venta = Venta.builder()
+                .fecha(LocalDateTime.now())
+                .total(BigDecimal.ZERO)
+                .nombreCliente(request.nombreCliente())
+                .jornadaId(obtenerJornadaActivaId())
+                .build();
+        // Se guarda primero para obtener el id: las producciones automáticas
+        // de los productos bajo pedido quedan marcadas con este ventaId.
+        venta = ventaRepository.save(venta);
+
+        List<DetalleVenta> detalles = new ArrayList<>();
+        BigDecimal total = BigDecimal.ZERO;
+
+        for (int i = 0; i < request.detalles().size(); i++) {
+            var detalleRequest = request.detalles().get(i);
+            Producto producto = productos.get(i);
+
+            if (esBajoPedido(producto)) {
+                // Producción automática: descuenta los insumos de la receta por
+                // unidad vendida (con snapshot de precio) y crea el gasto de
+                // materia prima. Lanza si los insumos no alcanzan → rollback.
+                // El stock de producto queda inerte: el inventario real de un
+                // producto bajo pedido son sus insumos.
+                produccionService.registrarParaVenta(producto.getId(), detalleRequest.cantidad(), venta.getId());
+            } else {
+                producto.setStockActual(producto.getStockActual() - detalleRequest.cantidad());
+                productoRepository.save(producto);
+            }
 
             // Precio del servidor (snapshot); no confiar en el cliente.
             BigDecimal precioUnitario = producto.getPrecioVenta();
             BigDecimal subtotal = precioUnitario.multiply(BigDecimal.valueOf(detalleRequest.cantidad()));
-
-            producto.setStockActual(producto.getStockActual() - detalleRequest.cantidad());
-            productoRepository.save(producto);
 
             detalles.add(DetalleVenta.builder()
                     .venta(venta)
@@ -112,6 +134,10 @@ public class VentaService {
         return VentaResponse.desde(ventaRepository.save(venta));
     }
 
+    private boolean esBajoPedido(Producto producto) {
+        return Boolean.TRUE.equals(producto.getBajoPedido());
+    }
+
     @Transactional
     public void eliminar(Long id) {
         Venta venta = ventaRepository.findById(id)
@@ -120,9 +146,15 @@ public class VentaService {
         for (DetalleVenta detalle : venta.getDetalles()) {
             Producto producto = productoRepository.findByIdConLock(detalle.getProducto().getId())
                     .orElseThrow(() -> new RecursoNoEncontradoException("Producto", detalle.getProducto().getId()));
-            producto.setStockActual(producto.getStockActual() + detalle.getCantidad());
-            productoRepository.save(producto);
+            if (!esBajoPedido(producto)) {
+                producto.setStockActual(producto.getStockActual() + detalle.getCantidad());
+                productoRepository.save(producto);
+            }
         }
+
+        // Revierte las producciones automaticas generadas por productos bajo
+        // pedido (devuelve insumos y elimina su gasto de materia prima).
+        produccionService.revertirDeVenta(id);
 
         ventaRepository.deleteById(id);
     }

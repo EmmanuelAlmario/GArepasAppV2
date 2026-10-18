@@ -10,7 +10,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "producciones", indexes = {
-        @Index(name = "idx_producciones_fecha", columnList = "fecha")
+        @Index(name = "idx_producciones_fecha", columnList = "fecha"),
+        @Index(name = "idx_producciones_venta_id", columnList = "venta_id")
 })
 @Getter
 @Setter
@@ -50,6 +51,13 @@ public class Produccion {
     @Column(nullable = false, length = 15)
     @Builder.Default
     private EstadoProduccion estado = EstadoProduccion.PENDIENTE;
+
+    /**
+     * Venta que originó la producción cuando es automática (producto bajo pedido).
+     * null = producción registrada manualmente desde el módulo Producciones.
+     */
+    @Column(name = "venta_id")
+    private Long ventaId;
 
     @OneToMany(mappedBy = "produccion", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default

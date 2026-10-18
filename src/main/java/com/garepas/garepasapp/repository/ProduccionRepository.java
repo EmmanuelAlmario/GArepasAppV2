@@ -26,4 +26,7 @@ public interface ProduccionRepository extends JpaRepository<Produccion, Long> {
     List<Produccion> findByProductoId(Long productoId);
 
     List<Produccion> findByFechaBetween(LocalDateTime inicio, LocalDateTime fin);
+
+    @EntityGraph(attributePaths = {"producto", "detalles", "detalles.insumo"})
+    List<Produccion> findByVentaId(Long ventaId);
 }

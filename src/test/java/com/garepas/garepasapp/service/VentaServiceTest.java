@@ -22,17 +22,20 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 /**
  * Reglas del punto de venta: precio del servidor, descuento de stock,
- * rechazo de productos inactivos o sin stock, y reversión al eliminar.
+ * rechazo de productos inactivos o sin stock, producción automática para
+ * productos bajo pedido, y reversión al eliminar.
  */
 class VentaServiceTest {
 
     private VentaRepository ventaRepository;
     private ProductoRepository productoRepository;
     private JornadaRepository jornadaRepository;
+    private ProduccionService produccionService;
     private VentaService ventaService;
 
     @BeforeEach
@@ -40,7 +43,8 @@ class VentaServiceTest {
         ventaRepository = mock(VentaRepository.class);
         productoRepository = mock(ProductoRepository.class);
         jornadaRepository = mock(JornadaRepository.class);
-        ventaService = new VentaService(ventaRepository, productoRepository, jornadaRepository);
+        produccionService = mock(ProduccionService.class);
+        ventaService = new VentaService(ventaRepository, productoRepository, jornadaRepository, produccionService);
         when(jornadaRepository.findFirstByActivaTrueOrderByFechaAperturaDesc()).thenReturn(Optional.empty());
         when(ventaRepository.save(any(Venta.class))).thenAnswer(inv -> {
             Venta venta = inv.getArgument(0);
@@ -73,7 +77,8 @@ class VentaServiceTest {
         assertEquals(1, respuesta.detalles().size());
         assertEquals("Arepa de queso", respuesta.detalles().get(0).productoNombre());
         verify(productoRepository).save(arepa);
-        verify(ventaRepository).save(any(Venta.class));
+        // save #1 obtiene el id para vincular producciones automaticas, #2 persiste total/detalles.
+        verify(ventaRepository, times(2)).save(any(Venta.class));
     }
 
     @Test
@@ -122,7 +127,52 @@ class VentaServiceTest {
     }
 
     @Test
-    void eliminarDevuelveElStockDelProducto() {
+    void productoBajoPedidoVendeSinStockYGeneraProduccionAutomatica() {
+        Producto arepaDeCerdo = producto(1L, "Arepa de cerdo", 0, "6000", true);
+        arepaDeCerdo.setBajoPedido(true);
+        when(productoRepository.findByIdConLock(1L)).thenReturn(Optional.of(arepaDeCerdo));
+
+        VentaResponse respuesta = ventaService.registrar(
+                new VentaRequest(null, List.of(new DetalleVentaRequest(1L, 2))));
+
+        assertEquals(0, respuesta.total().compareTo(new BigDecimal("12000")));
+        // La produccion automatica reutiliza el pipeline de ProduccionService:
+        // descuenta insumos por unidad vendida y queda marcada con el ventaId.
+        verify(produccionService).registrarParaVenta(eq(1L), eq(2), eq(99L));
+        // El stock de producto queda inerte para productos bajo pedido.
+        assertEquals(0, arepaDeCerdo.getStockActual());
+        verify(productoRepository, never()).save(any());
+    }
+
+    @Test
+    void productoBajoPedidoPropagaElRechazoPorInsumosInsuficientes() {
+        Producto arepaDeCerdo = producto(1L, "Arepa de cerdo", 0, "6000", true);
+        arepaDeCerdo.setBajoPedido(true);
+        when(productoRepository.findByIdConLock(1L)).thenReturn(Optional.of(arepaDeCerdo));
+        when(produccionService.registrarParaVenta(eq(1L), eq(1), eq(99L)))
+                .thenThrow(new OperacionInvalidaException("Insumos insuficientes para 'Arepa de cerdo'"));
+
+        assertThrows(OperacionInvalidaException.class, () -> ventaService.registrar(
+                new VentaRequest(null, List.of(new DetalleVentaRequest(1L, 1)))));
+
+        // Los insumos no se descuentan ni se persisten ventas parciales
+        // (la transaccion real se revierte por la excepcion).
+        verify(productoRepository, never()).save(any());
+    }
+
+    @Test
+    void productoBajoPedidoNoSeValidaPorStock() {
+        Producto arepaDeCerdo = producto(1L, "Arepa de cerdo", 0, "6000", true);
+        arepaDeCerdo.setBajoPedido(true);
+        when(productoRepository.findByIdConLock(1L)).thenReturn(Optional.of(arepaDeCerdo));
+
+        ventaService.registrar(new VentaRequest(null, List.of(new DetalleVentaRequest(1L, 5))));
+
+        verify(produccionService).registrarParaVenta(eq(1L), eq(5), eq(99L));
+    }
+
+    @Test
+    void eliminarRestauraStockYMantieneElFlujoDeProduccion() {
         Producto arepa = producto(1L, "Arepa", 5, "3500", true);
         Venta venta = Venta.builder()
                 .id(50L)
@@ -143,6 +193,34 @@ class VentaServiceTest {
 
         assertEquals(8, arepa.getStockActual());
         verify(productoRepository).save(arepa);
+        verify(ventaRepository).deleteById(50L);
+    }
+
+    @Test
+    void eliminarRevertirLaProduccionAutomaticaDeVentas() {
+        Producto arepaDeCerdo = producto(1L, "Arepa de cerdo", 0, "6000", true);
+        arepaDeCerdo.setBajoPedido(true);
+        Venta venta = Venta.builder()
+                .id(50L)
+                .fecha(LocalDateTime.now())
+                .total(new BigDecimal("6000"))
+                .build();
+        venta.getDetalles().add(DetalleVenta.builder()
+                .venta(venta)
+                .producto(arepaDeCerdo)
+                .cantidad(1)
+                .precioUnitario(new BigDecimal("6000"))
+                .subtotal(new BigDecimal("6000"))
+                .build());
+        when(ventaRepository.findById(50L)).thenReturn(Optional.of(venta));
+        when(productoRepository.findByIdConLock(1L)).thenReturn(Optional.of(arepaDeCerdo));
+
+        ventaService.eliminar(50L);
+
+        // El stock de producto bajo pedido queda inerte (sin alteración)
+        assertEquals(0, arepaDeCerdo.getStockActual());
+        verify(productoRepository, never()).save(any());
+        verify(produccionService).revertirDeVenta(50L);
         verify(ventaRepository).deleteById(50L);
     }
 }

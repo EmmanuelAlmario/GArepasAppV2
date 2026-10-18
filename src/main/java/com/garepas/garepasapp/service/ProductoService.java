@@ -57,6 +57,7 @@ public class ProductoService {
                 .stockMinimo(request.stockMinimo())
                 .precioVenta(request.precioVenta())
                 .receta(receta)
+                .bajoPedido(validarBajoPedido(Boolean.TRUE.equals(request.bajoPedido()), receta, request.nombre()))
                 .activo(request.activo())
                 .build();
         return ProductoResponse.desde(productoRepository.save(producto));
@@ -83,8 +84,22 @@ public class ProductoService {
         producto.setReceta(receta);
         producto.setStockActual(request.stockActual());
         producto.setStockMinimo(request.stockMinimo());
+        producto.setBajoPedido(validarBajoPedido(Boolean.TRUE.equals(request.bajoPedido()), receta, request.nombre()));
         producto.setActivo(request.activo());
         return ProductoResponse.desde(productoRepository.save(producto));
+    }
+
+    /**
+     * Un producto bajo pedido se elabora al momento de la venta: la venta
+     * descuenta los insumos de su receta. Sin receta no hay nada que
+     * descontar, por eso la marca exige receta asignada.
+     */
+    private Boolean validarBajoPedido(boolean bajoPedido, Receta receta, String nombre) {
+        if (bajoPedido && receta == null) {
+            throw new OperacionInvalidaException(
+                    "El producto bajo pedido '" + nombre + "' requiere una receta asignada");
+        }
+        return bajoPedido;
     }
 
     /**

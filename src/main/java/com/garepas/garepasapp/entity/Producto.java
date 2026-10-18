@@ -38,6 +38,14 @@ public class Producto {
     @JoinColumn(name = "receta_id")
     private Receta receta;
 
+    /**
+     * Producto elaborado al momento de la venta (no requiere stock terminado):
+     * la venta dispara una producción automática que descuenta los insumos
+     * de la receta por unidad vendida. null = false (productos legacy).
+     */
+    @Column
+    private Boolean bajoPedido;
+
     @Column(nullable = false)
     private Boolean activo;
 

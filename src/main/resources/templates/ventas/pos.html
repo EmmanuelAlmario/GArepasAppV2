@@ -48,23 +48,24 @@
             </div>
 
             <p th:if="${#lists.isEmpty(productos)}" class="text-muted small">
-                No hay productos activos con stock.
+                No hay productos activos disponibles.
                 <span sec:authorize="hasRole('ADMIN')">
                     Registra una <a th:href="@{/producciones/nuevo}">producción</a>
                     o <a th:href="@{/insumos/ajustar-stock}">ajusta el stock de insumos</a>.
                 </span>
-                <span sec:authorize="hasRole('VENTAS')">Pide al administrador que reponga el inventario.</span>
+                <span sec:authorize="hasRole('VENTAS')">Pide al administrador que repone el inventario.</span>
             </p>
 
             <div id="catalogo" class="ga-grid" role="group" aria-label="Catálogo de productos">
                 <div class="ga-grid__celda" data-producto-col th:each="p : ${productos}">
                     <button type="button" class="ga-producto" data-producto
-                            th:attr="data-id=${p.id},data-nombre=${p.nombre},data-precio=${p.precioVenta},data-stock=${p.stockActual}">
+                            th:attr="data-id=${p.id},data-nombre=${p.nombre},data-precio=${p.precioVenta},data-stock=${p.stockActual},data-bajo-pedido=${p.bajoPedido()}">
                         <span class="ga-producto__inicial" aria-hidden="true"
                               th:text="${#strings.toUpperCase(#strings.substring(p.nombre, 0, 1))}">A</span>
                         <span class="ga-producto__nombre" th:text="${p.nombre}">Producto</span>
                         <span class="ga-producto__precio" th:text="${fmt.moneda(p.precioVenta)}">$0</span>
-                        <span class="ga-producto__stock" th:text="'Stock ' + ${p.stockActual}">Stock 0</span>
+                        <span class="ga-producto__stock"
+                              th:text="${p.bajoPedido()} ? 'Bajo pedido' : 'Stock ' + ${p.stockActual}">Stock 0</span>
                     </button>
                 </div>
             </div>

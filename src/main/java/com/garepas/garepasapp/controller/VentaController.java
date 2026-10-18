@@ -120,7 +120,8 @@ public class VentaController {
      */
     private String cargarPos(Model model, VentaForm form, List<DetalleVentaRequest> detalles) {
         List<ProductoResponse> productos = productoService.listarActivos().stream()
-                .filter(p -> p.stockActual() != null && p.stockActual() > 0)
+                .filter(p -> Boolean.TRUE.equals(p.bajoPedido())
+                        || (p.stockActual() != null && p.stockActual() > 0))
                 .toList();
 
         Map<Long, ProductoResponse> porId = new LinkedHashMap<>();
@@ -138,6 +139,7 @@ public class VentaController {
                     fila.put("precio", p.precioVenta());
                     fila.put("cantidad", d.cantidad());
                     fila.put("stock", p.stockActual());
+                    fila.put("bajoPedido", Boolean.TRUE.equals(p.bajoPedido()));
                     return fila;
                 })
                 .filter(Objects::nonNull)

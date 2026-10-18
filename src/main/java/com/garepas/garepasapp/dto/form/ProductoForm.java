@@ -27,6 +27,8 @@ public class ProductoForm {
 
     private Long recetaId;
 
+    private Boolean bajoPedido;
+
     private Boolean activo = Boolean.TRUE;
 
     public ProductoRequest toRequest() {
@@ -36,6 +38,7 @@ public class ProductoForm {
                 stockMinimo,
                 precioVenta,
                 recetaId,
+                Boolean.TRUE.equals(bajoPedido),
                 activo == null ? Boolean.TRUE : activo);
     }
 
@@ -85,6 +88,14 @@ public class ProductoForm {
 
     public void setRecetaId(Long recetaId) {
         this.recetaId = recetaId;
+    }
+
+    public Boolean getBajoPedido() {
+        return bajoPedido;
+    }
+
+    public void setBajoPedido(Boolean bajoPedido) {
+        this.bajoPedido = bajoPedido;
     }
 
     public Boolean getActivo() {
