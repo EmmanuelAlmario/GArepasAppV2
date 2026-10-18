@@ -1,6 +1,7 @@
 package com.garepas.garepasapp.config;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.config.Customizer;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,7 +14,8 @@ import org.springframework.security.web.SecurityFilterChain;
  * Seguridad de la aplicacion web: sesion HTTP con formulario de login.
  *
  * Reglas de acceso:
- *  - Publico: login, recursos estaticos y healthcheck.
+ *  - Publico: login, recursos estaticos, healthcheck y lectura GET del menu
+ *    (/api/public/**, con CORS restringido en CorsConfig).
  *  - VENTAS: punto de venta y jornadas.
  *  - ADMIN: todo lo demas (inventario, produccion, gastos, reportes, usuarios).
  */
@@ -24,11 +26,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/error", "/actuator/health",
                                 "/css/**", "/js/**", "/images/**", "/favicon.ico",
                                 // PWA instalable: manifest, service worker y pagina offline.
                                 "/manifest.json", "/sw.js", "/offline.html").permitAll()
+                        // API publica del menu: solo lectura, sin sesion. Cualquier otro
+                        // metodo sobre /api/public cae en las reglas de abajo (no publicas).
+                        .requestMatchers(HttpMethod.GET, "/api/public/**").permitAll()
                         .requestMatchers("/usuarios/**").hasRole("ADMIN")
                         .requestMatchers("/insumos/**", "/productos/**", "/recetas/**",
                                 "/producciones/**", "/gastos/**", "/reportes/**").hasRole("ADMIN")
