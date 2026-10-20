@@ -24,9 +24,13 @@
 
         <div class="ga-sidebar__pie">
             <div class="ga-sidebar__usuario">
-                <span class="ga-sidebar__nombre" sec:authentication="name">usuario</span>
+                <span class="ga-sidebar__nombre"
+                      th:attr="data-inicial=${#authentication != null and #authentication.name != null ? #strings.substring(#authentication.name, 0, 1).toUpperCase() : '?'}"
+                      sec:authentication="name">usuario</span>
                 <form th:action="@{/logout}" method="post">
-                    <button type="submit" class="btn btn-sm btn-outline-light">Cerrar sesión</button>
+                    <button type="submit" class="btn btn-sm btn-outline-light">
+                        <i class="bi bi-box-arrow-right" aria-hidden="true"></i>Salir
+                    </button>
                 </form>
             </div>
         </div>
@@ -38,19 +42,25 @@
             <img th:src="@{/images/gordo_arepas_logo.png}" alt="" width="32" height="32">
             <span class="ga-marca__nombre">Gordo Arepas</span>
         </a>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn-sm btn-ghost">
+                <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+                <span class="visually-hidden">Cerrar sesión</span>
+            </button>
+        </form>
     </header>
 
     <!-- Móvil: accesos diarios -->
     <nav class="ga-tabbar" aria-label="Accesos rápidos">
-        <a class="ga-tab" th:href="@{/reportes}" sec:authorize="hasRole('ADMIN')"
-           th:classappend="${seccion == 'reportes'} ? 'is-active'"
-           th:aria-current="${seccion == 'reportes'} ? 'page' : null">
-            <i class="bi bi-graph-up-arrow" aria-hidden="true"></i><span>Reportes</span>
-        </a>
         <a class="ga-tab" th:href="@{/ventas}"
            th:classappend="${seccion == 'ventas'} ? 'is-active'"
            th:aria-current="${seccion == 'ventas'} ? 'page' : null">
             <i class="bi bi-cart3" aria-hidden="true"></i><span>Vender</span>
+        </a>
+        <a class="ga-tab" th:href="@{/reportes}" sec:authorize="hasRole('ADMIN')"
+           th:classappend="${seccion == 'reportes'} ? 'is-active'"
+           th:aria-current="${seccion == 'reportes'} ? 'page' : null">
+            <i class="bi bi-graph-up-arrow" aria-hidden="true"></i><span>Reportes</span>
         </a>
         <button type="button" class="ga-tab" data-bs-toggle="offcanvas" data-bs-target="#gaMenuMovil"
                 aria-controls="gaMenuMovil"
@@ -67,13 +77,17 @@
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
                     aria-label="Cerrar menú"></button>
         </div>
-        <div class="offcanvas-body">
+        <div class="offcanvas-body d-flex flex-column">
             <div th:replace="~{fragments/nav :: enlaces(${seccion})}"></div>
-            <div class="ga-sidebar__pie">
+            <div class="ga-sidebar__pie mt-auto">
                 <div class="ga-sidebar__usuario">
-                    <span class="ga-sidebar__nombre" sec:authentication="name">usuario</span>
+                    <span class="ga-sidebar__nombre"
+                          th:attr="data-inicial=${#authentication != null and #authentication.name != null ? #strings.substring(#authentication.name, 0, 1).toUpperCase() : '?'}"
+                          sec:authentication="name">usuario</span>
                     <form th:action="@{/logout}" method="post">
-                        <button type="submit" class="btn btn-sm btn-outline-light">Cerrar sesión</button>
+                        <button type="submit" class="btn btn-sm btn-outline-light">
+                            <i class="bi bi-box-arrow-right" aria-hidden="true"></i>Salir
+                        </button>
                     </form>
                 </div>
             </div>
@@ -105,6 +119,13 @@
                    th:classappend="${seccion == 'reportes'} ? 'is-active'"
                    th:aria-current="${seccion == 'reportes'} ? 'page' : null">
                     <i class="bi bi-graph-up-arrow" aria-hidden="true"></i><span>Reportes</span>
+                </a>
+            </li>
+            <li>
+                <a class="ga-nav__link" th:href="@{/clientes}"
+                   th:classappend="${seccion == 'clientes'} ? 'is-active'"
+                   th:aria-current="${seccion == 'clientes'} ? 'page' : null">
+                    <i class="bi bi-people" aria-hidden="true"></i><span>Clientes</span>
                 </a>
             </li>
             <li>
@@ -158,7 +179,14 @@
                 <a class="ga-nav__link" th:href="@{/usuarios}"
                    th:classappend="${seccion == 'usuarios'} ? 'is-active'"
                    th:aria-current="${seccion == 'usuarios'} ? 'page' : null">
-                    <i class="bi bi-people" aria-hidden="true"></i><span>Usuarios</span>
+                    <i class="bi bi-person-badge" aria-hidden="true"></i><span>Usuarios</span>
+                </a>
+            </li>
+            <li>
+                <a class="ga-nav__link" th:href="@{/configuracion}"
+                   th:classappend="${seccion == 'configuracion'} ? 'is-active'"
+                   th:aria-current="${seccion == 'configuracion'} ? 'page' : null">
+                    <i class="bi bi-shop" aria-hidden="true"></i><span>Mi negocio</span>
                 </a>
             </li>
         </ul>

@@ -6,7 +6,7 @@
     <a th:href="@{/producciones}" class="btn btn-outline-secondary">Volver al listado</a>
 </th:block>
 <div th:fragment="contenido">
-    <th:block th:replace="~{fragments/page-header :: pageHeader('Registrar producción', null, ~{::acciones})}"></th:block>
+    <th:block th:replace="~{fragments/page-header :: pageHeader('Registrar producción', null, 'Inventario', ~{::acciones})}"></th:block>
 
     <div class="card shadow-sm form-card">
         <div class="card-body">

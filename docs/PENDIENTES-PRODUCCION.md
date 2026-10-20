@@ -1,10 +1,16 @@
 # Pendientes para producción
 
-Estado revisado: 2026-10-03
+Estado revisado: 2026-10-19
 Alcance: **GArepasAppV2** (backend Thymeleaf) + **GArepasMenu** (cliente React)
-Documentos hermanos: [`AUDITORIA-BASICA.md`](./AUDITORIA-BASICA.md) · [`DESPLIEGUE.md`](./DESPLIEGUE.md) (genérica) · [`DESPLIEGUE-RAILWAY.md`](./DESPLIEGUE-RAILWAY.md) (destino elegido)
+Documentos hermanos: [`ARQUITECTURA.md`](./ARQUITECTURA.md) (diseño del rediseño) · [`AUDITORIA-BASICA.md`](./AUDITORIA-BASICA.md) · [`DESPLIEGUE.md`](./DESPLIEGUE.md) (genérica) · [`DESPLIEGUE-RAILWAY.md`](./DESPLIEGUE-RAILWAY.md) (destino elegido)
 
-> **Ejecutado el 2026-10-03 (limpieza segura + perfiles):** B1, B2 y B5 resueltos; B3 y B6 *configurados* (falta el servidor PostgreSQL y los valores reales); `.playwright-mcp/` eliminado y en `.gitignore`; CDN actualizados con SRI (Bootstrap 5.3.8 / Chart.js 4.5.1); nuevo `ValidacionProduccion` que detiene el arranque con mensaje claro si faltan variables. Detalle en la columna **Estado**.
+> **Rediseño del 2026-10-19:** se reorganizó la aplicación en capas (`domain` / `web` / `api`), se corrigieron los defectos de fondo del inventario (overselling, conversión de unidades, suficiencia por fila, rango de reportes) y se añadió la migración `V2__rediseño_dominio.sql`. Ver [`ARQUITECTURA.md`](./ARQUITECTURA.md).
+>
+> **Antes del primer despliegue con la V2, haz copia de seguridad de la base:** la migración renombra columnas (`insumos.precio_por_gramo` → `precio_unidad_base`, `insumos.unidad_medida` → `unidad_presentacion`), elimina `detalle_recetas.unidad_medida`, añade `ventas.estado` y crea tres claves foráneas.
+>
+> **La V3** (clientes, crédito y configuración del negocio) crea las tablas `clientes`, `abonos` y `configuracion_negocio`, y añade a `ventas` las columnas `subtotal`, `impuestos`, `saldo`, `forma_pago`, `fecha_vencimiento` y `cliente_id`. También necesita copia de seguridad previa.
+>
+> **Nuevo en esta versión:** clientes con cartera y saldo, ventas a crédito con abonos, impuestos por negocio y recibo imprimible (módulo inspirado en TREINTA, ver [`ARQUITECTURA.md`](./ARQUITECTURA.md) §7).
 
 ---
 
@@ -14,10 +20,10 @@ Documentos hermanos: [`AUDITORIA-BASICA.md`](./AUDITORIA-BASICA.md) · [`DESPLIE
 |---|---|---|---|---|
 | B1 | **Datos demo** | `application.properties` (base) → `app.seed.demo-data=false` y `DataSeeder` anotado `@Profile("dev")` | Nada más: en producción la clase no se registra. | ✅ Resuelto |
 | B2 | **Contraseñas por defecto** | Base sin defaults (`${ADMIN_PASSWORD}` obligatoria); `admin123`/`cajero123` viven solo en `application-dev.properties` | Rotar cualquier clave usada en demos antes de desplegar. | ✅ Resuelto (rotar claves) |
-| B3 | **Base de datos no productiva** | Base: PostgreSQL por `DB_*` obligatorias; H2 solo en perfil `dev` | Provisionar el servidor PostgreSQL y crear la base. H2 sigue en scope `runtime` porque dev lo necesita. | 🟡 Configurado (falta servidor) |
-| B4 | **Esquema con `ddl-auto=update`** | `application.properties` con TODO visible | Pasar a `validate` + migraciones versionadas (Flyway/Liquibase). | ⏳ Pendiente |
+| B3 | **Base de datos no productiva** | Base: PostgreSQL por `DB_*` obligatorias; H2 solo en perfil `dev` | Provisionar el servidor PostgreSQL y crear la base. | 🟡 Configurado (falta servidor) |
+| B4 | **Esquema con `ddl-auto=update`** | `application-prod.properties` → `ddl-auto=validate` + Flyway con `baseline-version=1` | Aplicar las migraciones `V2` y `V3` (se ejecutan solas al arrancar). **Copia de seguridad previa.** | ✅ Resuelto (aplicar V2 y V3) |
 | B5 | **Log con credenciales demo** | `DataSeeder` ahora registra "Datos de prueba de desarrollo listos (perfil dev)." | — | ✅ Resuelto |
-| B6 | **URLs locales por defecto** | Base exige `MENU_PUBLICO_URL` y `CORS_ORIGINS` (sin defaults); dev aporta localhost | Definir los dominios reales en el entorno. | 🟡 Configurado (faltan valores) |
+| B6 | **URLs locales por defecto** | Base exige `CORS_ORIGINS` (sin defaults); dev aporta localhost | Definir los dominios reales en el entorno. | 🟡 Configurado (faltan valores) |
 
 ---
 
@@ -72,14 +78,15 @@ En el cliente del menú (`GArepasMenu`):
 
 | Pendiente | Detalle |
 |---|---|
-| Pruebas | ✅ Cobertura base completa: 28 pruebas en verde (`SeguridadWebTest` 12, `VentaServiceTest` 6, `JornadaServiceTest` 4, `ProduccionServiceTest` 3, `InsumoServiceTest` 3). Falta: smoke E2E. Nota: los tests con contexto Spring deben usar `@ActiveProfiles("dev")` (si no, `ValidacionProduccion` exige variables de producción). |
-| Healthcheck | ✅ `/actuator/health` expuesto (solo estado, sin detalles), público para el orquestador. |
+| Pruebas | ✅ **95 pruebas en verde** (`VentaServiceTest` 15, `SeguridadWebTest` 12, `CarteraTest` 10, `CostoServiceTest` 7, `RecetaServiceTest` 7, `PublicMenuWebTest` 7, `InsumoServiceTest` 6, `UsuarioServiceTest` 6, `EsquemaFlywayTest` 6, `JornadaServiceTest` 5, `ProduccionServiceTest` 5, `ReporteServiceTest` 3, `MenuPublicoItemResponseTest` 4). Cada corrección de fondo tiene su prueba de regresión (ver `ARQUITECTURA.md` §8). Cobertura con JaCoCo: `./mvnw test` genera `target/site/jacoco/index.html`. Falta: smoke E2E. Nota: los tests con contexto Spring deben usar `@ActiveProfiles("dev")` (si no, `ValidacionProduccion` exige variables de producción). |
+| Healthcheck | ✅ `/actuator/health` expuesto (solo estado, sin detalles), público para el orquestador + `HEALTHCHECK` en el Dockerfile. |
 | Logs | Definir destino (archivo/centralizado) y nivel INFO en producción. |
-| Backups | Plan de respaldo de PostgreSQL (diario + retención + prueba de restauración). |
+| Backups | Plan de respaldo de PostgreSQL (diario + retención + prueba de restauración). **Obligatorio antes de aplicar la migración V2.** |
 | Monitoreo | Uptime y errores (aunque sea básico). |
 | favicon | ✅ `static/images/favicon.svg` enlazado en `head.html` (ya no hay 404). El menú ya tiene uno. |
-| CDN | ✅ Actualizados a Bootstrap 5.3.8 y Chart.js 4.5.1 con `integrity`+`crossorigin` (SRI). |
-| Framework | Spring Boot **3.4.13** (último parche de la línea 3.4; la línea quedó fuera de soporte OSS en dic-2025). Decisión del proyecto: mantener 3.4 por ahora. Planificar upgrade a 4.x (4.1.1, soporte hasta jul-2027) con la suite de pruebas. Ver auditoría A-10. |
+| CDN | ✅ **Eliminado**: Bootstrap, Bootstrap Icons y Chart.js se sirven desde `static/vendor`. La app no depende de internet para funcionar. |
+| Dependencias de terceros | ✅ El driver H2 ya no viaja en la imagen de producción (`-Pproduccion` lo deja en scope `test`). |
+| Framework | Spring Boot **3.4.13** (línea 3.4 fuera de soporte OSS desde dic-2025). Decisión del proyecto: mantener 3.4 por ahora. Planificar upgrade a 4.x (4.1.1, soporte hasta jul-2027) con la suite de pruebas. Ver auditoría A-10. |
 
 ---
 
@@ -89,15 +96,15 @@ En el cliente del menú (`GArepasMenu`):
 - [x] B2 sin contraseñas por defecto en la config base (dev las aporta) — falta **rotar claves de demos**
 - [x] B5 logs sin credenciales
 - [ ] B3 conectar PostgreSQL real (configuración lista)
-- [ ] B4 `ddl-auto=validate` + migraciones
+- [x] B4 `ddl-auto=validate` + migraciones (aplicar V2 y V3 con copia de seguridad previa)
 - [ ] B6 definir valores reales de menú y CORS (configuración lista)
 - [x] `.playwright-mcp/` borrado y en `.gitignore`
-- [x] CDN con SRI y versiones actualizadas
+- [x] CDN eliminado: librerías servidas desde `static/vendor`
 - [ ] `detalles.js` e ilustraciones aprobadas o reemplazadas
 - [ ] HTTPS + `.env` en servidor
 - [x] Pruebas de seguridad mínimas (MockMvc: `SeguridadWebTest`, 12 pruebas)
-- [x] Pruebas de servicios (venta 6, jornada 4, producción 3)
-- [x] Healthcheck (`/actuator/health`, solo estado)
+- [x] Pruebas de servicios y de regresión (83 en total)
+- [x] Healthcheck (`/actuator/health`, solo estado) + `HEALTHCHECK` del contenedor
 - [x] favicon (SVG de marca; ya no hay 404)
 - [ ] Smoke E2E
 - [ ] Backups + monitoreo

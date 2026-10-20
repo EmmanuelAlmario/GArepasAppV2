@@ -3,28 +3,27 @@
       th:replace="~{layout :: layout('Reportes', 'reportes', ~{::contenido})}">
 <body>
 <th:block th:fragment="acciones">
-    <a th:href="@{/gastos/nuevo}" class="btn btn-outline-primary">Registrar gasto</a>
+    <a th:href="@{/gastos/nuevo}" class="btn btn-outline-secondary">
+        <i class="bi bi-receipt" aria-hidden="true"></i>Registrar gasto
+    </a>
 </th:block>
 <div th:fragment="contenido">
-    <th:block th:replace="~{fragments/page-header :: pageHeader('Reportes', 'Ingresos, gastos y utilidad del periodo seleccionado.', ~{::acciones})}"></th:block>
+    <th:block th:replace="~{fragments/page-header :: pageHeader('Reportes', 'Ingresos, gastos y utilidad del periodo seleccionado.', 'Panel', ~{::acciones})}"></th:block>
 
-    <div class="card shadow-sm mb-3">
+    <!-- Selector de rango -->
+    <div class="card mb-3">
         <div class="card-body">
             <div class="row g-3 align-items-end">
                 <div class="col-12 col-lg-auto">
                     <span class="form-label d-block mb-1">Rango</span>
-                    <div class="btn-group flex-wrap" role="group" aria-label="Rangos rápidos">
-                        <a th:href="@{/reportes(rango='hoy')}" class="btn btn-sm"
-                           th:classappend="${rangoActivo == 'hoy'} ? 'btn-primary' : 'btn-outline-secondary'"
+                    <div class="ga-segmentos" role="group" aria-label="Rangos rápidos">
+                        <a th:href="@{/reportes(rango='hoy')}" th:classappend="${rangoActivo == 'hoy'} ? 'is-active'"
                            th:aria-current="${rangoActivo == 'hoy'} ? 'page' : null">Hoy</a>
-                        <a th:href="@{/reportes(rango='7d')}" class="btn btn-sm"
-                           th:classappend="${rangoActivo == '7d'} ? 'btn-primary' : 'btn-outline-secondary'"
+                        <a th:href="@{/reportes(rango='7d')}" th:classappend="${rangoActivo == '7d'} ? 'is-active'"
                            th:aria-current="${rangoActivo == '7d'} ? 'page' : null">7 días</a>
-                        <a th:href="@{/reportes(rango='mes')}" class="btn btn-sm"
-                           th:classappend="${rangoActivo == 'mes'} ? 'btn-primary' : 'btn-outline-secondary'"
+                        <a th:href="@{/reportes(rango='mes')}" th:classappend="${rangoActivo == 'mes'} ? 'is-active'"
                            th:aria-current="${rangoActivo == 'mes'} ? 'page' : null">Mes</a>
-                        <a th:href="@{/reportes(rango='anio')}" class="btn btn-sm"
-                           th:classappend="${rangoActivo == 'anio'} ? 'btn-primary' : 'btn-outline-secondary'"
+                        <a th:href="@{/reportes(rango='anio')}" th:classappend="${rangoActivo == 'anio'} ? 'is-active'"
                            th:aria-current="${rangoActivo == 'anio'} ? 'page' : null">Año</a>
                     </div>
                 </div>
@@ -33,66 +32,82 @@
                     <form method="get" th:action="@{/reportes}" class="row g-2 align-items-end">
                         <input type="hidden" name="rango" value="custom">
                         <div class="col-6 col-md-4">
-                            <label class="form-label small mb-1" for="desde">Desde</label>
-                            <input type="date" id="desde" name="desde" class="form-control form-control-sm"
-                                   th:value="${desdeInput}">
+                            <label class="form-label" for="desde">Desde</label>
+                            <input type="date" id="desde" name="desde" class="form-control" th:value="${desdeInput}">
                         </div>
                         <div class="col-6 col-md-4">
-                            <label class="form-label small mb-1" for="hasta">Hasta</label>
-                            <input type="date" id="hasta" name="hasta" class="form-control form-control-sm"
-                                   th:value="${hastaInput}">
+                            <label class="form-label" for="hasta">Hasta</label>
+                            <input type="date" id="hasta" name="hasta" class="form-control" th:value="${hastaInput}">
                         </div>
                         <div class="col-12 col-md-4">
-                            <button type="submit" class="btn btn-sm btn-outline-primary">Aplicar rango</button>
+                            <button type="submit" class="btn btn-primary w-100">Aplicar rango</button>
                         </div>
                     </form>
                 </div>
             </div>
 
-            <p class="text-muted small mb-0 mt-2"
+            <p class="ga-texto-mini mt-3 mb-0"
                th:text="'Mostrando del ' + ${#temporals.format(r.desde, 'dd/MM/yyyy')} + ' al ' + ${#temporals.format(r.hasta, 'dd/MM/yyyy')}">
                 Periodo</p>
         </div>
     </div>
 
-    <div class="row g-3 mb-2">
+    <!-- Indicadores -->
+    <div class="row g-3 mb-3">
         <div class="col-6 col-lg-3">
             <div class="ga-kpi ga-kpi--brick">
-                <p class="ga-kpi__etiqueta">Ingresos del periodo</p>
+                <div class="ga-kpi__cabecera">
+                    <p class="ga-kpi__etiqueta">Ingresos</p>
+                    <span class="ga-kpi__icono"><i class="bi bi-cash-coin" aria-hidden="true"></i></span>
+                </div>
                 <p class="ga-kpi__valor" th:text="${fmt.moneda(r.ingresoTotal)}">$0</p>
+                <p class="ga-kpi__nota">Ventas del periodo</p>
             </div>
         </div>
         <div class="col-6 col-lg-3">
             <div class="ga-kpi ga-kpi--ink">
-                <p class="ga-kpi__etiqueta">Gastos del periodo</p>
+                <div class="ga-kpi__cabecera">
+                    <p class="ga-kpi__etiqueta">Gastos</p>
+                    <span class="ga-kpi__icono"><i class="bi bi-receipt" aria-hidden="true"></i></span>
+                </div>
                 <p class="ga-kpi__valor" th:text="${fmt.moneda(r.gastoTotal)}">$0</p>
+                <p class="ga-kpi__nota">Materia prima y gastos operativos</p>
             </div>
         </div>
         <div class="col-6 col-lg-3">
-            <div class="ga-kpi ga-kpi--neutro" th:classappend="${r.utilidadNeta.signum() < 0} ? 'is-negativa'">
-                <p class="ga-kpi__etiqueta">Utilidad neta</p>
+            <div class="ga-kpi ga-kpi--verde" th:classappend="${r.utilidadNeta.signum() < 0} ? 'is-negativa'">
+                <div class="ga-kpi__cabecera">
+                    <p class="ga-kpi__etiqueta">Utilidad neta</p>
+                    <span class="ga-kpi__icono"><i class="bi bi-piggy-bank" aria-hidden="true"></i></span>
+                </div>
                 <p class="ga-kpi__valor" th:text="${fmt.moneda(r.utilidadNeta)}">$0</p>
+                <p class="ga-kpi__nota">Ingresos menos gastos</p>
             </div>
         </div>
         <div class="col-6 col-lg-3">
             <div class="ga-kpi ga-kpi--gold">
-                <p class="ga-kpi__etiqueta">Margen</p>
+                <div class="ga-kpi__cabecera">
+                    <p class="ga-kpi__etiqueta">Margen</p>
+                    <span class="ga-kpi__icono"><i class="bi bi-percent" aria-hidden="true"></i></span>
+                </div>
                 <p class="ga-kpi__valor" th:text="${fmt.porcentaje(r.margenPorcentaje)}">0%</p>
+                <p class="ga-kpi__nota">Sobre los ingresos del periodo</p>
             </div>
         </div>
     </div>
-    <p class="form-text mb-3">
-        Ingresos = ventas registradas · Gastos = gastos registrados · Utilidad = ingresos − gastos.
-    </p>
 
-    <div class="card shadow-sm mb-3">
+    <!-- Serie diaria -->
+    <div class="card mb-3">
+        <div class="card-header">
+            <h2>Ingresos vs gastos por día</h2>
+            <span class="ga-chip ga-chip--suave" th:text="${#lists.size(r.serieIngresosVsGastos)} + ' días'">0 días</span>
+        </div>
         <div class="card-body">
-            <h2 class="h6 text-muted mb-3">Ingresos vs gastos por día</h2>
             <canvas id="grafico" height="90" role="img"
                     aria-label="Gráfico de barras comparando ingresos y gastos por día en el periodo"></canvas>
 
             <details class="mt-3">
-                <summary class="text-muted small">Ver los datos del gráfico en una tabla</summary>
+                <summary class="ga-texto-mini">Ver los datos del gráfico en una tabla</summary>
                 <div class="table-responsive mt-2">
                     <table class="table table-sm mb-0">
                         <caption class="visually-hidden">Ingresos y gastos por día del periodo</caption>
@@ -117,63 +132,63 @@
     </div>
 
     <div class="row g-3">
+        <!-- Top de productos -->
         <div class="col-12 col-lg-6">
-            <div class="card shadow-sm h-100">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h2>Top 5 productos vendidos</h2>
+                    <span class="ga-chip ga-chip--suave">Por unidades</span>
+                </div>
                 <div class="card-body">
-                    <h2 class="h6 text-muted mb-3">Top 5 productos vendidos</h2>
-                    <p th:if="${#lists.isEmpty(r.topProductos)}" class="text-muted small mb-0">Sin ventas en el rango.</p>
-                    <div class="table-responsive" th:unless="${#lists.isEmpty(r.topProductos)}">
-                        <table class="table table-sm mb-0">
-                            <caption class="visually-hidden">Productos más vendidos en el periodo</caption>
-                            <thead>
-                            <tr>
-                                <th scope="col">Producto</th>
-                                <th scope="col" class="text-end">Unidades</th>
-                                <th scope="col" class="text-end">Ingreso</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="p : ${r.topProductos}">
-                                <td th:text="${p.nombre}">Producto</td>
-                                <td class="text-end" th:text="${p.unidades}">0</td>
-                                <td class="text-end" th:text="${fmt.moneda(p.ingreso)}">$0</td>
-                            </tr>
-                            </tbody>
-                        </table>
+                    <div th:if="${#lists.isEmpty(topProductosView)}" class="ga-empty-state">
+                        <span class="ga-empty-state__icono"><i class="bi bi-bag" aria-hidden="true"></i></span>
+                        <p class="ga-empty-state__titulo">Sin ventas en el rango</p>
+                        <p class="ga-empty-state__detalle">Cuando registres ventas aparecerán aquí los productos más vendidos.</p>
+                    </div>
+                    <div th:unless="${#lists.isEmpty(topProductosView)}">
+                        <div class="ga-barra-fila" th:each="p : ${topProductosView}">
+                            <span class="ga-barra-fila__nombre" th:text="${p.nombre}">Producto</span>
+                            <span class="ga-barra-fila__valor" th:text="${fmt.moneda(p.monto)}">$0</span>
+                            <div class="ga-barra">
+                                <div class="ga-barra__relleno" th:style="'width:' + ${p.porcentaje} + '%'"></div>
+                            </div>
+                            <span class="ga-texto-mini" th:text="${p.nota}">0 unidades</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Gastos por categoria -->
         <div class="col-12 col-lg-6">
-            <div class="card shadow-sm h-100">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h2>Gastos por categoría</h2>
+                    <span class="ga-chip ga-chip--suave">Del periodo</span>
+                </div>
                 <div class="card-body">
-                    <h2 class="h6 text-muted mb-3">Gastos por categoría</h2>
-                    <p th:if="${#lists.isEmpty(r.gastosPorCategoria)}" class="text-muted small mb-0">Sin gastos en el rango.</p>
-                    <div class="table-responsive" th:unless="${#lists.isEmpty(r.gastosPorCategoria)}">
-                        <table class="table table-sm mb-0">
-                            <caption class="visually-hidden">Gastos agrupados por categoría en el periodo</caption>
-                            <thead>
-                            <tr>
-                                <th scope="col">Categoría</th>
-                                <th scope="col" class="text-end">Monto</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="g : ${r.gastosPorCategoria}">
-                                <td th:text="${g.categoria}">Categoría</td>
-                                <td class="text-end" th:text="${fmt.moneda(g.monto)}">$0</td>
-                            </tr>
-                            </tbody>
-                        </table>
+                    <div th:if="${#lists.isEmpty(gastosView)}" class="ga-empty-state">
+                        <span class="ga-empty-state__icono"><i class="bi bi-receipt" aria-hidden="true"></i></span>
+                        <p class="ga-empty-state__titulo">Sin gastos en el rango</p>
+                        <p class="ga-empty-state__detalle">Registra servicios, transporte u otros gastos para medir la utilidad real.</p>
+                    </div>
+                    <div th:unless="${#lists.isEmpty(gastosView)}">
+                        <div class="ga-barra-fila" th:each="g : ${gastosView}">
+                            <span class="ga-barra-fila__nombre" th:text="${g.nombre}">Categoría</span>
+                            <span class="ga-barra-fila__valor" th:text="${fmt.moneda(g.monto)}">$0</span>
+                            <div class="ga-barra">
+                                <div class="ga-barra__relleno ga-barra__relleno--ink"
+                                     th:style="'width:' + ${g.porcentaje} + '%'"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"
-            integrity="sha384-jb8JQMbMoBUzgWatfe6COACi2ljcDdZQ2OxczGA3bGNeWe+6DChMTBJemed7ZnvJ"
-            crossorigin="anonymous"></script>
+    <!-- Chart.js 4.5.1 servido desde el propio servidor (sin CDN). -->
+    <script th:src="@{/vendor/js/chart.umd.min.js?v=5}"></script>
     <script th:inline="javascript">
         const fechas = /*[[${serieFechas}]]*/ [];
         const ingresos = /*[[${serieIngresos}]]*/ [];
@@ -182,21 +197,33 @@
         const colorIngresos = estilos.getPropertyValue('--ga-chart-ingresos').trim();
         const colorGastos = estilos.getPropertyValue('--ga-chart-gastos').trim();
 
-        new Chart(document.getElementById('grafico'), {
-            type: 'bar',
-            data: {
-                labels: fechas,
-                datasets: [
-                    {label: 'Ingresos', data: ingresos, backgroundColor: colorIngresos, borderRadius: 6},
-                    {label: 'Gastos', data: gastos, backgroundColor: colorGastos, borderRadius: 6}
-                ]
-            },
-            options: {
-                responsive: true,
-                plugins: {legend: {position: 'bottom'}},
-                scales: {y: {beginAtZero: true}}
-            }
-        });
+        // Si el grafico no puede dibujarse (por ejemplo en modo offline sin
+        // la libreria en cache), el resto del reporte sigue siendo usable.
+        if (typeof Chart !== 'undefined') {
+            new Chart(document.getElementById('grafico'), {
+                type: 'bar',
+                data: {
+                    labels: fechas,
+                    datasets: [
+                        {label: 'Ingresos', data: ingresos, backgroundColor: colorIngresos, borderRadius: 6, maxBarThickness: 34},
+                        {label: 'Gastos', data: gastos, backgroundColor: colorGastos, borderRadius: 6, maxBarThickness: 34}
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {legend: {position: 'bottom', labels: {usePointStyle: true, pointStyle: 'circle', boxWidth: 8}}},
+                    scales: {
+                        x: {grid: {display: false}, border: {display: false}, ticks: {font: {size: 11}}},
+                        y: {
+                            beginAtZero: true,
+                            grid: {color: 'rgba(42, 15, 10, .07)'},
+                            border: {display: false},
+                            ticks: {font: {size: 11}, callback: v => '$' + Number(v).toLocaleString('es-CO')}
+                        }
+                    }
+                }
+            });
+        }
     </script>
 </div>
 </body>

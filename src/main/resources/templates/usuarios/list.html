@@ -6,7 +6,7 @@
     <a th:href="@{/usuarios/nuevo}" class="btn btn-primary">Crear usuario</a>
 </th:block>
 <div th:fragment="contenido">
-    <th:block th:replace="~{fragments/page-header :: pageHeader('Usuarios', 'Administradores y registradores de ventas. El usuario admin no se puede eliminar.', ~{::acciones})}"></th:block>
+    <th:block th:replace="~{fragments/page-header :: pageHeader('Usuarios', 'Administradores y registradores de ventas. El usuario admin no se puede eliminar.', 'Sistema', ~{::acciones})}"></th:block>
 
     <div class="card shadow-sm">
         <div class="table-responsive">
@@ -23,7 +23,7 @@
                 <tbody>
                 <tr th:if="${#lists.isEmpty(usuarios)}">
                     <td colspan="4">
-                        <div th:replace="~{fragments/empty-state :: empty('No hay usuarios registrados', 'Crea un usuario para que pueda iniciar sesión.')}"></div>
+                        <div th:replace="~{fragments/empty-state :: empty('No hay usuarios registrados', 'Crea un usuario para que pueda iniciar sesión.', 'bi-people')}"></div>
                     </td>
                 </tr>
                 <tr th:each="u : ${usuarios}">

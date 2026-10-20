@@ -2,17 +2,24 @@
  * Service worker de la PWA.
  *
  * Estrategia:
- *  - Navegaciones (HTML): red primero; sin red se responde desde la cache
- *    la ultima pagina vista y, en su defecto, /offline.html.
- *  - Estaticos (css/js/imagenes del dominio): cache primero, rellenando la
- *    cache en cuanto se descargan.
- *  - Recursos de terceros (CDN de Bootstrap/fuentes): cache con revalidacion
- *    en segundo plano para no bloquear la carga.
+ *  - Navegaciones (HTML): red primero. La respuesta NO se cachea: las paginas
+ *    del sistema muestran datos del negocio y de la sesion (nombre de usuario,
+ *    ventas, costos). Cachearlas hacia que, en un dispositivo compartido, la
+ *    persona siguiente vieran el HTML de la anterior. Sin red se responde
+ *    /offline.html.
+ *  - CSS y JS del propio dominio: RED PRIMERO con la cache como respaldo.
+ *    Antes era "cache primero": al publicar un cambio de estilos, el
+ *    navegador seguía sirviendo el CSS viejo desde la cache y la aplicacion
+ *    se veia con el diseno anterior (o sin estilos). Con red primero, un
+ *    despliegue nuevo se ve de inmediato y, sin conexion, se usa la cache.
+ *  - Recursos inmutables (vendor, imagenes, fuentes): cache primero.
+ *  - Recursos de terceros (fuentes web): cache con revalidacion en segundo
+ *    plano para no bloquear la carga.
  *
  * Solo se manejan peticiones GET: los formularios POST nunca se cachean.
  * Cambiar CACHE_VERSION fuerza la limpieza de la cache vieja en el install.
  */
-const CACHE_VERSION = 'v3';
+const CACHE_VERSION = 'v5';
 const CACHE_NAME = `garepas-${CACHE_VERSION}`;
 
 const OFFLINE_URL = '/offline.html';
@@ -23,13 +30,25 @@ const PRECACHE = [
     '/css/components.css',
     '/css/layout.css',
     '/js/ui-feedback.js',
+    '/js/tablas-moviles.js',
+    '/js/filas.js',
+    '/js/pos-cart.js',
+    '/vendor/css/bootstrap.min.css',
+    '/vendor/css/bootstrap-icons.css',
+    '/vendor/js/bootstrap.bundle.min.js',
+    '/vendor/js/chart.umd.min.js',
     '/images/icon-192.png',
     '/images/gordo_arepas_logo.png'
 ];
 
+/* Recursos que no cambian entre despliegues: se sirven desde la cache. */
+const INMUTABLES = ['/vendor/', '/images/', '/fonts/'];
+
 self.addEventListener('install', (evento) => {
     evento.waitUntil(
         caches.open(CACHE_NAME)
+            // addAll es atomico: si un recurso falla, no se instala el worker
+            // y se evita dejar la app a medias.
             .then((cache) => cache.addAll(PRECACHE))
             .then(() => self.skipWaiting())
     );
@@ -55,38 +74,61 @@ self.addEventListener('fetch', (evento) => {
         return;
     }
 
+    const url = new URL(request.url);
+    const esPropio = url.origin === self.location.origin;
+
     if (request.mode === 'navigate') {
         evento.respondWith(navegarConRedPrimero(request));
         return;
     }
 
-    if (new URL(request.url).origin === self.location.origin) {
-        evento.respondWith(cachePrimero(request));
+    if (esPropio) {
+        if (INMUTABLES.some((prefijo) => url.pathname.startsWith(prefijo))) {
+            evento.respondWith(cachePrimero(request));
+            return;
+        }
+        // CSS y JS: red primero para que un despliegue nuevo se vea ya.
+        evento.respondWith(redPrimeroConRespaldo(request));
         return;
     }
 
     evento.respondWith(cacheConRevalidacion(request));
 });
 
-/** Red primero para paginas; sin red, cache de la pagina y por ultimo offline. */
+/**
+ * Red primero para paginas. Sin red se responde /offline.html: la pagina
+ * visitada NO se cachea porque contiene datos de la sesion.
+ */
 async function navegarConRedPrimero(request) {
     try {
-        const respuesta = await fetch(request);
-        if (respuesta && respuesta.ok) {
-            const cache = await caches.open(CACHE_NAME);
-            cache.put(request, respuesta.clone());
-        }
-        return respuesta;
+        return await fetch(request);
     } catch (error) {
-        const cacheada = await caches.match(request);
-        if (cacheada) {
-            return cacheada;
-        }
         return (await caches.match(OFFLINE_URL)) || Response.error();
     }
 }
 
-/** Cache primero para estaticos del propio dominio. */
+/**
+ * Red primero con la cache como respaldo: si hay red, se usa la version
+ * del servidor (y se actualiza la cache); si no, la ultima guardada.
+ */
+async function redPrimeroConRespaldo(request) {
+    const cache = await caches.open(CACHE_NAME);
+    try {
+        const respuesta = await fetch(request);
+        if (respuesta && respuesta.ok) {
+            cache.put(request, respuesta.clone());
+        }
+        return respuesta;
+    } catch (error) {
+        const cacheada = await cache.match(request);
+        if (cacheada) {
+            return cacheada;
+        }
+        return Response.error();
+    }
+}
+
+/** Cache primero para recursos inmutables del propio dominio. */
 async function cachePrimero(request) {
     const cacheada = await caches.match(request);
     if (cacheada) {

@@ -1,6 +1,6 @@
 package com.garepas.garepasapp.security;
 
-import com.garepas.garepasapp.repository.UsuarioRepository;
+import com.garepas.garepasapp.domain.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;

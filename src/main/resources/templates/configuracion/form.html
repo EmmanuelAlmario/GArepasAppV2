@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Mi negocio', 'configuracion', ~{::contenido})}">
+<body>
+<th:block th:fragment="acciones">
+    <a th:href="@{/ventas}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left" aria-hidden="true"></i>Ir al punto de venta
+    </a>
+</th:block>
+<div th:fragment="contenido">
+    <th:block th:replace="~{fragments/page-header :: pageHeader('Mi negocio', 'Estos datos aparecen en el punto de venta y en el recibo.', 'Sistema', ~{::acciones})}"></th:block>
+
+    <div class="card shadow-sm form-card">
+        <div class="card-body">
+            <th:block th:replace="~{fragments/form-alerts :: formAlerts}"></th:block>
+
+            <form method="post" th:object="${form}" th:action="@{/configuracion}">
+                <p class="form-text">Los campos marcados con <span class="text-danger">*</span> son obligatorios.</p>
+
+                <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('*')}">
+                    <p class="fw-semibold mb-1">Revisa los campos marcados:</p>
+                    <ul class="mb-0">
+                        <li th:each="e : ${#fields.errors('*')}" th:text="${e}">Error</li>
+                    </ul>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="nombreComercial">Nombre comercial <span class="text-danger">*</span></label>
+                        <input type="text" id="nombreComercial" th:field="*{nombreComercial}" class="form-control" required
+                               th:classappend="${#fields.hasErrors('nombreComercial')} ? 'is-invalid'"
+                               th:attr="aria-describedby=${#fields.hasErrors('nombreComercial')} ? 'nombreComercial-error' : null">
+                        <div class="invalid-feedback" id="nombreComercial-error" th:errors="*{nombreComercial}">Error</div>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="identificacionFiscal">Identificación fiscal</label>
+                        <input type="text" id="identificacionFiscal" th:field="*{identificacionFiscal}"
+                               class="form-control" placeholder="Ej. NIT 900123456-7"
+                               th:classappend="${#fields.hasErrors('identificacionFiscal')} ? 'is-invalid'">
+                        <div class="form-text">Se imprime en el recibo.</div>
+                        <div class="invalid-feedback" th:errors="*{identificacionFiscal}">Error</div>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="telefono">Teléfono</label>
+                        <input type="tel" id="telefono" th:field="*{telefono}" class="form-control"
+                               placeholder="Opcional"
+                               th:classappend="${#fields.hasErrors('telefono')} ? 'is-invalid'">
+                        <div class="invalid-feedback" th:errors="*{telefono}">Error</div>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="direccion">Dirección</label>
+                        <input type="text" id="direccion" th:field="*{direccion}" class="form-control"
+                               placeholder="Opcional"
+                               th:classappend="${#fields.hasErrors('direccion')} ? 'is-invalid'">
+                        <div class="invalid-feedback" th:errors="*{direccion}">Error</div>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="impuestoPorcentaje">Impuesto (%) <span class="text-danger">*</span></label>
+                        <input type="number" step="0.01" min="0" id="impuestoPorcentaje"
+                               th:field="*{impuestoPorcentaje}" class="form-control" required
+                               th:classappend="${#fields.hasErrors('impuestoPorcentaje')} ? 'is-invalid'">
+                        <div class="form-text">Se aplica a cada venta registrada.</div>
+                        <div class="invalid-feedback" th:errors="*{impuestoPorcentaje}">Error</div>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="logoUrl">Ruta del logo</label>
+                        <input type="text" id="logoUrl" th:field="*{logoUrl}" class="form-control"
+                               placeholder="Opcional"
+                               th:classappend="${#fields.hasErrors('logoUrl')} ? 'is-invalid'">
+                        <div class="form-text">Ruta dentro de /images o URL externa</div>
+                        <div class="invalid-feedback" th:errors="*{logoUrl}">Error</div>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label" for="mensajeRecibo">Mensaje del recibo</label>
+                        <textarea id="mensajeRecibo" th:field="*{mensajeRecibo}" class="form-control" rows="2"
+                                  placeholder="Opcional"
+                                  th:classappend="${#fields.hasErrors('mensajeRecibo')} ? 'is-invalid'"></textarea>
+                        <div class="form-text">Texto que aparece al pie de cada recibo.</div>
+                        <div class="invalid-feedback" th:errors="*{mensajeRecibo}">Error</div>
+                    </div>
+
+                    <div class="col-12 d-flex flex-wrap gap-2 pt-2">
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                        <a th:href="@{/ventas}" class="btn btn-outline-secondary">Cancelar</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

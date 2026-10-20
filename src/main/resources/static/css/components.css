@@ -1,167 +1,320 @@
 /* =============================================================
-   GArepasAppV2 — components.css
-   Ajustes de marca sobre componentes de Bootstrap: superficies,
-   tablas, botones, formularios, alertas y dialogos.
-   Todos consumen los tokens de tokens.css.
+   Componentes — Bootstrap reestilizado + piezas propias
+   Se conservan las clases de Bootstrap (btn, card, table, badge,
+   form-control...) para no romper las plantillas, pero su aspecto
+   es nuevo.
    ============================================================= */
 
-/* ---------- Superficies ---------- */
-.card {
-    --bs-card-border-radius: var(--ga-radius-lg);
-    border: 1px solid var(--ga-border);
-    border-radius: var(--ga-radius-lg);
-    background-color: var(--ga-surface);
+/* =============================================================
+   1. Botones
+   ============================================================= */
+
+.btn {
+    --ga-btn-bg: transparent;
+    --ga-btn-fg: var(--ga-text);
+    --ga-btn-bd: transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .45rem;
+    min-height: 2.625rem;
+    padding: .5rem 1.05rem;
+    font-size: .875rem;
+    font-weight: 600;
+    letter-spacing: .005em;
+    line-height: 1.2;
+    color: var(--ga-btn-fg);
+    /* `background` (y no `background-color`) porque el valor puede ser un
+       degradado: con background-color la declaración se descarta y el boton
+       se queda sin fondo. */
+    background: var(--ga-btn-bg);
+    border: 1.5px solid var(--ga-btn-bd);
+    border-radius: var(--ga-radius-md);
+    box-shadow: none;
+    transition: transform var(--ga-fast) var(--ga-ease),
+                box-shadow var(--ga-base) var(--ga-ease),
+                background-color var(--ga-fast) var(--ga-ease),
+                border-color var(--ga-fast) var(--ga-ease),
+                color var(--ga-fast) var(--ga-ease);
 }
 
-.card.shadow-sm {
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+.btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 .25rem var(--ga-focus-ring);
+}
+
+.btn i { font-size: 1.05em; line-height: 1; }
+
+/* Primario: ladrillo con degradado a naranja, como la arepa al fuego. */
+.btn-primary {
+    --ga-btn-bg: linear-gradient(135deg, var(--ga-brick) 0%, var(--ga-orange) 135%);
+    --ga-btn-fg: #FFF8F0;
+    border-color: transparent;
+    box-shadow: var(--ga-shadow-brand);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    --ga-btn-bg: linear-gradient(135deg, var(--ga-brick-oscuro) 0%, var(--ga-brick) 135%);
+    color: #FFF8F0;
+    box-shadow: 0 14px 26px -12px rgba(var(--ga-brick-rgb), .95);
+}
+
+/* Secundario: contorno sobrio. */
+.btn-outline-secondary {
+    --ga-btn-bg: var(--ga-surface);
+    --ga-btn-fg: var(--ga-ink);
+    --ga-btn-bd: var(--ga-border-strong);
+}
+
+.btn-outline-secondary:hover {
+    --ga-btn-bg: var(--ga-surface);
+    --ga-btn-fg: var(--ga-brick);
+    --ga-btn-bd: var(--ga-brick);
+    box-shadow: var(--ga-shadow-xs);
+}
+
+/* Contorno claro (sobre fondo oscuro). */
+.btn-outline-light {
+    --ga-btn-bg: rgba(255, 253, 249, .06);
+    --ga-btn-fg: var(--ga-on-ink);
+    --ga-btn-bd: rgba(253, 244, 227, .32);
+}
+
+.btn-outline-light:hover {
+    --ga-btn-bg: rgba(253, 244, 227, .14);
+    --ga-btn-fg: #FFF8EC;
+    --ga-btn-bd: rgba(253, 244, 227, .6);
+}
+
+/* Contorno de marca (Brick): el borde se ve, el relleno solo al pasar el raton. */
+.btn-outline-primary {
+    --ga-btn-bg: var(--ga-surface);
+    --ga-btn-fg: var(--ga-brick);
+    --ga-btn-bd: rgba(var(--ga-brick-rgb), .42);
+}
+
+.btn-outline-primary:hover {
+    --ga-btn-bg: rgba(var(--ga-brick-rgb), .07);
+    --ga-btn-fg: var(--ga-brick-oscuro);
+    --ga-btn-bd: var(--ga-brick);
+}
+
+.btn-outline-success {
+    --ga-btn-bg: var(--ga-success-soft);
+    --ga-btn-fg: #0F5132;
+    --ga-btn-bd: rgba(25, 135, 84, .38);
+}
+
+.btn-outline-success:hover {
+    --ga-btn-bg: rgba(25, 135, 84, .18);
+    --ga-btn-fg: #0B3D24;
+    --ga-btn-bd: var(--ga-success);
+}
+
+/* Fantasma: sin borde, se apoya en el fondo. */
+.btn-ghost {
+    --ga-btn-bg: transparent;
+    --ga-btn-fg: var(--ga-text-muted);
+    --ga-btn-bd: transparent;
+}
+
+.btn-ghost:hover {
+    --ga-btn-bg: var(--ga-surface-muted);
+    --ga-btn-fg: var(--ga-ink);
+}
+
+/* Peligro: tinta roja suave (no un bloque rojo chillón). */
+.btn-outline-danger {
+    --ga-btn-bg: var(--ga-danger-soft);
+    --ga-btn-fg: var(--ga-danger-text);
+    --ga-btn-bd: rgba(220, 53, 69, .32);
+}
+
+.btn-outline-danger:hover {
+    --ga-btn-bg: rgba(220, 53, 69, .16);
+    --ga-btn-fg: #8C1622;
+    --ga-btn-bd: rgba(220, 53, 69, .5);
+}
+
+.btn-danger {
+    --ga-btn-bg: var(--ga-danger);
+    --ga-btn-fg: #FFF;
+    border-color: transparent;
+}
+
+.btn-link {
+    --ga-btn-fg: var(--ga-link);
+    text-decoration: none;
+    padding-inline: .25rem;
+}
+
+.btn-sm {
+    min-height: 2.125rem;
+    padding: .3rem .7rem;
+    font-size: .8125rem;
+    border-radius: var(--ga-radius-sm);
+}
+
+.btn-lg {
+    min-height: 3rem;
+    padding: .7rem 1.4rem;
+    font-size: .9375rem;
+}
+
+.btn-icon {
+    min-height: 2.25rem;
+    width: 2.25rem;
+    padding: 0;
+    border-radius: var(--ga-radius-sm);
+}
+
+/* =============================================================
+   2. Tarjetas
+   ============================================================= */
+
+.card {
+    border: 1px solid var(--ga-border);
+    border-radius: var(--ga-radius-lg);
+    background: var(--ga-surface);
     box-shadow: var(--ga-shadow-sm);
 }
 
 .card-header {
-    background-color: var(--ga-surface-muted);
-    border-color: var(--ga-border);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem;
+    padding: 1.05rem 1.35rem;
+    background: transparent;
+    border-bottom: 1px solid var(--ga-border);
+    border-radius: var(--ga-radius-lg) var(--ga-radius-lg) 0 0;
 }
 
-/* ---------- Tablas ---------- */
+.card-header h2,
+.card-header h3,
+.card-header h5 {
+    margin: 0;
+    font-size: 1.0625rem;
+}
+
+.card-body {
+    padding: 1.35rem;
+}
+
+.card-footer {
+    padding: .9rem 1.35rem;
+    background: transparent;
+    border-top: 1px solid var(--ga-border);
+    border-radius: 0 0 var(--ga-radius-lg) var(--ga-radius-lg);
+}
+
+/* =============================================================
+   3. Tablas
+   ============================================================= */
+
 .table {
-    --bs-table-color: var(--ga-text);
-    --bs-table-cell-padding-y: .8rem;
-    --bs-table-cell-padding-x: 1rem;
-    --bs-table-hover-bg: rgba(var(--ga-brick-rgb), .05);
-    --bs-table-hover-color: var(--ga-text);
+    --bs-table-bg: transparent;
+    margin-bottom: 0;
+    color: var(--ga-text);
+    font-size: .875rem;
 }
 
-.table td,
-.table th {
-    vertical-align: middle;
-}
-
-.table > :not(caption) > * > * {
-    border-color: var(--ga-border);
-}
-
-/* Encabezados como etiquetas pequenas: la lectura va a los datos. */
-.table thead th {
-    color: var(--ga-text-muted);
-    font-size: .72rem;
+.table > thead th {
+    padding: .7rem 1rem;
+    font-size: .6875rem;
     font-weight: 700;
-    letter-spacing: .08em;
+    letter-spacing: .12em;
     text-transform: uppercase;
+    color: var(--ga-text-soft);
+    background: transparent;
+    border-bottom: 1.5px solid var(--ga-border-strong);
+    border-top: none;
     white-space: nowrap;
 }
 
-.table-light {
-    --bs-table-bg: var(--ga-surface-muted);
-    --bs-table-color: var(--ga-text-muted);
-    --bs-table-border-color: var(--ga-border);
+.table > tbody > tr {
+    transition: background-color var(--ga-fast) var(--ga-ease);
 }
 
-/* ---------- Botones ---------- */
-.btn {
-    font-weight: 600;
-    letter-spacing: -0.005em;
+.table > tbody > tr > td {
+    padding: .85rem 1rem;
+    border-bottom: 1px solid var(--ga-border);
+    vertical-align: middle;
 }
 
-.btn-lg {
-    --bs-btn-padding-y: .8rem;
-    --bs-btn-padding-x: 1.5rem;
-    --bs-btn-font-size: 1.05rem;
+.table > tbody > tr:last-child > td { border-bottom: none; }
+
+.table > tbody > tr:hover > td {
+    background: rgba(254, 246, 170, .28);
 }
 
-.btn-sm {
-    --bs-btn-padding-y: .35rem;
-    --bs-btn-padding-x: .8rem;
-    --bs-btn-font-size: .85rem;
+.table > tbody > tr.ga-fila-vacia > td {
+    background: transparent;
 }
 
-.btn-primary {
-    --bs-btn-bg: var(--ga-brick);
-    --bs-btn-border-color: var(--ga-brick);
-    --bs-btn-hover-bg: var(--ga-brick-oscuro);
-    --bs-btn-hover-border-color: var(--ga-brick-oscuro);
-    --bs-btn-active-bg: var(--ga-brick-activo);
-    --bs-btn-active-border-color: var(--ga-brick-activo);
-    --bs-btn-disabled-bg: var(--ga-brick);
-    --bs-btn-disabled-border-color: var(--ga-brick);
-    --bs-btn-focus-shadow-rgb: var(--ga-brick-rgb);
-    box-shadow: 0 8px 18px -10px rgba(var(--ga-brick-rgb), .9);
+.table td.text-end, .table th.text-end { white-space: nowrap; }
+
+.table-responsive {
+    border-radius: 0 0 var(--ga-radius-lg) var(--ga-radius-lg);
 }
 
-.btn-primary:disabled {
-    box-shadow: none;
-}
-
-.btn-outline-primary {
-    --bs-btn-color: var(--ga-link);
-    --bs-btn-border-color: var(--ga-link);
-    --bs-btn-hover-bg: var(--ga-brick);
-    --bs-btn-hover-border-color: var(--ga-brick);
-    --bs-btn-active-bg: var(--ga-brick-oscuro);
-    --bs-btn-active-border-color: var(--ga-brick-oscuro);
-    --bs-btn-focus-shadow-rgb: var(--ga-brick-rgb);
-}
-
-/* Secundario en tono marron, no gris: la app conserva su calidez. */
-.btn-outline-secondary {
-    --bs-btn-color: var(--ga-burdeos);
-    --bs-btn-border-color: var(--ga-border-strong);
-    --bs-btn-hover-color: var(--ga-burdeos);
-    --bs-btn-hover-bg: var(--ga-surface-muted);
-    --bs-btn-hover-border-color: var(--ga-border-strong);
-    --bs-btn-active-color: var(--ga-burdeos);
-    --bs-btn-active-bg: var(--ga-border);
-    --bs-btn-active-border-color: var(--ga-border-strong);
-    --bs-btn-focus-shadow-rgb: var(--ga-brick-rgb);
-}
-
-/* ---------- Formularios ---------- */
-.form-control,
-.form-select {
-    background-color: var(--ga-input-bg);
-    border-color: var(--ga-input-border);
-}
-
-.form-control:not(.form-control-sm),
-.form-select:not(.form-select-sm) {
-    min-height: var(--ga-touch);
-}
+/* =============================================================
+   4. Formularios
+   ============================================================= */
 
 .form-label {
+    margin-bottom: .35rem;
+    font-size: .8125rem;
     font-weight: 600;
-    color: var(--ga-text);
+    color: #4A3A34;
 }
 
-.form-text {
-    color: var(--ga-text-muted);
-    line-height: 1.45;
+.form-control,
+.form-select {
+    min-height: 2.625rem;
+    padding: .5rem .8rem;
+    font-size: .875rem;
+    color: var(--ga-text);
+    background-color: var(--ga-input-bg);
+    border: 1.5px solid var(--ga-input-border);
+    border-radius: var(--ga-radius-md);
+    box-shadow: none;
+    transition: border-color var(--ga-fast) var(--ga-ease),
+                box-shadow var(--ga-fast) var(--ga-ease),
+                background-color var(--ga-fast) var(--ga-ease);
 }
+
+.form-control::placeholder { color: var(--ga-text-soft); }
 
 .form-control:focus,
 .form-select:focus {
+    background-color: var(--ga-input-bg);
     border-color: var(--ga-brick);
     box-shadow: 0 0 0 .25rem var(--ga-focus-ring);
 }
 
-/* Los estados de validacion conservan su color semantico. */
-.form-control.is-invalid:focus,
-.form-select.is-invalid:focus {
-    border-color: var(--bs-form-invalid-border-color);
-    box-shadow: 0 0 0 .25rem rgba(var(--bs-danger-rgb), .25);
+.form-control:disabled,
+.form-select:disabled {
+    background-color: var(--ga-surface-muted);
+    color: var(--ga-text-muted);
 }
 
-.form-control.is-valid:focus,
-.form-select.is-valid:focus {
-    border-color: var(--bs-form-valid-border-color);
-    box-shadow: 0 0 0 .25rem rgba(var(--bs-success-rgb), .25);
-}
-
-.form-control:hover:not(:focus):not(.is-invalid):not(.is-valid),
-.form-select:hover:not(:focus):not(.is-invalid):not(.is-valid) {
-    border-color: var(--ga-text-muted);
+.form-control.is-invalid,
+.form-select.is-invalid {
+    border-color: var(--ga-danger);
+    background-image: none;
+    box-shadow: 0 0 0 .2rem var(--ga-danger-soft);
 }
 
 .form-check-input {
-    border-color: var(--ga-input-border);
+    width: 1.15rem;
+    height: 1.15rem;
+    border: 1.5px solid var(--ga-input-border);
+    border-radius: .35rem;
 }
 
 .form-check-input:checked {
@@ -170,42 +323,434 @@
 }
 
 .form-check-input:focus {
-    border-color: var(--ga-brick);
     box-shadow: 0 0 0 .25rem var(--ga-focus-ring);
+    border-color: var(--ga-brick);
 }
 
-/* ---------- Insignias ---------- */
-.badge {
-    padding: .4em .7em;
-    border-radius: var(--ga-radius-pill);
-    font-weight: 600;
+.form-check-label { font-size: .875rem; }
+
+.form-text {
+    margin-top: .3rem;
+    font-size: .75rem;
+    color: var(--ga-text-muted);
 }
 
-/* ---------- Alertas ---------- */
-.alert {
+.invalid-feedback {
+    font-size: .75rem;
+    font-weight: 500;
+}
+
+.input-group > .form-control,
+.input-group > .form-select {
+    border-radius: 0;
+}
+
+.input-group > :first-child { border-radius: var(--ga-radius-md) 0 0 var(--ga-radius-md); }
+.input-group > :last-child { border-radius: 0 var(--ga-radius-md) var(--ga-radius-md) 0; }
+
+/* Selector de rango (segmentado) */
+.ga-segmentos {
+    display: inline-flex;
+    gap: .25rem;
+    padding: .25rem;
+    background: var(--ga-surface-muted);
+    border: 1px solid var(--ga-border);
     border-radius: var(--ga-radius-md);
 }
 
+.ga-segmentos a,
+.ga-segmentos button {
+    padding: .3rem .7rem;
+    font-size: .8125rem;
+    font-weight: 600;
+    color: var(--ga-text-muted);
+    text-decoration: none;
+    background: transparent;
+    border: 0;
+    border-radius: var(--ga-radius-sm);
+    transition: all var(--ga-fast) var(--ga-ease);
+}
+
+.ga-segmentos a:hover,
+.ga-segmentos button:hover {
+    color: var(--ga-ink);
+    background: rgba(255, 253, 249, .8);
+}
+
+.ga-segmentos .is-active {
+    color: #FFF8F0;
+    background: linear-gradient(135deg, var(--ga-brick) 0%, var(--ga-orange) 135%);
+    box-shadow: var(--ga-shadow-xs);
+}
+
+/* =============================================================
+   5. Insignias (badges y chips)
+   ============================================================= */
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    padding: .28rem .6rem;
+    font-size: .6875rem;
+    font-weight: 700;
+    letter-spacing: .04em;
+    line-height: 1.3;
+    border-radius: var(--ga-radius-pill);
+    vertical-align: middle;
+}
+
+.text-bg-secondary {
+    color: var(--ga-text-muted) !important;
+    background: var(--ga-surface-muted) !important;
+}
+
+.text-bg-success {
+    color: #0F5132 !important;
+    background: var(--ga-success-soft) !important;
+}
+
+.text-bg-danger {
+    color: var(--ga-danger-text) !important;
+    background: var(--ga-danger-soft) !important;
+}
+
+.text-bg-warning {
+    color: var(--ga-warning-text) !important;
+    background: var(--ga-warning-soft) !important;
+}
+
+.text-bg-info {
+    color: var(--ga-info-text) !important;
+    background: var(--ga-info-bg) !important;
+}
+
+/* Chip de marca (arena con texto burdeos) */
+.ga-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .22rem .55rem;
+    font-size: .6875rem;
+    font-weight: 700;
+    letter-spacing: .03em;
+    color: var(--ga-burdeos);
+    background: var(--ga-arena);
+    border-radius: var(--ga-radius-pill);
+}
+
+.ga-chip--oro { background: var(--ga-gold); }
+.ga-chip--suave { background: var(--ga-surface-muted); color: var(--ga-text-muted); }
+.ga-chip--punto::before {
+    content: "";
+    width: .4rem;
+    height: .4rem;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+/* =============================================================
+   6. Alertas
+   ============================================================= */
+
+.alert {
+    display: flex;
+    align-items: flex-start;
+    gap: .65rem;
+    padding: .85rem 1.1rem;
+    font-size: .875rem;
+    border: 1px solid var(--ga-border);
+    border-left-width: 4px;
+    border-radius: var(--ga-radius-md);
+    box-shadow: var(--ga-shadow-xs);
+}
+
+.alert-success {
+    color: #14532D;
+    background: var(--ga-success-soft);
+    border-color: rgba(25, 135, 84, .28);
+    border-left-color: var(--ga-success);
+}
+
+.alert-danger {
+    color: #7A1620;
+    background: var(--ga-danger-soft);
+    border-color: rgba(220, 53, 69, .28);
+    border-left-color: var(--ga-danger);
+}
+
 .alert-warning {
-    --bs-alert-color: var(--ga-warning-text);
-    --bs-alert-bg: var(--ga-arena);
-    --bs-alert-border-color: var(--ga-gold);
+    color: var(--ga-warning-text);
+    background: var(--ga-warning-soft);
+    border-color: rgba(246, 125, 20, .3);
+    border-left-color: var(--ga-orange);
 }
 
 .alert-info {
-    --bs-alert-color: var(--ga-info-text);
-    --bs-alert-bg: var(--ga-info-bg);
-    --bs-alert-border-color: var(--ga-terracota);
+    color: var(--ga-info-text);
+    background: var(--ga-info-bg);
+    border-color: rgba(192, 67, 11, .22);
+    border-left-color: var(--ga-brick);
 }
 
-/* ---------- Dialogos ---------- */
+.alert .btn-close { margin-left: auto; opacity: .55; }
+
+/* =============================================================
+   7. Indicadores (KPIs)
+   ============================================================= */
+
+.ga-kpi {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: .45rem;
+    height: 100%;
+    padding: 1.15rem 1.25rem 1.25rem;
+    background: var(--ga-surface);
+    border: 1px solid var(--ga-border);
+    border-radius: var(--ga-radius-lg);
+    box-shadow: var(--ga-shadow-sm);
+    overflow: hidden;
+}
+
+.ga-kpi::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 3px;
+    background: var(--ga-kpi-color, var(--ga-brick));
+}
+
+.ga-kpi__cabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem;
+}
+
+.ga-kpi__etiqueta {
+    font-size: .6875rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ga-text-soft);
+}
+
+.ga-kpi__icono {
+    display: grid;
+    place-items: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    font-size: 1rem;
+    color: var(--ga-kpi-color, var(--ga-brick));
+    background: var(--ga-kpi-soft, var(--ga-warning-soft));
+    border-radius: var(--ga-radius-sm);
+}
+
+.ga-kpi__valor {
+    font-family: var(--ga-font-ui);
+    font-size: 1.875rem;
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -.02em;
+    color: var(--ga-ink);
+}
+
+.ga-kpi__nota {
+    font-size: .75rem;
+    color: var(--ga-text-muted);
+}
+
+.ga-kpi--brick { --ga-kpi-color: var(--ga-brick); --ga-kpi-soft: rgba(192, 67, 11, .12); }
+.ga-kpi--ink { --ga-kpi-color: var(--ga-sidebar); --ga-kpi-soft: rgba(58, 22, 16, .1); }
+.ga-kpi--gold { --ga-kpi-color: #B07A00; --ga-kpi-soft: rgba(254, 208, 95, .45); }
+.ga-kpi--verde { --ga-kpi-color: var(--ga-success); --ga-kpi-soft: var(--ga-success-soft); }
+.ga-kpi--neutro { --ga-kpi-color: var(--ga-text-soft); --ga-kpi-soft: var(--ga-surface-muted); }
+
+.ga-kpi--neutro.is-negativa .ga-kpi__valor { color: var(--ga-danger-text); }
+
+/* =============================================================
+   8. Barras de datos (top de productos, gastos por categoria)
+   ============================================================= */
+
+.ga-barra-fila {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: .25rem .75rem;
+    padding: .55rem 0;
+    border-bottom: 1px solid var(--ga-border);
+}
+
+.ga-barra-fila:last-child { border-bottom: none; }
+
+.ga-barra-fila__nombre {
+    font-size: .875rem;
+    font-weight: 550;
+    color: var(--ga-text);
+}
+
+.ga-barra-fila__valor {
+    font-size: .875rem;
+    font-weight: 650;
+    font-variant-numeric: tabular-nums;
+    color: var(--ga-ink);
+}
+
+.ga-barra {
+    grid-column: 1 / -1;
+    height: .375rem;
+    background: var(--ga-surface-sunken);
+    border-radius: var(--ga-radius-pill);
+    overflow: hidden;
+}
+
+.ga-barra__relleno {
+    height: 100%;
+    border-radius: var(--ga-radius-pill);
+    background: linear-gradient(90deg, var(--ga-brick), var(--ga-orange));
+    transition: width var(--ga-slow) var(--ga-ease);
+}
+
+.ga-barra__relleno--ink { background: linear-gradient(90deg, var(--ga-sidebar), var(--ga-burdeos)); }
+
+/* =============================================================
+   9. Estado vacio
+   ============================================================= */
+
+.ga-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .3rem;
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+}
+
+.ga-empty-state__icono {
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    margin-bottom: .5rem;
+    font-size: 1.35rem;
+    color: var(--ga-brick);
+    background: rgba(254, 246, 170, .5);
+    border-radius: 50%;
+}
+
+.ga-empty-state__titulo {
+    margin: 0;
+    font-family: var(--ga-font-display);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: var(--ga-ink);
+}
+
+.ga-empty-state__detalle {
+    max-width: 26rem;
+    margin: 0;
+    font-size: .8125rem;
+    color: var(--ga-text-muted);
+}
+
+/* =============================================================
+   10. Modal de confirmacion
+   ============================================================= */
+
 .modal-content {
-    border: 0;
-    border-radius: var(--ga-radius-xl);
-    box-shadow: var(--ga-shadow-md);
+    border: 1px solid var(--ga-border);
+    border-radius: var(--ga-radius-lg);
+    background: var(--ga-surface);
+    box-shadow: var(--ga-shadow-lg);
 }
 
 .modal-header,
 .modal-footer {
     border-color: var(--ga-border);
+    padding: 1.1rem 1.35rem;
+}
+
+.modal-body { padding: 1.35rem; }
+
+.modal-title {
+    font-family: var(--ga-font-display);
+    font-size: 1.1875rem;
+}
+
+/* =============================================================
+   11. Paginacion
+   ============================================================= */
+
+.pagination {
+    gap: .25rem;
+}
+
+.page-link {
+    min-width: 2.25rem;
+    padding: .4rem .7rem;
+    font-size: .8125rem;
+    font-weight: 600;
+    color: var(--ga-text-muted);
+    text-align: center;
+    background: var(--ga-surface);
+    border: 1px solid var(--ga-border);
+    border-radius: var(--ga-radius-sm) !important;
+    transition: all var(--ga-fast) var(--ga-ease);
+}
+
+.page-link:hover {
+    color: var(--ga-brick);
+    background: var(--ga-surface-muted);
+    border-color: var(--ga-border-strong);
+}
+
+.page-item.active .page-link {
+    color: #FFF8F0;
+    background: var(--ga-brick);
+    border-color: var(--ga-brick);
+}
+
+.page-item.disabled .page-link {
+    color: var(--ga-text-soft);
+    background: var(--ga-surface-muted);
+}
+
+/* =============================================================
+   12. Offcanvas (menu movil)
+   ============================================================= */
+
+.offcanvas {
+    background: var(--ga-sidebar);
+    color: var(--ga-on-ink);
+    border-right: none;
+}
+
+.offcanvas .offcanvas-header {
+    border-bottom: 1px solid rgba(253, 244, 227, .14);
+}
+
+.offcanvas .offcanvas-title {
+    font-family: var(--ga-font-display);
+    color: var(--ga-on-ink);
+}
+
+/* =============================================================
+   13. Spinner y estados de carga
+   ============================================================= */
+
+.spinner-border {
+    border-width: .14em;
+}
+
+.skeleton {
+    background: linear-gradient(90deg, var(--ga-surface-muted) 25%, var(--ga-surface-sunken) 37%, var(--ga-surface-muted) 63%);
+    background-size: 400% 100%;
+    border-radius: var(--ga-radius-sm);
+    animation: ga-skeleton 1.4s ease infinite;
+}
+
+@keyframes ga-skeleton {
+    0% { background-position: 100% 50%; }
+    100% { background-position: 0 50%; }
 }

@@ -6,6 +6,10 @@
 <div th:fragment="alert">
     <div th:if="${mensaje}" class="alert alert-dismissible fade show"
          th:classappend="'alert-' + (${tipo} != null ? ${tipo} : 'success')" role="alert">
+        <i class="bi" aria-hidden="true"
+           th:classappend="${tipo} == 'danger' ? 'bi-exclamation-triangle'
+                     : (${tipo} == 'warning' ? 'bi-exclamation-circle'
+                     : (${tipo} == 'info' ? 'bi-info-circle' : 'bi-check-circle'))"></i>
         <span th:text="${mensaje}">Mensaje</span>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
     </div>

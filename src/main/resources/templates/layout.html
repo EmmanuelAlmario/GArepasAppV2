@@ -26,11 +26,11 @@
             aria-label="Ocultar aviso"></button>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-        crossorigin="anonymous"></script>
-<script th:src="@{/js/ui-feedback.js}"></script>
-<script th:src="@{/js/tablas-moviles.js}"></script>
+<!-- Bootstrap servido desde el propio servidor: sin CDN la app no depende
+         de internet y el modal de confirmacion siempre funciona. -->
+    <script th:src="@{/vendor/js/bootstrap.bundle.min.js?v=5}"></script>
+<script th:src="@{/js/ui-feedback.js?v=5}"></script>
+<script th:src="@{/js/tablas-moviles.js?v=5}"></script>
 <script>
     // Muestra la guía solo en Safari del iPhone/iPad y aún no instalada.
     (function () {

@@ -1,8 +1,51 @@
 # Auditoría básica
 
-Fecha: 2026-10-03
+Fecha: 2026-10-03 (revisada el 2026-10-19 tras el rediseño)
 Alcance: **GArepasAppV2** (backend Spring Boot/Thymeleaf) + **GArepasMenu** (cliente React)
-Método: revisión estática de código y configuración, `./mvnw test` (3/3 ✔), `npm audit --omit=dev` (0 vulnerabilidades ✔), inspección de endpoints y política de acceso. **No es un pentest** ni incluye análisis dinámico ni infraestructura.
+Método: revisión estática de código y configuración, `./mvnw test` (83/83 ✔), inspección de endpoints y política de acceso. **No es un pentest** ni incluye análisis dinámico ni infraestructura.
+
+> **Rediseño del 2026-10-19 (ver [`ARQUITECTURA.md`](./ARQUITECTURA.md)):** se reescribieron las capas de dominio, web e infraestructura. Estado actual de los hallazgos:
+>
+> | ID | Hallazgo | Estado tras el rediseño |
+> |---|---|---|
+> | A-01 | Credenciales por defecto | ✅ Sin defaults en la config base; dev las aporta |
+> | A-02 | Siembra de datos demo | ✅ `DataSeeder` solo con perfil `dev` |
+> | A-03 | Base no productiva | 🟡 Configurado (falta provisionar PostgreSQL) |
+> | A-04 | Credenciales demo en logs | ✅ Resuelto |
+> | A-05 | Usuario `cajero1` automático | ✅ Solo en dev |
+> | A-06 | HTTPS / cookies seguras | 🟡 Pendiente de TLS en el proxy |
+> | A-07 | `UsuarioSeeder` reescribe la clave del admin | ✅ **Resuelto**: el seeder solo crea el usuario si no existe; la clave cambiada desde la app se conserva |
+> | A-08 | CDN sin SRI | ✅ **Resuelto de otra forma**: Bootstrap, Iconos y Chart.js se sirven desde `static/vendor` (sin CDN ni dependencia de internet) |
+> | A-09 | Cobertura de pruebas de seguridad nula | ✅ 12 pruebas de seguridad + 71 de dominio |
+> | A-10 | Spring Boot 3.4 fuera de soporte | ⏳ Plan pendiente (la línea 3.4 se mantiene) |
+> | A-11 | Sin healthcheck | ✅ Actuator + `HEALTHCHECK` en el Dockerfile |
+> | A-12 | Sin límite de tasa en la API pública | ⏳ Pendiente (opcional) |
+> | A-13 | favicon 404 | ✅ Resuelto |
+> | A-14 | Sin CSP | ⏳ Pendiente (ya no hay CDN: se puede fijar una CSP estricta) |
+> | A-15 | `app.seed.admin-password` con default | ✅ Resuelto |
+> | A-16 | `.playwright-mcp/` en el árbol | ✅ Resuelto |
+>
+> **Hallazgos nuevos del rediseño y cómo se trataron:**
+>
+> | Hallazgo | Tratamiento |
+> |---|---|
+> | Overselling: dos líneas del mismo producto pasaban la validación de stock por separado | **Corregido**: las líneas se consolidan antes de validar (`VentaServiceTest.rechazaVentaConElMismoProductoRepetidoQueExcedeElStock`) |
+> | Unidades convertidas en varios sitios (formulario, API, servicio) | **Corregido**: una sola conversión, en la capa de servicio (`InsumoServiceTest`, `RecetaServiceTest`) |
+> | `Insumo.unidadMedida` significaba dos cosas distintas | **Corregido**: `unidad_presentacion` (lo que elige el usuario) + base derivada (`UnidadMedida.base()`) |
+> | Insumo repetido en una receta: suficiencia evaluada por fila | **Corregido**: los ingredientes se consolidan por insumo (`ProduccionServiceTest.consolidaLosIngredientesRepetidosAlCalcularLaSuficiencia`) |
+> | Reporte con un día fantasma (BETWEEN inclusivo) | **Corregido**: rango semiabierto (`ReporteServiceTest.elRangoEsSemiabiertoYNoIncluyeLaMedianocheDelDiaSiguiente`) |
+> | Costo por unidad sin considerar el rendimiento de la receta | **Corregido** (`CostoServiceTest.elCostoUnitarioDividePorElRendimientoDeLaReceta`) |
+> | Margen interpretado como factor (0.30) en vez de porcentaje (30) | **Corregido** (`CostoServiceTest.elMargenDeSugerenciaSeInterpretaComoPorcentaje`) |
+> | Anular una venta la borraba del histórico | **Corregido**: `EstadoVenta.ANULADA`; el registro se conserva y deja de contar |
+> | Referencias "id suelto" sin clave foránea | **Corregido**: relaciones JPA + FKs en la migración V2 |
+> | Ajustes de stock sin rastro ni bloqueo | **Corregido**: `InventarioService` + bitácora `ajustes_inventario` |
+> | Se podía dejar el sistema sin ningún administrador | **Corregido** (`UsuarioServiceTest.noSePuedeEliminarElUltimoAdministradorActivo`) |
+> | Errores de dominio terminaban en página 500 | **Corregido**: `GlobalExceptionHandler` |
+> | Historial de ventas cargaba la tabla completa | **Corregido**: búsqueda en SQL + paginación |
+> | SW cacheaba páginas autenticadas (fuga entre usuarios) | **Corregido**: el SW ya no cachea navegaciones |
+> | Si el CDN caía, el borrado se ejecutaba sin confirmar | **Corregido**: sin CDN + fallback a `window.confirm` |
+> | H2 en `runtime` (viajaba en la imagen de producción) | **Corregido**: scope parametrizado; `-Pproduccion` lo deja en `test` |
+> | Docker corría como root | **Corregido**: usuario sin privilegios + `HEALTHCHECK` |
 
 ---
 

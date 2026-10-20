@@ -6,7 +6,7 @@
     <a th:href="@{/productos/nuevo}" class="btn btn-primary">Agregar producto</a>
 </th:block>
 <div th:fragment="contenido">
-    <th:block th:replace="~{fragments/page-header :: pageHeader('Productos', 'Catálogo que se vende en el punto de venta. El margen se calcula sobre el precio de venta.', ~{::acciones})}"></th:block>
+    <th:block th:replace="~{fragments/page-header :: pageHeader('Productos', 'Catálogo que se vende en el punto de venta. El margen se calcula sobre el precio de venta.', 'Inventario', ~{::acciones})}"></th:block>
 
     <div class="card shadow-sm">
         <div class="table-responsive">
@@ -27,7 +27,7 @@
                 <tbody>
                 <tr th:if="${#lists.isEmpty(productos)}">
                     <td colspan="8">
-                        <div th:replace="~{fragments/empty-state :: empty('No hay productos registrados', 'Agrega el primer producto para poder venderlo en el punto de venta.')}"></div>
+                        <div th:replace="~{fragments/empty-state :: empty('No hay productos registrados', 'Agrega el primer producto para poder venderlo en el punto de venta.', 'bi-cup-hot')}"></div>
                     </td>
                 </tr>
                 <tr th:each="p : ${productos}">

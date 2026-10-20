@@ -6,7 +6,7 @@
     <a th:href="@{/recetas}" class="btn btn-outline-secondary">Volver al listado</a>
 </th:block>
 <div th:fragment="contenido">
-    <th:block th:replace="~{fragments/page-header :: pageHeader(${form.id} == null ? 'Agregar receta' : 'Editar receta', null, ~{::acciones})}"></th:block>
+    <th:block th:replace="~{fragments/page-header :: pageHeader(${form.id} == null ? 'Agregar receta' : 'Editar receta', null, 'Inventario', ~{::acciones})}"></th:block>
 
     <div class="card shadow-sm form-card-lg">
         <div class="card-body">
@@ -128,7 +128,7 @@
         </div>
     </template>
 
-    <script th:src="@{/js/filas.js}"></script>
+    <script th:src="@{/js/filas.js?v=5}"></script>
 </div>
 </body>
 </html>

@@ -19,6 +19,12 @@
     <properties>
         <java.version>21</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!--
+            H2 se usa en runtime para el perfil dev (H2 en memoria). Al compilar
+            la imagen de produccion con -Pproduccion pasa a scope test y el
+            driver NO viaja en el jar final: en produccion solo hay PostgreSQL.
+        -->
+        <h2.scope>runtime</h2.scope>
     </properties>
 
     <dependencies>
@@ -86,9 +92,8 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <!-- TEMPORAL: H2 en memoria mientras no se usa PostgreSQL.
-                 Al volver a PostgreSQL, cambiar el scope a "test". -->
-            <scope>runtime</scope>
+            <!-- Solo dev: en la imagen de produccion el scope lo baja a test. -->
+            <scope>${h2.scope}</scope>
         </dependency>
     </dependencies>
 
@@ -112,6 +117,38 @@
                     </excludes>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.12</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <!--
+            Build de produccion: el driver H2 pasa a scope test y no se
+            incluye en el jar final. Lo usa el Dockerfile.
+        -->
+        <profile>
+            <id>produccion</id>
+            <properties>
+                <h2.scope>test</h2.scope>
+            </properties>
+        </profile>
+    </profiles>
 </project>

@@ -3,11 +3,14 @@
 <body>
 <!--
   Estado vacío o sin resultados.
-  Uso: th:replace="~{fragments/empty-state :: empty('Sin registros', 'Detalle opcional')}"
+  Uso: th:replace="~{fragments/empty-state :: empty('Sin registros', 'Detalle opcional', 'bi-inbox')}"
 -->
-<div th:fragment="empty(titulo, detalle)" class="ga-empty-state text-center text-muted py-4">
-    <p class="fw-semibold mb-1" th:text="${titulo}">Sin datos</p>
-    <p class="small mb-0"
+<div th:fragment="empty(titulo, detalle, icono)" class="ga-empty-state">
+    <span class="ga-empty-state__icono" aria-hidden="true">
+        <i class="bi" th:classappend="${icono != null and !#strings.isEmpty(icono)} ? ${icono} : 'bi-inbox'"></i>
+    </span>
+    <p class="ga-empty-state__titulo" th:text="${titulo}">Sin datos</p>
+    <p class="ga-empty-state__detalle"
        th:if="${detalle != null and !#strings.isEmpty(detalle)}"
        th:text="${detalle}">Detalle</p>
 </div>

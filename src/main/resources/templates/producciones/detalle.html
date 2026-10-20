@@ -10,7 +10,7 @@
     <a th:href="@{/producciones}" class="btn btn-outline-secondary">Volver al listado</a>
 </th:block>
 <div th:fragment="contenido">
-    <th:block th:replace="~{fragments/page-header :: pageHeader('Producción #' + ${p.id}, null, ~{::acciones})}"></th:block>
+    <th:block th:replace="~{fragments/page-header :: pageHeader('Producción #' + ${p.id}, null, 'Inventario', ~{::acciones})}"></th:block>
     <p class="text-muted mb-3">
         <span class="fw-semibold" th:text="${p.productoNombre}">Producto</span> ·
         <span th:text="${p.cantidad} + ' unidades'">0</span> ·

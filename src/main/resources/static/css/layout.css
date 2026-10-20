@@ -1,150 +1,134 @@
 /* =============================================================
-   GArepasAppV2 — layout.css
-   Direccion "sidebar + POS tactil". Shell: barra lateral fija en
-   escritorio; en movil, barra superior, barra inferior de accesos
-   y menu completo. Tambien: contenedores, encabezados, tablas que
-   se vuelven tarjetas, indicadores, punto de venta, acceso y errores.
-   Punto de quiebre: 991.98px (lg). Tablas en tarjetas: 767.98px.
+   Layout — el armazón de la aplicación
+   Barra lateral (escritorio), barra superior y barra inferior
+   (movil), encabezado de pagina y las pantallas especiales
+   (punto de venta, login, errores).
    ============================================================= */
-
-/* ---------- Utilidades de color ---------- */
-.text-ga-burdeos {
-    color: var(--ga-burdeos) !important;
-}
-
-.text-ga-brick {
-    color: var(--ga-brick) !important;
-}
-
-/* ---------- Contenedores centrados ---------- */
-.ga-centered-container {
-    width: min(calc(100% - 2rem), var(--ga-centered-max, 40rem));
-    margin-inline: auto;
-}
-
-.ga-auth-container {
-    --ga-centered-max: 26.25rem;
-}
-
-.ga-menu-container {
-    --ga-centered-max: 40rem;
-}
-
-.ga-error-container {
-    --ga-centered-max: 35rem;
-}
-
-.ga-empty-state {
-    max-width: 38rem;
-    margin-inline: auto;
-}
-
-/* Ancho de formularios: se evita el estilo inline repetido. */
-.form-card {
-    max-width: 760px;
-    width: 100%;
-}
-
-.form-card-lg {
-    max-width: 900px;
-    width: 100%;
-}
 
 /* =============================================================
-   Shell
+   1. Armazon general
    ============================================================= */
 
-/* Los hijos del wrapper participan del layout de <body>: asi la
-   barra superior movil queda pegada al desplazarse. */
 .ga-chrome {
     display: contents;
 }
 
 .ga-app-main {
-    width: auto;
-    max-width: 1480px;
-    margin-inline: auto;
-    padding: 2rem clamp(1rem, 2.6vw, 2.5rem) 3rem;
+    width: 100%;
+    max-width: var(--ga-content-max);
+    margin-left: var(--ga-sidebar-w);
+    padding: 2rem 2.25rem 4rem;
 }
 
-/* ---------- Marca ---------- */
+.ga-centered-container {
+    width: 100%;
+    max-width: var(--ga-centered-max);
+    margin-inline: auto;
+}
+
+.ga-auth-container { max-width: 26.25rem; }
+.ga-menu-container { max-width: 40rem; }
+.ga-error-container { max-width: 35rem; }
+
+.form-card { max-width: 47.5rem; }
+.form-card-lg { max-width: 56.25rem; }
+
+/* =============================================================
+   2. Barra lateral (escritorio)
+   ============================================================= */
+
+.ga-sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 1035;
+    display: flex;
+    flex-direction: column;
+    width: var(--ga-sidebar-w);
+    padding: 1.5rem 1rem 1.15rem;
+    color: var(--ga-on-ink);
+    background:
+        radial-gradient(120% 55% at 0% 0%, rgba(254, 208, 95, .12) 0%, rgba(254, 208, 95, 0) 60%),
+        linear-gradient(180deg, #3A1610 0%, #2A0F0A 100%);
+    border-right: 1px solid rgba(253, 244, 227, .08);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+/* --- Marca --- */
+
 .ga-marca {
     display: flex;
     align-items: center;
-    gap: .75rem;
-    padding: .25rem .5rem .75rem;
-    color: var(--ga-on-ink);
+    gap: .7rem;
+    padding: .35rem .5rem 1.35rem;
+    color: inherit;
     text-decoration: none;
-}
-
-.ga-marca:hover {
-    color: var(--ga-gold);
 }
 
 .ga-marca img {
     flex: none;
     width: 2.5rem;
     height: 2.5rem;
+    object-fit: contain;
+    padding: .18rem;
+    background: rgba(253, 244, 227, .08);
+    border: 1px solid rgba(254, 208, 95, .35);
+    border-radius: var(--ga-radius-md);
 }
 
 .ga-marca__nombre {
     display: block;
     font-family: var(--ga-font-display);
-    font-size: 1.3rem;
+    font-size: 1.0625rem;
     font-weight: 700;
-    line-height: 1.1;
-    letter-spacing: -0.01em;
+    line-height: 1.15;
+    letter-spacing: -.01em;
+    color: #FFF8EC;
 }
 
 .ga-marca__sub {
     display: block;
-    font-size: .68rem;
-    font-weight: 600;
-    letter-spacing: .1em;
+    margin-top: .12rem;
+    font-size: .625rem;
+    font-weight: 700;
+    letter-spacing: .16em;
     text-transform: uppercase;
-    color: var(--ga-on-ink-muted);
+    color: rgba(254, 208, 95, .75);
 }
 
-/* ---------- Barra lateral (escritorio) ---------- */
-.ga-sidebar {
-    position: fixed;
-    inset: 0 auto 0 0;
-    z-index: 1040;
-    display: flex;
-    flex-direction: column;
-    gap: var(--ga-space-2);
-    width: var(--ga-sidebar-w);
-    padding: var(--ga-space-4) var(--ga-space-3) var(--ga-space-3);
-    overflow-y: auto;
-    background: var(--ga-sidebar);
-    color: var(--ga-on-ink);
-}
+/* --- Navegacion --- */
 
 .ga-nav {
-    display: flex;
-    flex-direction: column;
-    gap: var(--ga-space-1);
+    flex: 1 1 auto;
 }
 
-.ga-nav__seccion {
-    display: flex;
-    flex-direction: column;
-    margin-top: var(--ga-space-2);
+.ga-nav__seccion + .ga-nav__seccion {
+    margin-top: 1.35rem;
 }
 
 .ga-nav__grupo {
-    margin: 0 0 .25rem .75rem;
-    font-size: .68rem;
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    margin: 0 0 .45rem .6rem;
+    font-size: .625rem;
     font-weight: 700;
-    letter-spacing: .1em;
+    letter-spacing: .17em;
     text-transform: uppercase;
-    color: var(--ga-on-ink-muted);
+    color: rgba(254, 208, 95, .55);
+}
+
+.ga-nav__grupo::after {
+    content: "";
+    flex: 1 1 auto;
+    height: 1px;
+    background: rgba(253, 244, 227, .12);
 }
 
 .ga-nav__lista {
     display: flex;
     flex-direction: column;
-    gap: .125rem;
+    gap: .15rem;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -154,321 +138,304 @@
     position: relative;
     display: flex;
     align-items: center;
-    gap: .75rem;
-    min-height: var(--ga-touch);
-    padding: .5rem .75rem;
-    border-radius: var(--ga-radius-md);
-    color: var(--ga-on-ink);
+    gap: .7rem;
+    padding: .55rem .6rem;
+    font-size: .875rem;
     font-weight: 500;
+    color: var(--ga-on-ink-muted);
     text-decoration: none;
-    transition: background-color .15s ease, color .15s ease;
+    border-radius: var(--ga-radius-md);
+    transition: background-color var(--ga-fast) var(--ga-ease),
+                color var(--ga-fast) var(--ga-ease);
 }
 
 .ga-nav__link i {
-    font-size: 1.1rem;
-    opacity: .9;
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 1.85rem;
+    height: 1.85rem;
+    font-size: .95rem;
+    color: rgba(254, 208, 95, .8);
+    background: rgba(253, 244, 227, .06);
+    border-radius: var(--ga-radius-sm);
+    transition: background-color var(--ga-fast) var(--ga-ease),
+                color var(--ga-fast) var(--ga-ease);
 }
 
 .ga-nav__link:hover {
+    color: #FFF8EC;
     background: var(--ga-sidebar-hover);
+}
+
+.ga-nav__link:hover i {
+    background: rgba(254, 208, 95, .18);
     color: var(--ga-gold);
 }
 
 .ga-nav__link.is-active {
-    background: var(--ga-sidebar-activo);
-    color: var(--ga-gold);
+    color: #FFF8EC;
     font-weight: 600;
+    background: linear-gradient(100deg, rgba(192, 67, 11, .95) 0%, rgba(246, 125, 20, .78) 130%);
+    box-shadow: 0 10px 22px -14px rgba(192, 67, 11, .95);
 }
 
-/* Indicador lateral del enlace activo. */
+.ga-nav__link.is-active i {
+    color: var(--ga-gold);
+    background: rgba(20, 8, 4, .35);
+}
+
 .ga-nav__link.is-active::before {
     content: "";
     position: absolute;
-    top: .6rem;
-    bottom: .6rem;
-    left: -.75rem;
+    left: -.5rem;
+    top: 50%;
     width: 3px;
-    border-radius: 3px;
+    height: 1.35rem;
     background: var(--ga-gold);
+    border-radius: 0 var(--ga-radius-pill) var(--ga-radius-pill) 0;
+    transform: translateY(-50%);
 }
 
-.ga-sidebar :focus-visible,
-.ga-offcanvas :focus-visible {
-    outline-color: var(--ga-gold);
-}
+/* --- Pie: usuario --- */
 
 .ga-sidebar__pie {
-    display: flex;
-    flex-direction: column;
-    gap: var(--ga-space-2);
-    margin-top: auto;
-    padding-top: var(--ga-space-3);
-    border-top: 1px solid rgba(254, 208, 95, .18);
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(253, 244, 227, .12);
 }
 
 .ga-sidebar__usuario {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--ga-space-2);
-    padding: .25rem .25rem .25rem .75rem;
+    gap: .6rem;
+    padding: .35rem .55rem;
 }
 
 .ga-sidebar__nombre {
-    min-width: 0;
-    overflow: hidden;
-    font-weight: 600;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.ga-sidebar .btn-outline-light {
-    --bs-btn-border-color: rgba(247, 235, 217, .4);
-}
-
-/* ---------- Menu movil (offcanvas con el estilo de la barra lateral) ---------- */
-.ga-offcanvas {
-    --bs-offcanvas-bg: var(--ga-sidebar);
-    --bs-offcanvas-color: var(--ga-on-ink);
-    --bs-offcanvas-width: 19rem;
-}
-
-.ga-offcanvas .offcanvas-header {
-    padding-bottom: 0;
-}
-
-.ga-offcanvas .offcanvas-title {
-    font-family: var(--ga-font-display);
-    font-weight: 700;
-}
-
-.ga-offcanvas .offcanvas-body {
     display: flex;
-    flex-direction: column;
-}
-
-/* En los moviles la barra superior y la inferior se ocultan en escritorio. */
-.ga-topbar,
-.ga-tabbar {
-    display: none;
-}
-
-@media (min-width: 992px) {
-    .ga-shell {
-        padding-left: var(--ga-sidebar-w);
-    }
-}
-
-/* ---------- Shell en movil ---------- */
-@media (max-width: 991.98px) {
-    .ga-sidebar {
-        display: none;
-    }
-
-    .ga-topbar {
-        position: sticky;
-        top: 0;
-        z-index: 1035;
-        display: flex;
-        align-items: center;
-        min-height: 3.5rem;
-        padding: env(safe-area-inset-top) var(--ga-space-3) 0;
-        background: var(--ga-sidebar);
-        color: var(--ga-on-ink);
-    }
-
-    .ga-topbar .ga-marca {
-        padding: 0;
-    }
-
-    .ga-topbar .ga-marca__nombre {
-        font-size: 1.15rem;
-    }
-
-    .ga-topbar .ga-marca img {
-        width: 2rem;
-        height: 2rem;
-    }
-
-    /* Accesos diarios: siempre a la vista, con pulgar en la zona baja. */
-    .ga-tabbar {
-        position: fixed;
-        inset: auto 0 0 0;
-        z-index: 1035;
-        display: grid;
-        grid-auto-flow: column;
-        grid-auto-columns: 1fr;
-        height: calc(var(--ga-tabbar-h) + env(safe-area-inset-bottom));
-        padding: .4rem .5rem env(safe-area-inset-bottom);
-        background: var(--ga-surface);
-        border-top: 1px solid var(--ga-border);
-        box-shadow: 0 -10px 24px -16px rgba(var(--ga-ink-rgb), .4);
-    }
-
-    .ga-tab {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: .1rem;
-        padding: 0;
-        border: 0;
-        background: transparent;
-        color: var(--ga-text-muted);
-        font: inherit;
-        font-size: .72rem;
-        font-weight: 600;
-        text-decoration: none;
-    }
-
-    .ga-tab i {
-        padding: .3rem 1.1rem;
-        border-radius: var(--ga-radius-pill);
-        font-size: 1.3rem;
-        line-height: 1;
-        transition: background-color .15s ease;
-    }
-
-    .ga-tab.is-active {
-        color: var(--ga-brick);
-    }
-
-    .ga-tab.is-active i {
-        background: var(--ga-arena);
-    }
-
-    .ga-tab:focus-visible {
-        outline: 2px solid var(--ga-brick);
-        outline-offset: -2px;
-        border-radius: var(--ga-radius-md);
-    }
-
-    .ga-app-main {
-        padding: 1rem 1rem calc(var(--ga-tabbar-h) + env(safe-area-inset-bottom) + 1.5rem);
-    }
-
-    /* Botones pequenos con area tactil comoda. */
-    .btn-sm {
-        min-height: 2.5rem;
-    }
-}
-
-/* =============================================================
-   Encabezado de pagina
-   ============================================================= */
-.ga-page-header > :first-child {
+    align-items: center;
+    gap: .5rem;
     min-width: 0;
+    font-size: .8125rem;
+    font-weight: 600;
+    color: var(--ga-on-ink);
 }
 
-.ga-page-header h1 {
-    font-size: clamp(1.75rem, 2.6vw, 2.25rem);
-    letter-spacing: -0.02em;
-}
-
-/* Acento de marca sobre el titulo. */
-.ga-page-header h1::before {
-    content: "";
-    display: block;
-    width: 2.5rem;
-    height: .25rem;
-    margin-bottom: .6rem;
-    border-radius: var(--ga-radius-pill);
-    background: var(--ga-orange);
-}
-
-@media (max-width: 575.98px) {
-    .ga-page-header {
-        align-items: flex-start !important;
-    }
-
-    .ga-page-header__actions {
-        width: 100%;
-    }
-
-    .ga-page-header__actions .btn {
-        flex: 1 1 auto;
-    }
+.ga-sidebar__nombre::before {
+    content: attr(data-inicial);
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 1.85rem;
+    height: 1.85rem;
+    font-size: .75rem;
+    font-weight: 700;
+    color: var(--ga-burdeos);
+    background: linear-gradient(135deg, var(--ga-gold), var(--ga-arena));
+    border-radius: 50%;
 }
 
 /* =============================================================
-   Tablas que se vuelven tarjetas en movil
-   tablas-moviles.js copia cada encabezado a data-etiqueta.
+   3. Movil: barra superior y barra inferior
    ============================================================= */
+
+.ga-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--ga-header-h);
+    padding: 0 1rem;
+    background: rgba(255, 253, 249, .92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--ga-border);
+}
+
+.ga-topbar .ga-marca {
+    padding: 0;
+}
+
+.ga-topbar .ga-marca img {
+    width: 2.1rem;
+    height: 2.1rem;
+    background: transparent;
+    border-color: var(--ga-border-strong);
+}
+
+.ga-topbar .ga-marca__nombre {
+    font-size: .9375rem;
+    color: var(--ga-ink);
+}
+
+.ga-tabbar {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 1035;
+    display: none;
+    align-items: stretch;
+    height: calc(var(--ga-tabbar-h) + env(safe-area-inset-bottom));
+    padding-bottom: env(safe-area-inset-bottom);
+    background: rgba(255, 253, 249, .96);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--ga-border);
+    box-shadow: 0 -8px 24px -18px rgba(42, 15, 10, .5);
+}
+
+.ga-tab {
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: .15rem;
+    min-height: var(--ga-touch);
+    padding: .35rem .25rem;
+    font-size: .6875rem;
+    font-weight: 600;
+    color: var(--ga-text-soft);
+    text-decoration: none;
+    background: none;
+    border: 0;
+    transition: color var(--ga-fast) var(--ga-ease);
+}
+
+.ga-tab i {
+    font-size: 1.25rem;
+    line-height: 1;
+}
+
+.ga-tab.is-active {
+    color: var(--ga-brick);
+}
+
+.ga-tab.is-active i {
+    transform: translateY(-1px);
+}
+
+/* =============================================================
+   4. Encabezado de pagina
+   ============================================================= */
+
+.ga-page-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.6rem;
+    padding-bottom: 1.1rem;
+    border-bottom: 1px solid var(--ga-border);
+}
+
+.ga-page-header__titulo {
+    margin: 0;
+    font-family: var(--ga-font-display);
+    font-size: 1.875rem;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -.02em;
+    color: var(--ga-ink);
+}
+
+.ga-page-header__subtitulo {
+    max-width: 46rem;
+    margin: .35rem 0 0;
+    font-size: .875rem;
+    color: var(--ga-text-muted);
+}
+
+.ga-page-header__acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+}
+
+/* Kicker: pequena linea de color sobre el titulo */
+.ga-kicker {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    margin-bottom: .4rem;
+    font-size: .6875rem;
+    font-weight: 700;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--ga-brick);
+}
+
+.ga-kicker::before {
+    content: "";
+    width: 1.4rem;
+    height: 3px;
+    background: linear-gradient(90deg, var(--ga-brick), var(--ga-orange));
+    border-radius: var(--ga-radius-pill);
+}
+
+/* =============================================================
+   5. Tablas en movil: cada fila se convierte en tarjeta
+   ============================================================= */
+
 @media (max-width: 767.98px) {
-    .table-responsive {
-        overflow: visible;
-    }
-
-    .table-responsive > table {
-        display: block;
-    }
-
-    /* Encabezados ocultos a la vista, pero disponibles para lectores de pantalla. */
     .table-responsive > table > thead {
         position: absolute;
         width: 1px;
         height: 1px;
+        padding: 0;
         margin: -1px;
         overflow: hidden;
-        clip: rect(0 0 0 0);
+        clip: rect(0, 0, 0, 0);
         white-space: nowrap;
-    }
-
-    .table-responsive > table > tbody {
-        display: block;
+        border: 0;
     }
 
     .table-responsive > table > tbody > tr {
         display: block;
-        margin-bottom: var(--ga-space-3);
-        padding: .25rem var(--ga-space-3);
+        margin-bottom: .85rem;
+        padding: .85rem 1rem;
         background: var(--ga-surface);
         border: 1px solid var(--ga-border);
         border-radius: var(--ga-radius-lg);
-        box-shadow: var(--ga-shadow-sm);
+        box-shadow: var(--ga-shadow-xs);
     }
+
+    .table-responsive > table > tbody > tr:last-child { margin-bottom: 0; }
 
     .table-responsive > table > tbody > tr > td {
         display: flex;
-        align-items: center;
+        align-items: baseline;
         justify-content: space-between;
-        gap: var(--ga-space-3);
-        padding: .55rem 0;
-        border: 0;
-        background: transparent;
+        gap: 1rem;
+        padding: .3rem 0;
+        border-bottom: none;
         text-align: right;
     }
 
-    .table-responsive > table > tbody > tr > td + td {
-        border-top: 1px dashed var(--ga-border);
-    }
-
-    .table-responsive > table > tbody > tr > td[data-etiqueta]::before {
-        flex: none;
+    .table-responsive > table > tbody > tr > td::before {
         content: attr(data-etiqueta);
-        font-size: .7rem;
+        flex: 0 0 auto;
+        font-size: .6875rem;
         font-weight: 700;
-        letter-spacing: .08em;
-        text-align: left;
+        letter-spacing: .1em;
         text-transform: uppercase;
-        color: var(--ga-text-muted);
-    }
-
-    .table-responsive > table > tbody > tr > td[data-etiqueta="Acciones"] {
-        flex-wrap: wrap;
-        justify-content: flex-end;
+        color: var(--ga-text-soft);
+        text-align: left;
     }
 
     .table-responsive > table > tbody > tr > td[data-etiqueta="Acciones"]::before {
-        content: none;
+        display: none;
     }
 
-    /* Fila de "sin registros": se muestra como estado, no como tarjeta. */
+    .table-responsive > table > tbody > tr > td:empty { display: none; }
+
     .table-responsive > table > tbody > tr.ga-fila-vacia {
-        margin: 0;
+        display: block;
         padding: 0;
         background: transparent;
-        border: 0;
+        border: none;
         box-shadow: none;
     }
 
@@ -476,236 +443,201 @@
         display: block;
         text-align: center;
     }
+
+    .table-responsive > table > tbody > tr.ga-fila-vacia > td::before {
+        display: none;
+    }
 }
 
 /* =============================================================
-   Indicadores (reportes)
+   6. Punto de venta
    ============================================================= */
-.ga-kpi {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: var(--ga-space-3);
-    height: 100%;
-    min-height: 8.5rem;
-    padding: 1.25rem 1.35rem;
-    border: 1px solid var(--ga-border);
-    border-radius: var(--ga-radius-xl);
-    background: var(--ga-surface);
-    color: var(--ga-text);
-    box-shadow: var(--ga-shadow-sm);
+
+.ga-pos {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 25rem;
+    gap: 1.5rem;
+    align-items: start;
 }
 
-.ga-kpi__etiqueta {
-    margin: 0;
-    font-size: .72rem;
-    font-weight: 700;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-    opacity: .9;
-}
-
-.ga-kpi__valor {
-    margin: 0;
-    font-family: var(--ga-font-display);
-    font-size: clamp(1.5rem, 2.6vw, 2.2rem);
-    font-weight: 700;
-    line-height: 1.05;
-    letter-spacing: -0.02em;
-}
-
-.ga-kpi--brick {
-    border-color: var(--ga-brick-oscuro);
-    background: var(--ga-brick);
-    color: var(--ga-on-brand);
-}
-
-.ga-kpi--ink {
-    border-color: var(--ga-ink);
-    background: var(--ga-sidebar);
-    color: var(--ga-on-ink);
-}
-
-.ga-kpi--gold {
-    border-color: var(--ga-gold);
-    background: var(--ga-gold);
-    color: var(--ga-ink);
-}
-
-.ga-kpi--neutro.is-negativa .ga-kpi__valor {
-    color: var(--ga-danger-text);
-}
-
-/* =============================================================
-   Punto de venta
-   Escritorio: catalogo y panel de pedido lado a lado.
-   Movil: catalogo de dos columnas y hoja inferior con el pedido.
-   ============================================================= */
-.ga-jornada {
-    border-radius: var(--ga-radius-xl);
-}
-
-.ga-pos__catalogo {
-    min-width: 0;
-}
+.ga-pos__catalogo { min-width: 0; }
 
 .ga-pos__buscar {
-    margin-bottom: var(--ga-space-3);
+    position: relative;
+    margin-bottom: 1.15rem;
 }
+
+.ga-pos__buscar .form-label { display: block; }
+
+.ga-pos__buscar .form-control {
+    padding-left: 2.6rem;
+    border-radius: var(--ga-radius-pill);
+}
+
+.ga-pos__buscar .form-control::placeholder { color: var(--ga-text-soft); }
 
 .ga-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: .75rem;
+    grid-template-columns: repeat(auto-fill, minmax(11.5rem, 1fr));
+    gap: .85rem;
 }
 
-.ga-grid > * {
-    min-width: 0;
-}
-
-/* Mosaico de producto: nombre, precio grande y stock visibles de un vistazo. */
 .ga-producto {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: .3rem;
+    gap: .15rem;
     width: 100%;
     height: 100%;
-    min-height: 8.5rem;
     padding: 1rem;
+    text-align: left;
+    background: var(--ga-surface);
     border: 1px solid var(--ga-border);
     border-radius: var(--ga-radius-lg);
-    background: var(--ga-surface);
-    color: var(--ga-text);
-    font: inherit;
-    text-align: left;
-    box-shadow: var(--ga-shadow-sm);
-    transition: transform .12s ease, border-color .15s ease, box-shadow .15s ease;
+    box-shadow: var(--ga-shadow-xs);
+    transition: transform var(--ga-base) var(--ga-ease),
+                box-shadow var(--ga-base) var(--ga-ease),
+                border-color var(--ga-base) var(--ga-ease);
 }
 
 .ga-producto:hover {
-    border-color: var(--ga-brick);
+    transform: translateY(-3px);
+    border-color: var(--ga-terracota);
     box-shadow: var(--ga-shadow-md);
-    transform: translateY(-2px);
-}
-
-.ga-producto:active {
-    transform: scale(.98);
-}
-
-.ga-producto:focus-visible {
-    outline: 3px solid var(--ga-brick);
-    outline-offset: 2px;
 }
 
 .ga-producto__inicial {
-    display: inline-grid;
+    display: grid;
     place-items: center;
     width: 2.4rem;
     height: 2.4rem;
-    margin-bottom: .35rem;
-    border-radius: 50%;
-    background: var(--ga-arena);
-    color: var(--ga-brick-oscuro);
+    margin-bottom: .5rem;
     font-family: var(--ga-font-display);
-    font-size: 1.1rem;
+    font-size: 1.0625rem;
     font-weight: 700;
+    color: var(--ga-burdeos);
+    background: linear-gradient(135deg, var(--ga-arena), var(--ga-gold));
+    border-radius: 50%;
 }
 
 .ga-producto__nombre {
-    font-weight: 700;
-    line-height: 1.2;
+    font-size: .875rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--ga-ink);
 }
 
 .ga-producto__precio {
-    margin-top: auto;
-    padding-top: .25rem;
-    font-family: var(--ga-font-display);
-    font-size: 1.3rem;
+    margin-top: .1rem;
+    font-size: 1.125rem;
     font-weight: 700;
-    color: var(--ga-burdeos);
-    font-variant-numeric: tabular-nums lining-nums;
+    font-variant-numeric: tabular-nums;
+    color: var(--ga-brick);
 }
 
 .ga-producto__stock {
-    font-size: .78rem;
-    color: var(--ga-text-muted);
+    margin-top: .25rem;
+    font-size: .6875rem;
+    font-weight: 600;
+    letter-spacing: .03em;
+    color: var(--ga-text-soft);
 }
 
-@media (min-width: 768px) {
-    .ga-grid {
-        grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
-        gap: 1rem;
-    }
-}
+/* --- Panel del pedido --- */
 
-/* ---------- Pedido ---------- */
 .ga-pedido {
+    position: sticky;
+    top: 1.5rem;
     display: flex;
     flex-direction: column;
-    min-width: 0;
+    background: var(--ga-surface);
+    border: 1px solid var(--ga-border);
+    border-radius: var(--ga-radius-xl);
+    box-shadow: var(--ga-shadow-md);
+    overflow: hidden;
 }
 
 .ga-pedido__cabecera {
-    display: flex;
-    flex-direction: column;
-    gap: .5rem;
-    padding: .75rem 1rem;
-    background: var(--ga-surface);
-}
-
-/* Mensajes del pedido: el contenedor siempre existe para que lectores de pantalla lo anuncien. */
-.ga-pos__aviso {
-    margin: 0;
+    padding: .9rem 1.15rem 0;
+    border-bottom: 1px solid var(--ga-border);
+    background: linear-gradient(180deg, rgba(254, 246, 170, .35), rgba(254, 246, 170, 0));
 }
 
 .ga-pedido__fila {
     display: flex;
-    align-items: center;
-    gap: .75rem;
+    flex-direction: column;
+    align-items: stretch;
+    gap: .6rem;
+    padding: .85rem 0;
 }
 
 .ga-pedido__abrir {
     display: none;
+    align-items: center;
+    gap: .4rem;
+    font-size: .875rem;
+    font-weight: 600;
+    color: var(--ga-ink);
+    background: none;
+    border: 0;
 }
 
 .ga-pedido__totales {
     display: flex;
-    flex-direction: column;
-    min-width: 0;
-    margin-right: auto;
-    line-height: 1.1;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: .5rem;
 }
 
 .ga-pedido__etiqueta {
-    font-size: .7rem;
+    font-size: .6875rem;
     font-weight: 700;
-    letter-spacing: .08em;
+    letter-spacing: .12em;
     text-transform: uppercase;
-    color: var(--ga-text-muted);
+    color: var(--ga-text-soft);
 }
 
 .ga-pedido__total {
-    font-family: var(--ga-font-display);
-    font-size: 1.7rem;
+    font-size: 1.5rem;
     font-weight: 700;
-    color: var(--ga-burdeos);
-    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -.02em;
+    color: var(--ga-ink);
 }
 
 .ga-pedido__cobrar {
-    white-space: nowrap;
+    flex: 1 1 auto;
+    width: 100%;
+    min-height: 3rem;
 }
 
 .ga-pedido__cuerpo {
-    padding: 0 1rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: .85rem;
+    padding: 1.15rem;
+    overflow-y: auto;
+    max-height: 26rem;
 }
+
+.ga-pos__aviso {
+    display: none;
+    padding: .5rem .75rem;
+    margin-bottom: .5rem;
+    font-size: .8125rem;
+    font-weight: 500;
+    color: var(--ga-warning-text);
+    background: var(--ga-warning-soft);
+    border-radius: var(--ga-radius-sm);
+}
+
+.ga-pos__aviso.is-visible { display: block; }
 
 .ga-lineas {
     display: flex;
     flex-direction: column;
     gap: .5rem;
-    margin: 0 0 1rem;
+    margin: 0;
     padding: 0;
     list-style: none;
 }
@@ -714,191 +646,96 @@
     display: flex;
     align-items: center;
     gap: .6rem;
-    padding: .55rem .6rem .55rem .8rem;
-    border: 1px solid var(--ga-border);
-    border-radius: var(--ga-radius-md);
+    padding: .55rem .6rem;
     background: var(--ga-surface-muted);
+    border-radius: var(--ga-radius-md);
 }
 
-.ga-linea__info {
-    flex: 1 1 auto;
-    min-width: 0;
-}
+.ga-linea__info { flex: 1 1 auto; min-width: 0; }
 
 .ga-linea__nombre {
+    display: block;
+    font-size: .8125rem;
+    font-weight: 600;
+    color: var(--ga-ink);
     overflow: hidden;
-    font-weight: 700;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
 .ga-linea__precio {
-    font-size: .8rem;
+    display: block;
+    font-size: .75rem;
+    font-variant-numeric: tabular-nums;
     color: var(--ga-text-muted);
 }
 
 .ga-linea__controles {
     display: flex;
     align-items: center;
-    gap: .3rem;
+    gap: .35rem;
+    flex: none;
 }
 
 .ga-linea__cantidad {
     min-width: 1.75rem;
-    text-align: center;
+    font-size: .875rem;
     font-weight: 700;
-    font-variant-numeric: tabular-nums lining-nums;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
 }
 
-/* Controles de cantidad de 44 px: objetivo tactil recomendado. */
 .ga-qty {
-    display: inline-grid;
+    display: grid;
     place-items: center;
-    flex: none;
-    width: var(--ga-touch);
-    height: var(--ga-touch);
-    padding: 0;
-    border: 1px solid var(--ga-border-strong);
-    border-radius: var(--ga-radius-md);
-    background: var(--ga-surface);
-    color: var(--ga-burdeos);
-    font: inherit;
-    font-size: 1.25rem;
+    width: 1.85rem;
+    height: 1.85rem;
+    font-size: .875rem;
     font-weight: 700;
-    line-height: 1;
+    color: var(--ga-burdeos);
+    background: var(--ga-surface);
+    border: 1px solid var(--ga-border-strong);
+    border-radius: 50%;
+    transition: all var(--ga-fast) var(--ga-ease);
 }
 
 .ga-qty:hover {
-    background: var(--ga-surface-muted);
-    border-color: var(--ga-burdeos);
+    color: #FFF8F0;
+    background: var(--ga-brick);
+    border-color: var(--ga-brick);
 }
 
-.ga-qty:focus-visible {
-    outline: 2px solid var(--ga-brick);
-    outline-offset: 2px;
+.ga-qty--quitar:hover {
+    color: #FFF;
+    background: var(--ga-danger);
+    border-color: var(--ga-danger);
 }
 
-.ga-qty--quitar {
-    color: var(--ga-danger-text);
+/* --- Jornada --- */
+
+.ga-jornada .card-body {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    padding: .9rem 1.25rem;
 }
 
-/* Movil: hoja inferior anclada sobre la barra de accesos. */
-@media (max-width: 991.98px) {
-    .ga-pos__catalogo {
-        padding-bottom: 11rem;
-    }
-
-    .ga-pedido {
-        position: fixed;
-        inset-inline: 0;
-        bottom: calc(var(--ga-tabbar-h) + env(safe-area-inset-bottom));
-        z-index: 1030;
-        max-height: 80vh;
-        overflow: hidden;
-        border-radius: var(--ga-radius-xl) var(--ga-radius-xl) 0 0;
-        background: var(--ga-surface);
-        box-shadow: 0 -12px 30px -14px rgba(var(--ga-ink-rgb), .5);
-    }
-
-    .ga-pedido__cabecera {
-        padding: .65rem 1rem;
-    }
-
-    .ga-pedido__abrir {
-        display: inline-flex;
-        align-items: center;
-        gap: .4rem;
-        min-height: var(--ga-touch);
-        padding: 0 .25rem;
-        border: 0;
-        background: transparent;
-        color: var(--ga-text);
-        font: inherit;
-        font-weight: 700;
-        white-space: nowrap;
-    }
-
-    .ga-pedido__abrir i {
-        transition: transform .2s ease;
-    }
-
-    .ga-pedido.is-abierto .ga-pedido__abrir i {
-        transform: rotate(180deg);
-    }
-
-    .ga-pedido__cuerpo {
-        display: none;
-        max-height: 50vh;
-        overflow-y: auto;
-    }
-
-    .ga-pedido.is-abierto .ga-pedido__cuerpo {
-        display: block;
-    }
-
-    .ga-pedido__totales {
-        margin-right: 0;
-    }
-
-    .ga-pedido__total {
-        font-size: 1.4rem;
-    }
-
-    .ga-pedido__cobrar {
-        min-height: var(--ga-touch);
-        padding-inline: 1.1rem;
-    }
-}
-
-/* Escritorio: panel de pedido fijo a la derecha, total y cobro al pie. */
-@media (min-width: 992px) {
-    .ga-pos {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) 25rem;
-        align-items: start;
-        gap: 1.5rem;
-    }
-
-    .ga-pedido {
-        position: sticky;
-        top: 1.5rem;
-        overflow: hidden;
-        border: 1px solid var(--ga-border);
-        border-radius: var(--ga-radius-xl);
-        background: var(--ga-surface);
-        box-shadow: var(--ga-shadow-sm);
-    }
-
-    .ga-pedido__cabecera {
-        order: 2;
-        padding: 1rem 1.25rem;
-        border-top: 1px solid var(--ga-border);
-    }
-
-    .ga-pedido__cuerpo {
-        order: 1;
-        display: block;
-        max-height: calc(100vh - 17rem);
-        overflow-y: auto;
-        padding: 1.25rem;
-    }
-
-    .ga-pedido__cobrar {
-        min-height: 3.25rem;
-    }
+.ga-jornada .btn-outline-success {
+    --ga-btn-bg: var(--ga-success-soft);
+    --ga-btn-fg: #0F5132;
+    --ga-btn-bd: rgba(25, 135, 84, .35);
 }
 
 /* =============================================================
-   Acceso
-   Split-screen: panel de marca con textura cálida y formulario
-   en tarjeta flotante.
+   7. Login
    ============================================================= */
+
 .ga-login {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: 1.05fr .95fr;
     min-height: 100vh;
-    min-height: 100dvh;
-    background: var(--ga-bg);
+    background: var(--ga-surface);
 }
 
 .ga-login__marca {
@@ -907,69 +744,72 @@
     flex-direction: column;
     justify-content: space-between;
     gap: 2rem;
+    padding: 3rem;
+    color: #FFF8EC;
+    background:
+        radial-gradient(38% 26% at 22% 28%, rgba(254, 208, 95, .2) 0%, rgba(254, 208, 95, 0) 70%),
+        radial-gradient(30% 22% at 72% 62%, rgba(246, 125, 20, .22) 0%, rgba(246, 125, 20, 0) 70%),
+        linear-gradient(150deg, #56241C 0%, #3A1610 55%, #2A0F0A 100%);
     overflow: hidden;
-    padding: calc(1.5rem + env(safe-area-inset-top)) clamp(1.5rem, 5vw, 4rem) 2rem;
-    /* Textura "arepa": puntos dorados sobre degradados cálidos. */
-    background-image:
-        radial-gradient(rgba(254, 208, 95, .14) 1.5px, transparent 1.6px),
-        radial-gradient(46rem 46rem at -15% -25%, rgba(254, 208, 95, .16), transparent 60%),
-        radial-gradient(52rem 52rem at 125% 135%, rgba(192, 67, 11, .38), transparent 58%);
-    background-size: 1.6rem 1.6rem, auto, auto;
-    background-color: var(--ga-sidebar);
-    color: var(--ga-on-ink);
 }
 
-/* Arepa decorativa: aro dorado que asoma por la esquina inferior. */
+/* Textura de arepa: circles concatenados muy sutiles. */
 .ga-login__marca::after {
     content: "";
     position: absolute;
-    right: -6.5rem;
-    bottom: -9.5rem;
-    width: 22rem;
-    height: 22rem;
-    border: 2px solid rgba(254, 208, 95, .32);
-    border-radius: 50%;
-    box-shadow: 0 0 0 1.1rem rgba(254, 208, 95, .07);
+    inset: 0;
+    background-image:
+        radial-gradient(circle at 50% 50%, rgba(255, 253, 249, .04) 0 42%, transparent 43%),
+        radial-gradient(circle at 50% 50%, transparent 0 46%, rgba(254, 208, 95, .045) 47% 49%, transparent 50%);
+    background-size: 170px 170px;
+    opacity: .5;
     pointer-events: none;
 }
 
+.ga-login__marca > * { position: relative; z-index: 1; }
+
 .ga-login__logo {
-    width: 3rem;
-    height: 3rem;
+    width: 3.25rem;
+    height: 3.25rem;
+    object-fit: contain;
+    padding: .25rem;
+    background: rgba(253, 244, 227, .1);
+    border: 1px solid rgba(254, 208, 95, .4);
+    border-radius: var(--ga-radius-lg);
 }
 
 .ga-login__sub {
     display: block;
-    margin-top: .25rem;
-    font-size: .72rem;
-    font-weight: 600;
-    letter-spacing: .1em;
+    margin-top: .5rem;
+    font-size: .6875rem;
+    font-weight: 700;
+    letter-spacing: .18em;
     text-transform: uppercase;
-    color: var(--ga-on-ink-muted);
+    color: rgba(254, 208, 95, .8);
 }
 
 .ga-login__titulo {
-    margin: 0 0 .75rem;
-    color: var(--ga-on-ink);
-    font-size: clamp(2.6rem, 6vw, 4.6rem);
-    line-height: .95;
-    letter-spacing: -0.03em;
+    margin: 0;
+    font-family: var(--ga-font-display);
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1.02;
+    letter-spacing: -.03em;
+    color: #FFF8EC;
 }
 
 .ga-login__lema {
-    max-width: 28rem;
-    margin: 0;
-    font-size: 1.05rem;
-    color: var(--ga-on-ink-muted);
+    max-width: 26rem;
+    margin: .9rem 0 0;
+    font-size: 1rem;
+    color: rgba(247, 235, 217, .78);
 }
 
-/* Beneficios con icono en chip dorado. */
 .ga-login__caracteristicas {
     display: flex;
     flex-direction: column;
-    gap: .9rem;
-    max-width: 26rem;
-    margin: 1.9rem 0 0;
+    gap: .65rem;
+    margin: 1.75rem 0 0;
     padding: 0;
     list-style: none;
 }
@@ -977,106 +817,326 @@
 .ga-login__caracteristicas li {
     display: flex;
     align-items: center;
-    gap: .85rem;
-    font-weight: 500;
-    color: var(--ga-on-ink-muted);
+    gap: .65rem;
+    font-size: .875rem;
+    color: rgba(247, 235, 217, .85);
 }
 
 .ga-login__caracteristicas i {
-    display: inline-grid;
+    display: grid;
     place-items: center;
     flex: none;
-    width: 2.35rem;
-    height: 2.35rem;
-    border-radius: 50%;
-    background: rgba(254, 208, 95, .16);
+    width: 2rem;
+    height: 2rem;
+    font-size: .9rem;
     color: var(--ga-gold);
-    font-size: 1.1rem;
+    background: rgba(253, 244, 227, .08);
+    border-radius: var(--ga-radius-sm);
 }
 
 .ga-login__panel {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem 1rem 3rem;
-}
-
-/* Tarjeta flotante del formulario. */
-.ga-login__caja {
-    width: min(100%, 25rem);
-    padding: 2.25rem 2rem;
-    border: 1px solid var(--ga-border);
-    border-radius: var(--ga-radius-xl);
+    display: grid;
+    place-items: center;
+    padding: 2.5rem 1.5rem;
     background: var(--ga-surface);
-    box-shadow: var(--ga-shadow-md);
 }
 
-@media (max-width: 767.98px) {
-    /* En pantallas pequeñas el panel de marca se compacta:
-       los beneficios no aportan al inicio de sesión en móvil. */
-    .ga-login__caracteristicas {
-        display: none;
-    }
+.ga-login__caja {
+    width: 100%;
+    max-width: 23rem;
 }
 
-@media (min-width: 992px) {
-    .ga-login {
-        grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-    }
-
-    .ga-login__marca {
-        min-height: 100vh;
-        padding: 3rem clamp(3rem, 6vw, 6rem);
-    }
-
-    .ga-login__panel {
-        padding: 3rem;
-    }
+.ga-login__caja h2 {
+    font-family: var(--ga-font-display);
+    font-size: 1.625rem;
+    font-weight: 700;
+    letter-spacing: -.02em;
 }
 
 /* =============================================================
-   Paginas de error
+   8. Errores y estados de pagina
    ============================================================= */
+
+.ga-error-container {
+    margin: 4rem auto;
+    text-align: center;
+}
+
 .ga-error-container .display-6 {
     font-family: var(--ga-font-display);
-    font-size: clamp(4.5rem, 13vw, 7rem);
+    font-size: 3.5rem;
     font-weight: 700;
-    line-height: 1;
-    letter-spacing: -0.04em;
+    color: var(--ga-brick);
 }
 
 /* =============================================================
-   PWA (modo standalone)
-   Con viewport-fit=cover el contenido puede invadir el notch y la
-   barra inferior de gestos; env() vale 0 fuera del celular.
+   8. Recibo imprimible
    ============================================================= */
-body {
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
+
+/* Fila de cobro (estado de cuenta del cliente) */
+.ga-fila-cobro > td {
+    padding-top: 0 !important;
+    border-bottom: 1px solid var(--ga-border) !important;
+    background: rgba(254, 246, 170, .22);
 }
 
-/* ---------- Aviso de instalacion en iPhone ---------- */
+.ga-cobro {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: .5rem;
+    padding: .5rem 0 .75rem;
+}
+
+.ga-cobro__monto { width: 8rem; }
+.ga-cobro__metodo { width: 9.5rem; }
+.ga-cobro__nota { width: 12rem; }
+
+.ga-recibo {
+    max-width: 34rem;
+    padding: 2rem 2.25rem;
+    background: var(--ga-surface);
+    border: 1px solid var(--ga-border);
+    border-radius: var(--ga-radius-lg);
+    box-shadow: var(--ga-shadow-sm);
+}
+
+.ga-recibo__cabecera {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px dashed var(--ga-border-strong);
+}
+
+.ga-recibo__logo {
+    width: 2.75rem;
+    height: 2.75rem;
+    object-fit: contain;
+    border-radius: var(--ga-radius-md);
+}
+
+.ga-recibo__negocio {
+    margin: 0;
+    font-family: var(--ga-font-display);
+    font-size: 1.375rem;
+    font-weight: 700;
+    letter-spacing: -.02em;
+    color: var(--ga-ink);
+}
+
+.ga-recibo__datos {
+    margin: .1rem 0 0;
+    font-size: .75rem;
+    color: var(--ga-text-muted);
+}
+
+.ga-recibo__meta {
+    margin-left: auto;
+    text-align: right;
+}
+
+.ga-recibo__numero {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--ga-brick);
+}
+
+.ga-recibo__cliente {
+    padding: .9rem 0 .4rem;
+}
+
+.ga-recibo__detalle {
+    margin-top: .75rem;
+}
+
+.ga-recibo__totales {
+    margin-top: 1rem;
+    padding-top: .75rem;
+    border-top: 1px dashed var(--ga-border-strong);
+}
+
+.ga-recibo__linea {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .25rem 0;
+    font-size: .875rem;
+    color: var(--ga-text-muted);
+}
+
+.ga-recibo__linea span:last-child {
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    color: var(--ga-text);
+}
+
+.ga-recibo__linea--total {
+    font-size: 1rem;
+    color: var(--ga-ink);
+}
+
+.ga-recibo__linea--total span:last-child {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--ga-brick);
+}
+
+.ga-recibo__abonos {
+    margin-top: .75rem;
+    padding-top: .5rem;
+    border-top: 1px solid var(--ga-border);
+}
+
+.ga-recibo__pie {
+    margin-top: 1.25rem;
+    padding-top: .85rem;
+    border-top: 1px dashed var(--ga-border-strong);
+    font-size: .8125rem;
+    color: var(--ga-text-muted);
+    text-align: center;
+}
+
+.ga-recibo__pie p { margin: 0; }
+
+@media print {
+    .ga-sidebar,
+    .ga-topbar,
+    .ga-tabbar,
+    .ga-page-header,
+    .ga-app-main > div > .ga-page-header__acciones {
+        display: none !important;
+    }
+
+    .ga-app-main {
+        margin: 0;
+        padding: 0;
+        max-width: none;
+    }
+
+    body {
+        background: #fff;
+    }
+
+    .ga-recibo {
+        max-width: none;
+        padding: 0;
+        border: none;
+        box-shadow: none;
+    }
+}
+
+/* =============================================================
+   9. Aviso de instalacion (iOS)
+   ============================================================= */
+
 .ios-install-hint {
     position: fixed;
-    inset-inline: 0;
-    bottom: 0;
-    z-index: 1055;
+    left: 50%;
+    bottom: calc(var(--ga-tabbar-h) + env(safe-area-inset-bottom) + 1rem);
+    z-index: 1040;
     display: flex;
     align-items: center;
-    gap: var(--ga-space-3);
-    padding: var(--ga-space-3);
-    padding-bottom: calc(var(--ga-space-3) + env(safe-area-inset-bottom));
-    background: var(--ga-sidebar);
-    color: var(--ga-on-ink);
-    font-size: .9rem;
-    box-shadow: 0 -.25rem 1rem rgba(var(--ga-ink-rgb), .3);
+    gap: .75rem;
+    width: min(26rem, calc(100vw - 2rem));
+    padding: .75rem 1rem;
+    font-size: .8125rem;
+    color: #FFF8EC;
+    background: rgba(42, 15, 10, .95);
+    border-radius: var(--ga-radius-lg);
+    box-shadow: var(--ga-shadow-lg);
+    transform: translateX(-50%);
 }
 
-.ios-install-hint[hidden] {
-    display: none;
+.ios-install-hint__texto { flex: 1 1 auto; }
+
+/* =============================================================
+   10. Adaptacion a movil
+   ============================================================= */
+
+@media (max-width: 991.98px) {
+    .ga-sidebar { display: none; }
+
+    .ga-app-main {
+        margin-left: 0;
+        padding: 1.35rem 1.15rem calc(var(--ga-tabbar-h) + env(safe-area-inset-bottom) + 2rem);
+    }
+
+    .ga-topbar { display: flex; }
+    .ga-tabbar { display: flex; }
+
+    .ga-page-header {
+        align-items: flex-start;
+        margin-bottom: 1.25rem;
+        padding-bottom: .9rem;
+    }
+
+    .ga-page-header__titulo { font-size: 1.5rem; }
+    .ga-page-header__acciones { width: 100%; }
+    .ga-page-header__acciones .btn { flex: 0 1 auto; }
+
+    /* Punto de venta: el pedido pasa a hoja inferior. */
+    .ga-pos { grid-template-columns: minmax(0, 1fr); }
+
+    .ga-pedido {
+        position: fixed;
+        inset: auto 0 0 0;
+        z-index: 1040;
+        border-radius: var(--ga-radius-xl) var(--ga-radius-xl) 0 0;
+        box-shadow: var(--ga-shadow-lg);
+        transform: translateY(calc(100% - 5.25rem));
+        transition: transform var(--ga-slow) var(--ga-ease);
+        max-height: 86vh;
+    }
+
+    .ga-pedido.is-abierto { transform: translateY(0); }
+
+    .ga-pedido__cabecera { padding: .75rem 1rem 0; }
+
+    .ga-pedido__fila {
+        flex-wrap: wrap;
+        padding-bottom: .75rem;
+    }
+
+    .ga-pedido__abrir { display: inline-flex; }
+
+    .ga-pedido__totales { order: 2; margin-left: auto; }
+
+    .ga-pedido__cobrar {
+        order: 3;
+        flex: 1 1 100%;
+        margin-bottom: .75rem;
+    }
+
+    .ga-pedido__cuerpo { max-height: 60vh; }
+
+    /* Login: una sola columna. */
+    .ga-login { grid-template-columns: 1fr; }
+
+    .ga-login__marca {
+        gap: 1.25rem;
+        padding: 2rem 1.5rem;
+    }
+
+    .ga-login__titulo { font-size: 2.25rem; }
+    .ga-login__lema { font-size: .9375rem; }
+    .ga-login__caracteristicas { display: none; }
+    .ga-login__panel { padding: 2rem 1.25rem 3rem; }
 }
 
-.ios-install-hint__texto {
-    flex: 1 1 auto;
-    min-width: 0;
+@media (max-width: 575.98px) {
+    .ga-grid { grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr)); }
+
+    .ga-producto { padding: .85rem; }
+
+    .ga-kpi__valor { font-size: 1.625rem; }
+}
+
+/* Espacio util extra: la barra lateral no debe cortar el contenido. */
+@media (min-width: 992px) {
+    body { padding-left: env(safe-area-inset-left); }
 }

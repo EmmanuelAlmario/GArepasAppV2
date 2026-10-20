@@ -180,7 +180,10 @@ document.addEventListener('DOMContentLoaded', () => {
             catalogo.querySelectorAll('[data-producto]').forEach((producto) => {
                 const columna = producto.closest('[data-producto-col]');
                 if (!columna) return;
-                const coincide = texto === '' || producto.dataset.nombre.toLowerCase().includes(texto);
+                // data-nombre puede faltar si el servidor no lo envio: no se
+                // rompe el filtro por ello.
+                const nombre = (producto.dataset.nombre || '').toLowerCase();
+                const coincide = texto === '' || nombre.includes(texto);
                 columna.hidden = !coincide;
                 if (coincide) visibles += 1;
             });
@@ -221,11 +224,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (Array.isArray(window.carritoInicial)) {
         window.carritoInicial.forEach((dato) => {
             if (!dato || dato.id == null) return;
+            const cantidad = Number(dato.cantidad);
+            if (!Number.isFinite(cantidad) || cantidad <= 0) return;
+            const precio = Number(dato.precio);
             carrito.set(String(dato.id), {
-                nombre: dato.nombre,
-                precio: Number(dato.precio),
-                cantidad: Number(dato.cantidad),
-                stock: Number(dato.stock),
+                nombre: dato.nombre || '',
+                precio: Number.isFinite(precio) ? precio : 0,
+                cantidad,
+                stock: Number(dato.stock) || 0,
                 bajoPedido: dato.bajoPedido === true
             });
         });

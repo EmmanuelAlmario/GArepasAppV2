@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Registrar cobro', 'ventas', ~{::contenido})}">
+<body>
+<th:block th:fragment="acciones">
+    <a th:href="@{/ventas/historial}" class="btn btn-outline-secondary">Volver al historial</a>
+</th:block>
+<div th:fragment="contenido">
+    <th:block th:replace="~{fragments/page-header :: pageHeader('Registrar cobro', 'Cobro de una venta a credito: el saldo baja y queda registrado en la bitacora de abonos.', 'Venta', ~{::acciones})}"></th:block>
+
+    <th:block th:replace="~{fragments/form-alerts :: formAlerts}"></th:block>
+
+    <div class="row g-3">
+        <!-- Resumen de la venta que se esta cobrando -->
+        <div class="col-12 col-lg-5">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h2 th:text="'Venta #' + ${v.id}">Venta</h2>
+                    <span class="ga-chip ga-chip--suave" th:text="${v.formaPagoEtiqueta}">Credito</span>
+                </div>
+                <div class="card-body">
+                    <p class="ga-texto-mini mb-1">Cliente</p>
+                    <p class="fw-semibold" th:text="${v.nombreCliente} ?: 'Consumidor final'">Cliente</p>
+
+                    <p class="ga-texto-mini mb-1 mt-3">Productos</p>
+                    <ul class="ga-texto-mini ps-3 mb-0">
+                        <li th:each="d : ${v.detalles}"
+                            th:text="${d.productoNombre} + ' x' + ${d.cantidad}">Producto</li>
+                    </ul>
+
+                    <div class="ga-recibo__totales mt-3">
+                        <div class="ga-recibo__linea">
+                            <span>Total de la venta</span>
+                            <span th:text="${fmt.moneda(v.total)}">$0</span>
+                        </div>
+                        <div class="ga-recibo__linea">
+                            <span>Abonado</span>
+                            <span th:text="${fmt.moneda(v.total - v.saldo)}">$0</span>
+                        </div>
+                        <div class="ga-recibo__linea ga-recibo__linea--total">
+                            <span>Saldo pendiente</span>
+                            <span th:text="${fmt.moneda(v.saldo)}">$0</span>
+                        </div>
+                        <div class="ga-recibo__linea" th:if="${v.fechaVencimiento != null}">
+                            <span>Vence</span>
+                            <span th:text="${#temporals.format(v.fechaVencimiento, 'dd/MM/yyyy')}">fecha</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulario del cobro -->
+        <div class="col-12 col-lg-7">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h2>Datos del cobro</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post" th:action="@{/ventas/{id}/cobrar(id=${v.id})}" th:object="${form}">
+                        <div class="row g-3">
+                            <div class="col-12 col-md-6">
+                                <label class="form-label" for="monto">
+                                    Monto del cobro <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" id="monto" th:field="*{monto}" class="form-control"
+                                       step="1" min="1" required
+                                       th:attr="max=${v.saldo}" th:value="${v.saldo}">
+                                <div class="form-text">
+                                    Deuda actual: <span th:text="${fmt.moneda(v.saldo)}">$0</span>.
+                                    Puedes cobrar una parte.
+                                </div>
+                                <div class="invalid-feedback" th:errors="*{monto}">Error</div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label" for="metodo">Metodo de pago <span class="text-danger">*</span></label>
+                                <select id="metodo" th:field="*{metodo}" class="form-select">
+                                    <option th:each="m : ${metodos}" th:value="${m.name()}"
+                                            th:text="${m.etiqueta}">Efectivo</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" for="nota">Nota</label>
+                                <input type="text" id="nota" th:field="*{nota}" class="form-control"
+                                       maxlength="150" placeholder="Opcional: como se recibio el dinero">
+                                <div class="invalid-feedback" th:errors="*{nota}">Error</div>
+                            </div>
+                            <div class="col-12 d-flex flex-wrap gap-2 pt-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-cash-coin" aria-hidden="true"></i>Registrar cobro
+                                </button>
+                                <a th:href="@{/ventas/historial}" class="btn btn-outline-secondary">Cancelar</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Cliente', 'clientes', ~{::contenido})}">
+<body>
+<th:block th:fragment="acciones">
+    <a th:href="@{/clientes/{id}/editar(id=${cliente.id})}" class="btn btn-outline-secondary">
+        <i class="bi bi-pencil" aria-hidden="true"></i>Editar
+    </a>
+    <a th:href="@{/clientes/nuevo}" class="btn btn-outline-secondary">
+        <i class="bi bi-person-plus" aria-hidden="true"></i>Nuevo cliente
+    </a>
+</th:block>
+<div th:fragment="contenido">
+    <th:block th:replace="~{fragments/page-header :: pageHeader('Cliente: ' + ${cliente.nombre}, ${cliente.telefono} ?: 'Sin datos de contacto', 'Panel', ~{::acciones})}"></th:block>
+
+    <div class="row g-3 mb-3">
+        <!-- Datos de contacto -->
+        <div class="col-12 col-md-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h2>Datos del cliente</h2>
+                    <span class="badge" th:classappend="${cliente.activo} ? 'text-bg-success' : 'text-bg-secondary'"
+                          th:text="${cliente.activo} ? 'Activo' : 'Inactivo'">Activo</span>
+                </div>
+                <div class="card-body">
+                    <p class="ga-texto-suave mb-0"
+                       th:if="${cliente.telefono == null and cliente.direccion == null and cliente.notas == null}">
+                        Sin datos de contacto
+                    </p>
+                    <div class="row g-3"
+                         th:unless="${cliente.telefono == null and cliente.direccion == null and cliente.notas == null}">
+                        <div class="col-12 col-md-6">
+                            <p class="ga-etiqueta">Teléfono</p>
+                            <p class="fw-semibold mb-0" th:text="${cliente.telefono} ?: '—'">—</p>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <p class="ga-etiqueta">Dirección</p>
+                            <p class="fw-semibold mb-0" th:text="${cliente.direccion} ?: '—'">—</p>
+                        </div>
+                        <div class="col-12">
+                            <p class="ga-etiqueta">Notas</p>
+                            <p class="mb-0" th:text="${cliente.notas} ?: '—'">—</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Saldo -->
+        <div class="col-12 col-md-6">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="ga-kpi ga-kpi--brick">
+                        <div class="ga-kpi__cabecera">
+                            <p class="ga-kpi__etiqueta">Saldo pendiente</p>
+                            <span class="ga-kpi__icono"><i class="bi bi-wallet2" aria-hidden="true"></i></span>
+                        </div>
+                        <p class="ga-kpi__valor" th:text="${fmt.moneda(saldo)}">$0</p>
+                        <p class="ga-kpi__nota">Deuda total del cliente</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ventas del cliente -->
+    <div class="card shadow-sm mb-3">
+        <div class="card-header">
+            <h2>Ventas</h2>
+            <span class="ga-chip ga-chip--suave"
+                  th:text="${#lists.size(ventas)} + ' venta(s)'">0 venta(s)</span>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <caption class="visually-hidden">Ventas del cliente con su saldo y estado de cobro</caption>
+                <thead class="table-light">
+                <tr>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Productos</th>
+                    <th scope="col" class="text-end">Total</th>
+                    <th scope="col" class="text-end">Saldo</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col" class="text-end">Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${#lists.isEmpty(ventas)}">
+                    <td colspan="6">
+                        <div th:replace="~{fragments/empty-state :: empty('Sin ventas', 'Cuando le registres una venta aparecerá aquí con su saldo.', 'bi-bag')}"></div>
+                    </td>
+                </tr>
+                <th:block th:each="v : ${ventas}">
+                <tr>
+                    <td th:text="${#temporals.format(v.fecha, 'dd/MM/yyyy HH:mm')}">Fecha</td>
+                    <td>
+                        <span th:each="d, it : ${v.detalles}"
+                              th:text="${d.producto.nombre} + ' x' + ${d.cantidad} + ${it.last ? '' : ', '}">Producto</span>
+                    </td>
+                    <td class="text-end" th:text="${fmt.moneda(v.total)}">$0</td>
+                    <td class="text-end">
+                        <span th:if="${v.saldo.signum() > 0}" class="fw-semibold"
+                              style="color:var(--ga-brick)" th:text="${fmt.moneda(v.saldo)}">$0</span>
+                        <span th:unless="${v.saldo.signum() > 0}" class="ga-texto-mini"
+                              th:text="${fmt.moneda(v.saldo)}">$0</span>
+                    </td>
+                    <td>
+                        <span class="badge" th:classappend="${v.saldo.signum() > 0} ? 'text-bg-warning' : 'text-bg-success'"
+                              th:text="${v.saldo.signum() > 0} ? 'Pendiente' : 'Pagada'">Pendiente</span>
+                        <span class="ga-chip ga-chip--suave ms-1" th:text="${v.formaPago.etiqueta}">Efectivo</span>
+                    </td>
+                    <td class="text-end">
+                        <a class="btn btn-sm btn-outline-secondary"
+                           th:href="@{/ventas/{id}/recibo(id=${v.id})}"
+                           th:aria-label="'Recibo de la venta ' + ${v.id}">Recibo</a>
+                    </td>
+                </tr>
+                <!-- Cobro de una venta pendiente: lleva al formulario de cobro -->
+                <tr th:if="${v.saldo != null and v.saldo.signum() > 0}" class="ga-fila-cobro">
+                    <td colspan="6">
+                        <div class="ga-cobro">
+                            <span class="ga-texto-mini">
+                                Esta venta tiene 
+                                <span class="fw-semibold" th:text="${fmt.moneda(v.saldo)}">$0</span>
+                                por cobrar.
+                            </span>
+                            <a class="btn btn-sm btn-primary" th:href="@{/ventas/{id}/cobrar(id=${v.id})}">
+                                <i class="bi bi-cash-coin" aria-hidden="true"></i>Registrar cobro
+                            </a>
+                        </div>
+                    </td>
+                </tr>                </th:block>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Abonos recibidos -->
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h2>Abonos recibidos</h2>
+            <span class="ga-chip ga-chip--suave"
+                  th:text="${#lists.size(abonos)} + ' abono(s)'">0 abono(s)</span>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <caption class="visually-hidden">Abonos registrados para el cliente</caption>
+                <thead class="table-light">
+                <tr>
+                    <th scope="col">Fecha</th>
+                    <th scope="col" class="text-end">Monto</th>
+                    <th scope="col">Método</th>
+                    <th scope="col">Nota</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${#lists.isEmpty(abonos)}">
+                    <td colspan="4">
+                        <div th:replace="~{fragments/empty-state :: empty('Sin abonos', 'Cuando registres un cobro aparecerá aquí.', 'bi-cash-coin')}"></div>
+                    </td>
+                </tr>
+                <tr th:each="a : ${abonos}">
+                    <td th:text="${#temporals.format(a.fecha, 'dd/MM/yyyy HH:mm')}">Fecha</td>
+                    <td class="text-end fw-semibold" th:text="${fmt.moneda(a.monto)}">$0</td>
+                    <td th:text="${a.metodo.etiqueta}">Efectivo</td>
+                    <td class="ga-texto-mini" th:text="${a.nota} ?: '—'">Nota</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

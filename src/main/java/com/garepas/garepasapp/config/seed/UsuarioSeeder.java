@@ -1,0 +1,55 @@
+package com.garepas.garepasapp.config.seed;
+
+import com.garepas.garepasapp.domain.enums.Rol;
+import com.garepas.garepasapp.domain.model.Usuario;
+import com.garepas.garepasapp.domain.repository.UsuarioRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+
+/**
+ * Crea el usuario de respaldo "admin" si todavia no existe.
+ *
+ * <p><b>Rediseño:</b> antes este seeder reescribia la contraseña (y el rol)
+ * del admin en CADA arranque, asi que cualquier cambio hecho desde la
+ * aplicacion se perdia en el siguiente redespliegue. Ahora solo crea el
+ * usuario la primera vez: si ya existe, se respeta la clave que el negocio
+ * haya cambiado.
+ *
+ * <p>Para rotar la clave inicial basta con la variable de entorno
+ * {@code ADMIN_PASSWORD} en el PRIMER arranque, o cambiar la clave desde el
+ * modulo de usuarios.
+ */
+@Component
+@Order(1)
+@RequiredArgsConstructor
+@Slf4j
+public class UsuarioSeeder implements CommandLineRunner {
+
+    public static final String USUARIO_RESPALDO = "admin";
+
+    private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    @Value("${app.seed.admin-password}")
+    private String adminPassword;
+
+    @Override
+    public void run(String... args) {
+        if (usuarioRepository.findByUsernameIgnoreCase(USUARIO_RESPALDO).isPresent()) {
+            log.info("Usuario de respaldo '{}' ya existe: se conserva su clave actual.", USUARIO_RESPALDO);
+            return;
+        }
+        usuarioRepository.save(Usuario.builder()
+                .username(USUARIO_RESPALDO)
+                .password(passwordEncoder.encode(adminPassword))
+                .rol(Rol.ADMIN)
+                .activo(true)
+                .build());
+        log.info("Usuario de respaldo creado: '{}' con rol ADMIN.", USUARIO_RESPALDO);
+    }
+}

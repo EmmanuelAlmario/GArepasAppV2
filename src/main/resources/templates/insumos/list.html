@@ -7,7 +7,7 @@
     <a th:href="@{/insumos/nuevo}" class="btn btn-primary">Agregar insumo</a>
 </th:block>
 <div th:fragment="contenido">
-    <th:block th:replace="~{fragments/page-header :: pageHeader('Insumos', 'Materia prima del negocio. El costo se guarda por unidad base: gramo (g), mililitro (ml) o unidad (u).', ~{::acciones})}"></th:block>
+    <th:block th:replace="~{fragments/page-header :: pageHeader('Insumos', 'Materia prima del negocio. El stock y el precio se muestran en la unidad que elegiste (kg, L, u); internamente el sistema los guarda en unidad base (g, ml, u).', 'Inventario', ~{::acciones})}"></th:block>
 
     <div class="card shadow-sm mb-3">
         <div class="card-body">
@@ -42,7 +42,7 @@
                     <th scope="col">Categoría</th>
                     <th scope="col">Marca</th>
                     <th scope="col" class="text-end">Stock</th>
-                    <th scope="col" class="text-end">Costo por unidad base</th>
+                    <th scope="col" class="text-end">Precio por unidad</th>
                     <th scope="col">Estado</th>
                     <th scope="col" class="text-end">Acciones</th>
                 </tr>
@@ -51,9 +51,9 @@
                 <tr th:if="${#lists.isEmpty(insumos)}">
                     <td colspan="7">
                         <div th:if="${q != null && !q.isBlank()}"
-                             th:replace="~{fragments/empty-state :: empty('Sin resultados', 'Ningún insumo coincide con la búsqueda. Prueba con otro nombre, categoría o marca.')}"></div>
+                             th:replace="~{fragments/empty-state :: empty('Sin resultados', 'Ningún insumo coincide con la búsqueda. Prueba con otro nombre, categoría o marca.', 'bi-basket2')}"></div>
                         <div th:unless="${q != null && !q.isBlank()}"
-                             th:replace="~{fragments/empty-state :: empty('No hay insumos registrados', 'Agrega el primer insumo para poder crear recetas y registrar producciones.')}"></div>
+                             th:replace="~{fragments/empty-state :: empty('No hay insumos registrados', 'Agrega el primer insumo para poder crear recetas y registrar producciones.', 'bi-basket2')}"></div>
                     </td>
                 </tr>
                 <tr th:each="i : ${insumos}">
@@ -61,11 +61,11 @@
                     <td th:text="${i.categoria}">Categoría</td>
                     <td th:text="${i.marca}">Marca</td>
                     <td class="text-end">
-                        <span th:text="${fmt.cantidad(i.stockPresentacion()) + ' ' + i.unidadMedida.etiqueta}">0 g</span>
+                        <span th:text="${fmt.cantidad(i.stockPresentacion()) + ' ' + i.unidadEtiqueta()}">0 g</span>
                         <span th:if="${i.stockBajo}" class="badge text-bg-danger ms-1">Bajo</span>
                     </td>
                     <td class="text-end"
-                        th:text="'$' + ${fmt.precio(i.precioPorGramo)} + ' / ' + ${i.unidadBaseEtiqueta()}">$0 / g</td>
+                        th:text="'$' + ${fmt.precio(i.precioPorUnidad)} + ' / ' + ${i.unidadEtiqueta()}">$0 / g</td>
                     <td>
                         <span class="badge" th:classappend="${i.activo} ? 'text-bg-success' : 'text-bg-secondary'"
                               th:text="${i.activo} ? 'Activo' : 'Inactivo'">Activo</span>

@@ -6,7 +6,7 @@
     <a th:href="@{/ventas}" class="btn btn-outline-secondary">Ir al punto de venta</a>
 </th:block>
 <div th:fragment="contenido">
-    <th:block th:replace="~{fragments/page-header :: pageHeader('Historial de ventas', 'Solo el administrador puede consultar y eliminar ventas.', ~{::acciones})}"></th:block>
+    <th:block th:replace="~{fragments/page-header :: pageHeader('Historial de ventas', 'Solo el administrador puede consultar y anular ventas. Las ventas anuladas se conservan como historia pero no cuentan en los reportes.', 'Venta', ~{::acciones})}"></th:block>
 
     <div class="card shadow-sm mb-3">
         <div class="card-body">
@@ -16,14 +16,27 @@
                     <input type="search" id="q" name="q" class="form-control"
                            placeholder="Número, cliente o producto..." th:value="${q}">
                 </div>
+                <div class="col-12 col-md-4 col-lg-3">
+                    <label class="form-label small mb-1" for="estado">Estado</label>
+                    <select id="estado" name="estado" class="form-select">
+                        <option value="">Todas</option>
+                        <option value="ACTIVA" th:selected="${estado != null and estado.name() == 'ACTIVA'}">Activas</option>
+                        <option value="ANULADA" th:selected="${estado != null and estado.name() == 'ANULADA'}">Anuladas</option>
+                    </select>
+                </div>
                 <div class="col-12 col-md-auto">
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-outline-primary">Buscar</button>
-                        <a th:if="${q != null && !q.isBlank()}" th:href="@{/ventas/historial}"
+                        <a th:if="${(q != null and !q.isBlank()) or estado != null}" th:href="@{/ventas/historial}"
                            class="btn btn-outline-secondary">Limpiar</a>
                     </div>
                 </div>
             </form>
+            <p class="text-muted small mb-0 mt-2" th:if="${pagina != null}">
+                <span th:text="${pagina.totalElements}">0</span> venta(s) ·
+                página <span th:text="${pagina.number + 1}">1</span> de
+                <span th:text="${pagina.totalPages}">1</span>
+            </p>
         </div>
     </div>
 
@@ -38,21 +51,23 @@
                     <th scope="col">Cliente</th>
                     <th scope="col">Productos</th>
                     <th scope="col" class="text-end">Total</th>
+                    <th scope="col">Pago</th>
+                    <th scope="col">Estado</th>
                     <th scope="col" class="text-end">Acciones</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:if="${#lists.isEmpty(ventas)}">
-                    <td colspan="6">
-                        <div th:if="${q != null && !q.isBlank()}">
-                            <div th:replace="~{fragments/empty-state :: empty('Sin resultados para esta búsqueda', 'Prueba con otro número, cliente o producto, o limpia el filtro.')}"></div>
+                    <td colspan="8">
+                        <div th:if="${(q != null and !q.isBlank()) or estado != null}">
+                            <div th:replace="~{fragments/empty-state :: empty('Sin resultados para esta búsqueda', 'Prueba con otro número, cliente o producto, o limpia el filtro.', 'bi-search')}"></div>
                         </div>
-                        <div th:unless="${q != null && !q.isBlank()}">
-                            <div th:replace="~{fragments/empty-state :: empty('No hay ventas registradas', 'Las ventas aparecerán aquí cuando se registren en el punto de venta.')}"></div>
+                        <div th:unless="${(q != null and !q.isBlank()) or estado != null}">
+                            <div th:replace="~{fragments/empty-state :: empty('No hay ventas registradas', 'Las ventas aparecerán aquí cuando se registren en el punto de venta.', 'bi-search')}"></div>
                         </div>
                     </td>
                 </tr>
-                <tr th:each="v : ${ventas}">
+                <tr th:each="v : ${ventas}" th:classappend="${!v.activa()} ? 'opacity-75' : ''">
                     <td th:text="'#' + ${v.id}">#</td>
                     <td th:text="${#temporals.format(v.fecha, 'dd/MM/yyyy HH:mm')}">Fecha</td>
                     <td th:text="${v.nombreCliente} ?: '—'">Cliente</td>
@@ -60,12 +75,31 @@
                         <span th:each="d, it : ${v.detalles}"
                               th:text="${d.productoNombre} + ' x' + ${d.cantidad} + ${it.last ? '' : ', '}">Producto</span>
                     </td>
-                    <td class="text-end" th:text="${fmt.moneda(v.total)}">$0</td>
                     <td class="text-end">
-                        <form class="d-inline" method="post"
+                        <span th:text="${fmt.moneda(v.total)}">$0</span>
+                        <div class="ga-texto-mini" th:if="${v.pendiente()}"
+                             th:text="'Debe ' + ${fmt.moneda(v.saldo)}">Debe $0</div>
+                    </td>
+                    <td>
+                        <span class="ga-chip ga-chip--suave" th:text="${v.formaPagoEtiqueta}">Efectivo</span>
+                    </td>
+                    <td>
+                        <span class="badge" th:classappend="${v.activa()} ? 'text-bg-success' : 'text-bg-secondary'"
+                              th:text="${v.activa()} ? 'Activa' : 'Anulada'">Activa</span>
+                    </td>
+                    <td class="text-end">
+                        <a class="btn btn-sm btn-outline-secondary"
+                           th:href="@{/ventas/{id}/recibo(id=${v.id})}"
+                           th:aria-label="'Recibo de la venta ' + ${v.id}">Recibo</a>
+                        <a class="btn btn-sm btn-primary" th:if="${v.activa() and v.pendiente()}"
+                           th:href="@{/ventas/{id}/cobrar(id=${v.id})}"
+                           th:aria-label="'Cobrar la venta ' + ${v.id}">
+                            <i class="bi bi-cash-coin" aria-hidden="true"></i>Cobrar
+                        </a>
+                        <form class="d-inline" method="post" th:if="${v.activa() and !v.pendiente()}"
                               th:action="@{/ventas/{id}/eliminar(id=${v.id})}"
-                              data-confirm="¿Eliminar esta venta? Se revertirá el stock de los productos vendidos.">
-                            <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                              data-confirm="¿Anular esta venta? Se devolverá el stock y la venta dejará de contar en los reportes.">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Anular</button>
                         </form>
                     </td>
                 </tr>
@@ -73,6 +107,20 @@
             </table>
         </div>
     </div>
+
+    <nav th:if="${pagina != null and pagina.totalPages > 1}" class="mt-3" aria-label="Paginacion de ventas">
+        <ul class="pagination pagination-sm justify-content-center">
+            <li class="page-item" th:classappend="${pagina.first} ? 'disabled'">
+                <a class="page-link" th:href="@{/ventas/historial(q=${q}, estado=${estado}, page=${pagina.number - 1})}">Anterior</a>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link" th:text="${pagina.number + 1} + ' / ' + ${pagina.totalPages}">1 / 1</span>
+            </li>
+            <li class="page-item" th:classappend="${pagina.last} ? 'disabled'">
+                <a class="page-link" th:href="@{/ventas/historial(q=${q}, estado=${estado}, page=${pagina.number + 1})}">Siguiente</a>
+            </li>
+        </ul>
+    </nav>
 </div>
 </body>
 </html>

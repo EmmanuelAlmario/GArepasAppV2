@@ -3,51 +3,68 @@
       th:replace="~{layout :: layout('Punto de venta', 'ventas', ~{::contenido})}">
 <body>
 <th:block th:fragment="acciones">
-    <a th:href="@{/ventas/historial}" class="btn btn-outline-secondary" sec:authorize="hasRole('ADMIN')">Historial de ventas</a>
+    <a th:href="@{/ventas/historial}" class="btn btn-outline-secondary" sec:authorize="hasRole('ADMIN')">
+        <i class="bi bi-clock-history" aria-hidden="true"></i>Historial
+    </a>
 </th:block>
 <div th:fragment="contenido">
-    <th:block th:replace="~{fragments/page-header :: pageHeader('Punto de venta', 'Arma el pedido y registra la venta.', ~{::acciones})}"></th:block>
+    <th:block th:replace="~{fragments/page-header :: pageHeader('Punto de venta', 'Toca un producto para agregarlo al pedido y cobra al finalizar.', 'Venta', ~{::acciones})}"></th:block>
 
     <th:block th:replace="~{fragments/form-alerts :: formAlerts}"></th:block>
 
-    <!-- Jornada de operación (UC20 / UC22) -->
-    <div class="card shadow-sm mb-3 ga-jornada">
-        <div class="card-body d-flex flex-wrap align-items-center gap-3">
-            <div th:if="${jornada != null}" class="flex-grow-1">
-                <span class="badge text-bg-success me-2">Día abierto</span>
-                <span class="text-muted">
+    <!-- Enlace al recibo de la venta que se acaba de registrar -->
+    <div th:if="${ultimaVentaId != null}" class="alert alert-success mb-3" role="status">
+        <i class="bi bi-check-circle" aria-hidden="true"></i>
+        <span>Venta registrada. </span>
+        <a th:href="@{/ventas/{id}/recibo(id=${ultimaVentaId})}">Ver o imprimir el recibo</a>
+    </div>
+
+    <!-- Jornada de operacion (UC20 / UC22) -->
+    <div class="card ga-jornada mb-3">
+        <div class="card-body">
+            <div th:if="${jornada != null}" class="flex-grow-1 d-flex flex-wrap align-items-center gap-2">
+                <span class="ga-chip ga-chip--punto" style="background: var(--ga-success-soft); color:#0F5132;">Día abierto</span>
+                <span class="ga-texto-mini">
                     desde <span th:text="${#temporals.format(jornada.fechaApertura, 'dd/MM/yyyy HH:mm')}">fecha</span>
                     · abrió <span th:text="${jornada.abiertaPor}">usuario</span>
                     · <span th:text="${jornada.nroVentas} + ' venta(s)'">0</span>
                     · <strong th:text="${fmt.moneda(jornada.totalVentas)}">$0</strong>
                 </span>
             </div>
-            <form method="post" th:action="@{/ventas/jornada/cerrar}" th:if="${jornada != null}"
-                  data-confirm="¿Cerrar el día? Se calcula el arqueo con las ventas de esta jornada y las ventas posteriores quedarán sin asociar.">
-                <button type="submit" class="btn btn-outline-danger">Cerrar día</button>
-            </form>
-
-            <div th:if="${jornada == null}" class="flex-grow-1 text-muted">
-                No hay una jornada abierta. Puedes registrar ventas igual, pero quedarán sin asociar a un día.
+            <div th:if="${jornada != null}" class="ms-auto">
+                <form method="post" th:action="@{/ventas/jornada/cerrar}"
+                      data-confirm="¿Cerrar el día? Se calcula el arqueo con las ventas de esta jornada y las ventas posteriores quedarán sin asociar.">
+                    <button type="submit" class="btn btn-outline-danger">
+                        <i class="bi bi-stop-circle" aria-hidden="true"></i>Cerrar día
+                    </button>
+                </form>
             </div>
-            <form method="post" th:action="@{/ventas/jornada/abrir}" th:if="${jornada == null}">
-                <button type="submit" class="btn btn-outline-success">Abrir día de operación</button>
+
+            <div th:if="${jornada == null}" class="flex-grow-1">
+                <span class="ga-texto-mini">No hay una jornada abierta. Puedes registrar ventas igual, pero quedarán sin asociar a un día.</span>
+            </div>
+            <form th:if="${jornada == null}" method="post" th:action="@{/ventas/jornada/abrir}" class="ms-auto">
+                <button type="submit" class="btn btn-outline-success">
+                    <i class="bi bi-play-circle" aria-hidden="true"></i>Abrir día de operación
+                </button>
             </form>
         </div>
     </div>
 
     <div class="ga-pos">
-        <!-- Catálogo -->
+        <!-- Catalogo -->
         <section class="ga-pos__catalogo" aria-labelledby="tituloCatalogo">
-            <h2 class="h6 text-muted mb-2" id="tituloCatalogo">Productos disponibles</h2>
+            <h2 class="ga-etiqueta mb-2" id="tituloCatalogo">Productos disponibles</h2>
 
             <div class="ga-pos__buscar">
-                <label class="form-label small mb-1" for="filtroProductos">Buscar producto</label>
-                <input type="search" id="filtroProductos" class="form-control form-control-lg"
+                <label class="form-label" for="filtroProductos">
+                    <i class="bi bi-search me-1" aria-hidden="true"></i>Buscar producto
+                </label>
+                <input type="search" id="filtroProductos" class="form-control"
                        placeholder="Nombre del producto..." autocomplete="off">
             </div>
 
-            <p th:if="${#lists.isEmpty(productos)}" class="text-muted small">
+            <p th:if="${#lists.isEmpty(productos)}" class="ga-texto-mini">
                 No hay productos activos disponibles.
                 <span sec:authorize="hasRole('ADMIN')">
                     Registra una <a th:href="@{/producciones/nuevo}">producción</a>
@@ -57,7 +74,7 @@
             </p>
 
             <div id="catalogo" class="ga-grid" role="group" aria-label="Catálogo de productos">
-                <div class="ga-grid__celda" data-producto-col th:each="p : ${productos}">
+                <div data-producto-col th:each="p : ${productos}">
                     <button type="button" class="ga-producto" data-producto
                             th:attr="data-id=${p.id},data-nombre=${p.nombre},data-precio=${p.precioVenta},data-stock=${p.stockActual},data-bajo-pedido=${p.bajoPedido()}">
                         <span class="ga-producto__inicial" aria-hidden="true"
@@ -69,12 +86,12 @@
                     </button>
                 </div>
             </div>
-            <p id="sinResultadosCatalogo" class="text-muted small mt-2 mb-0 d-none">
+            <p id="sinResultadosCatalogo" class="ga-texto-mini mt-2 mb-0 d-none">
                 Ningún producto coincide con la búsqueda.
             </p>
         </section>
 
-        <!-- Pedido: panel lateral en escritorio y hoja inferior en móvil -->
+        <!-- Pedido: panel lateral en escritorio y hoja inferior en movil -->
         <aside class="ga-pedido" id="pedido" aria-labelledby="tituloPedido">
             <div class="ga-pedido__cabecera">
                 <div id="posMensaje" class="ga-pos__aviso" role="status" aria-live="polite"></div>
@@ -88,22 +105,50 @@
                         <span class="ga-pedido__etiqueta">Total</span>
                         <span class="ga-pedido__total" id="totalCarrito">$0</span>
                     </div>
-                    <button type="submit" form="formVenta" class="btn btn-primary btn-lg ga-pedido__cobrar"
-                            id="botonCobrar" disabled>Cobrar</button>
+                    <button type="submit" form="formVenta" class="btn btn-primary ga-pedido__cobrar"
+                            id="botonCobrar" disabled>
+                        <i class="bi bi-check2-circle" aria-hidden="true"></i>Cobrar
+                    </button>
                 </div>
             </div>
 
             <div class="ga-pedido__cuerpo" id="pedidoCuerpo">
-                <h2 class="h6 text-muted mb-2" id="tituloPedido">Pedido actual</h2>
-                <p id="carritoVacio" class="text-muted small mb-3">Toca un producto para agregarlo al pedido.</p>
+                <h2 class="ga-etiqueta mb-0" id="tituloPedido">Pedido actual</h2>
+                <p id="carritoVacio" class="ga-texto-mini mb-0">Toca un producto para agregarlo al pedido.</p>
                 <ul id="carrito" class="ga-lineas" aria-label="Productos del pedido"></ul>
 
                 <form id="formVenta" method="post" th:action="@{/ventas}">
                     <div id="camposCarrito"></div>
+
                     <div>
-                        <label class="form-label" for="nombreCliente">Cliente (opcional)</label>
+                        <label class="form-label" for="clienteId">
+                            <i class="bi bi-person me-1" aria-hidden="true"></i>Cliente de la cartera
+                        </label>
+                        <select id="clienteId" name="clienteId" class="form-select">
+                            <option value="">Consumidor final (sin cliente)</option>
+                            <option th:each="c : ${clientes}" th:value="${c.id}" th:text="${c.nombre}">Cliente</option>
+                        </select>
+                        <div class="form-text">Elige un cliente para poder fiarle o registrar el cobro despues.</div>
+                    </div>
+
+                    <div>
+                        <label class="form-label" for="nombreCliente">Nombre del consumidor (opcional)</label>
                         <input type="text" id="nombreCliente" name="nombreCliente" class="form-control"
                                maxlength="100" th:value="${form.nombreCliente}" autocomplete="off">
+                    </div>
+
+                    <div>
+                        <label class="form-label" for="formaPago">
+                            <i class="bi bi-cash-coin me-1" aria-hidden="true"></i>Forma de pago
+                        </label>
+                        <select id="formaPago" name="formaPago" class="form-select">
+                            <option th:each="f : ${formasPago}" th:value="${f.name()}" th:text="${f.etiqueta}">Efectivo</option>
+                        </select>
+                    </div>
+
+                    <div id="bloqueVencimiento" class="d-none">
+                        <label class="form-label" for="fechaVencimiento">Fecha de vencimiento del credito</label>
+                        <input type="date" id="fechaVencimiento" name="fechaVencimiento" class="form-control">
                     </div>
                     <p class="alert alert-warning py-2 small mt-3 mb-0" th:if="${jornada == null}">
                         No hay día abierto: esta venta quedará registrada sin asociarse a una jornada.
@@ -117,7 +162,31 @@
         /* Pedido conservado por el servidor cuando la venta no se pudo registrar. */
         window.carritoInicial = /*[[${carritoInicial}]]*/ [];
     </script>
-    <script th:src="@{/js/pos-cart.js}"></script>
+    <script>
+        // El vencimiento solo tiene sentido en ventas a credito.
+        (function () {
+            const formaPago = document.getElementById('formaPago');
+            const bloque = document.getElementById('bloqueVencimiento');
+            const cliente = document.getElementById('clienteId');
+            if (!formaPago || !bloque) return;
+
+            function sincronizar() {
+                const esCredito = formaPago.value === 'CREDITO';
+                bloque.classList.toggle('d-none', !esCredito);
+                if (cliente) cliente.required = esCredito;
+            }
+
+            formaPago.addEventListener('change', sincronizar);
+            if (cliente) {
+                cliente.addEventListener('change', function () {
+                    if (cliente.value) formaPago.value = 'CREDITO';
+                    sincronizar();
+                });
+            }
+            sincronizar();
+        })();
+    </script>
+    <script th:src="@{/js/pos-cart.js?v=5}"></script>
 </div>
 </body>
 </html>

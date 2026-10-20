@@ -6,7 +6,7 @@
     <a th:href="@{/gastos/nuevo}" class="btn btn-primary">Registrar gasto</a>
 </th:block>
 <div th:fragment="contenido">
-    <th:block th:replace="~{fragments/page-header :: pageHeader('Gastos', 'Gastos operativos del negocio. Los generados por una producción se gestionan desde la producción.', ~{::acciones})}"></th:block>
+    <th:block th:replace="~{fragments/page-header :: pageHeader('Gastos', 'Gastos operativos del negocio. Los generados por una producción se gestionan desde la producción.', 'Panel', ~{::acciones})}"></th:block>
 
     <div class="card shadow-sm">
         <div class="table-responsive">
@@ -25,7 +25,7 @@
                 <tbody>
                 <tr th:if="${#lists.isEmpty(gastos)}">
                     <td colspan="6">
-                        <div th:replace="~{fragments/empty-state :: empty('No hay gastos registrados', 'Registra servicios, transporte u otros gastos para que los reportes reflejen la utilidad real.')}"></div>
+                        <div th:replace="~{fragments/empty-state :: empty('No hay gastos registrados', 'Registra servicios, transporte u otros gastos para que los reportes reflejen la utilidad real.', 'bi-receipt')}"></div>
                     </td>
                 </tr>
                 <tr th:each="g : ${gastos}">

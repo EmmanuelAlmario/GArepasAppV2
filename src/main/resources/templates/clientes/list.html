@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Clientes', 'clientes', ~{::contenido})}">
+<body>
+<th:block th:fragment="acciones">
+    <a th:href="@{/clientes/nuevo}" class="btn btn-primary">
+        <i class="bi bi-person-plus" aria-hidden="true"></i>Nuevo cliente
+    </a>
+</th:block>
+<div th:fragment="contenido">
+    <th:block th:replace="~{fragments/page-header :: pageHeader('Clientes', 'Clientes que fían o que compran con regularidad.', 'Panel', ~{::acciones})}"></th:block>
+
+    <!-- Indicadores de la cartera -->
+    <div class="row g-3 mb-3">
+        <div class="col-12 col-md-4">
+            <div class="ga-kpi ga-kpi--brick">
+                <div class="ga-kpi__cabecera">
+                    <p class="ga-kpi__etiqueta">Total por cobrar</p>
+                    <span class="ga-kpi__icono"><i class="bi bi-cash-coin" aria-hidden="true"></i></span>
+                </div>
+                <p class="ga-kpi__valor" th:text="${fmt.moneda(totalPorCobrar)}">$0</p>
+                <p class="ga-kpi__nota">Suma de los saldos pendientes</p>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="ga-kpi ga-kpi--ink">
+                <div class="ga-kpi__cabecera">
+                    <p class="ga-kpi__etiqueta">Clientes</p>
+                    <span class="ga-kpi__icono"><i class="bi bi-people" aria-hidden="true"></i></span>
+                </div>
+                <p class="ga-kpi__valor" th:text="${#lists.size(clientes)}">0</p>
+                <p class="ga-kpi__nota">Registrados en el negocio</p>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="ga-kpi ga-kpi--gold">
+                <div class="ga-kpi__cabecera">
+                    <p class="ga-kpi__etiqueta">Con saldo pendiente</p>
+                    <span class="ga-kpi__icono"><i class="bi bi-person-exclamation" aria-hidden="true"></i></span>
+                </div>
+                <p class="ga-kpi__valor"
+                   th:text="${#lists.size(saldos.values().?[(#this).signum() > 0])}">0</p>
+                <p class="ga-kpi__nota">Clientes con deuda por cobrar</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <caption class="visually-hidden">Clientes del negocio con su saldo pendiente y estado</caption>
+                <thead class="table-light">
+                <tr>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Dirección</th>
+                    <th scope="col" class="text-end">Saldo</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col" class="text-end">Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${#lists.isEmpty(clientes)}">
+                    <td colspan="5">
+                        <div th:replace="~{fragments/empty-state :: empty('No hay clientes registrados', 'Crea un cliente para poder fiar o llevar su estado de cuenta.', 'bi-people')}"></div>
+                    </td>
+                </tr>
+                <tr th:each="c : ${clientes}" th:with="saldo=${saldos.get(c.id)}">
+                    <td>
+                        <span class="fw-semibold d-block" th:text="${c.nombre}">Nombre</span>
+                        <span class="ga-texto-mini" th:if="${c.telefono != null}"
+                              th:text="${c.telefono}">Teléfono</span>
+                    </td>
+                    <td class="ga-texto-mini" th:text="${c.direccion} ?: '—'">Dirección</td>
+                    <td class="text-end">
+                        <span th:if="${(saldo ?: 0).signum() > 0}" class="fw-semibold"
+                              style="color:var(--ga-brick)" th:text="${fmt.moneda(saldo)}">$0</span>
+                        <span th:unless="${(saldo ?: 0).signum() > 0}" class="ga-texto-mini"
+                              th:text="${fmt.moneda(saldo)}">$0</span>
+                    </td>
+                    <td>
+                        <span class="badge" th:classappend="${c.activo} ? 'text-bg-success' : 'text-bg-secondary'"
+                              th:text="${c.activo} ? 'Activo' : 'Inactivo'">Activo</span>
+                    </td>
+                    <td class="text-end">
+                        <a class="btn btn-sm btn-outline-secondary"
+                           th:href="@{/clientes/{id}/editar(id=${c.id})}"
+                           th:aria-label="'Editar ' + ${c.nombre}">Editar</a>
+                        <form class="d-inline" method="post"
+                              th:action="@{/clientes/{id}/eliminar(id=${c.id})}"
+                              data-confirm="¿Eliminar este cliente? Si tiene ventas registradas se desactivará en lugar de eliminarse.">
+                            <button type="submit" class="btn btn-sm btn-outline-danger"
+                                    th:aria-label="'Eliminar ' + ${c.nombre}">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

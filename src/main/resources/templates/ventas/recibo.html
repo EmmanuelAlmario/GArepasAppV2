@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Recibo', 'ventas', ~{::contenido})}">
+<body>
+<th:block th:fragment="acciones">
+    <button type="button" class="btn btn-outline-secondary" onclick="window.print()">
+        <i class="bi bi-printer" aria-hidden="true"></i>Imprimir
+    </button>
+    <a th:href="@{/ventas}" class="btn btn-outline-secondary">Volver al punto de venta</a>
+</th:block>
+<div th:fragment="contenido">
+
+    <div class="ga-recibo mx-auto">
+        <header class="ga-recibo__cabecera">
+            <img th:if="${config.logoUrl != null}" th:src="${config.logoUrl}" alt="" class="ga-recibo__logo">
+            <div>
+                <h1 class="ga-recibo__negocio" th:text="${config.nombreComercial}">Gordo Arepas</h1>
+                <p class="ga-recibo__datos" th:if="${config.identificacionFiscal != null}"
+                   th:text="'NIT ' + ${config.identificacionFiscal}">NIT</p>
+                <p class="ga-recibo__datos" th:if="${config.telefono != null}"
+                   th:text="${config.telefono}">Telefono</p>
+                <p class="ga-recibo__datos" th:if="${config.direccion != null}"
+                   th:text="${config.direccion}">Direccion</p>
+            </div>
+            <div class="ga-recibo__meta">
+                <p class="ga-etiqueta mb-0">Recibo</p>
+                <p class="ga-recibo__numero" th:text="'#' + ${v.id}">#0</p>
+                <p class="ga-texto-mini mb-0"
+                   th:text="${#temporals.format(v.fecha, 'dd/MM/yyyy HH:mm')}">fecha</p>
+            </div>
+        </header>
+
+        <section class="ga-recibo__cliente" th:if="${v.nombreCliente != null}">
+            <p class="ga-etiqueta mb-1">Cliente</p>
+            <p class="fw-semibold mb-0" th:text="${v.nombreCliente}">Cliente</p>
+        </section>
+
+        <table class="table ga-recibo__detalle mb-0">
+            <thead>
+            <tr>
+                <th scope="col">Producto</th>
+                <th scope="col" class="text-end">Cant.</th>
+                <th scope="col" class="text-end">Precio</th>
+                <th scope="col" class="text-end">Subtotal</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="d : ${v.detalles}">
+                <td th:text="${d.productoNombre}">Producto</td>
+                <td class="text-end" th:text="${d.cantidad}">1</td>
+                <td class="text-end" th:text="${fmt.moneda(d.precioUnitario)}">$0</td>
+                <td class="text-end" th:text="${fmt.moneda(d.subtotal)}">$0</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <section class="ga-recibo__totales">
+            <div class="ga-recibo__linea">
+                <span>Subtotal</span>
+                <span th:text="${fmt.moneda(v.subtotal)}">$0</span>
+            </div>
+            <div class="ga-recibo__linea" th:if="${v.impuestos != null and v.impuestos.signum() > 0}">
+                <span>Impuestos</span>
+                <span th:text="${fmt.moneda(v.impuestos)}">$0</span>
+            </div>
+            <div class="ga-recibo__linea ga-recibo__linea--total">
+                <span>Total</span>
+                <span th:text="${fmt.moneda(v.total)}">$0</span>
+            </div>
+            <div class="ga-recibo__linea" th:if="${v.pendiente()}">
+                <span>Saldo pendiente</span>
+                <span th:text="${fmt.moneda(v.saldo)}">$0</span>
+            </div>
+            <div class="ga-recibo__linea">
+                <span>Forma de pago</span>
+                <span th:text="${v.formaPagoEtiqueta}">Efectivo</span>
+            </div>
+            <div class="ga-recibo__linea" th:if="${v.fechaVencimiento != null}">
+                <span>Vence</span>
+                <span th:text="${#temporals.format(v.fechaVencimiento, 'dd/MM/yyyy')}">fecha</span>
+            </div>
+        </section>
+
+        <section class="ga-recibo__abonos" th:if="${!#lists.isEmpty(abonos)}">
+            <p class="ga-etiqueta mb-1">Abonos recibidos</p>
+            <div class="ga-recibo__linea" th:each="a : ${abonos}">
+                <span th:text="${#temporals.format(a.fecha, 'dd/MM/yyyy')} + ' · ' + ${a.metodo.etiqueta}">abono</span>
+                <span th:text="${fmt.moneda(a.monto)}">$0</span>
+            </div>
+        </section>
+
+        <footer class="ga-recibo__pie" th:if="${config.mensajeRecibo != null}">
+            <p th:text="${config.mensajeRecibo}">Gracias</p>
+        </footer>
+    </div>
+</div>
+</body>
+</html>
