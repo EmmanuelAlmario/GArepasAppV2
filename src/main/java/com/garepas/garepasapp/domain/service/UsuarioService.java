@@ -15,18 +15,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-/**
- * Usuarios del sistema.
- *
- * <p><b>Reglas del rediseño:</b>
- * <ul>
- *   <li>No se puede dejar el sistema sin administradores: borrar, degradar o
- *       desactivar al ultimo ADMIN activo se bloquea. Antes el unico nombre
- *       protegido era la cadena "admin" y el resto de administradores
- *       podian dejar la aplicacion sin nadie que administerla.</li>
- *   <li>El usuario de respaldo "admin" no se puede eliminar ni degradar.</li>
- * </ul>
- */
+  
+
+
+
+
+
+
+
+
+
+
+
 @Service
 @RequiredArgsConstructor
 public class UsuarioService {
@@ -111,7 +111,7 @@ public class UsuarioService {
         return usuario.getRol() == Rol.ADMIN && Boolean.TRUE.equals(usuario.getActivo());
     }
 
-    /** Falla si este usuario es el ultimo administrador activo del sistema. */
+      
     private void verificarQueQuedaUnAdmin() {
         long admins = usuarioRepository.countByRolAndActivoTrue(Rol.ADMIN);
         if (admins <= 1) {

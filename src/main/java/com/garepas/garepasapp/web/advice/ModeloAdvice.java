@@ -4,11 +4,11 @@ import com.garepas.garepasapp.shared.Formato;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-/**
- * Expone atributos comunes a todas las plantillas.
- *
- * - "fmt": formateador de numeros, para usar ${fmt.moneda(precio)}.
- */
+  
+
+
+
+
 @ControllerAdvice
 public class ModeloAdvice {
 

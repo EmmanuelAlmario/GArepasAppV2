@@ -15,13 +15,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 
-/**
- * Clientes del negocio: los que fian, los que se les manda a cobrar y los que
- * solo compran de vez en cuando.
- *
- * <p>Un cliente con ventas registradas no se borra: se desactiva. Asi el
- * historico no se rompe.
- */
+  
+
+
+
+
+
+
 @Service
 @RequiredArgsConstructor
 public class ClienteService {
@@ -77,10 +77,10 @@ public class ClienteService {
         return clienteRepository.save(cliente);
     }
 
-    /**
-     * Borra el cliente si nunca ha tenido ventas; si ya tiene, lo desactiva
-     * (borrarlo dejaria ventas huerfanas).
-     */
+      
+
+
+
     @Transactional
     public void eliminar(Long id) {
         Cliente cliente = buscarPorId(id);
@@ -93,7 +93,7 @@ public class ClienteService {
         clienteRepository.deleteById(id);
     }
 
-    /** Saldo pendiente total de un cliente. */
+      
     @Transactional(readOnly = true)
     public BigDecimal saldoDe(Long clienteId) {
         return ventaRepository.findByClienteIdAndEstado(clienteId, EstadoVenta.ACTIVA).stream()

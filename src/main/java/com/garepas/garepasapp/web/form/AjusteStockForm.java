@@ -7,22 +7,22 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Formulario de ajuste de stock multiple (UC5).
- *
- * <p>Las filas se envian como listas paralelas con el mismo nombre de campo
- * (insumoId repetido y cantidad repetida), lo que permite agregar filas
- * dinamicamente sin manejar indices.
- *
- * <p>La cantidad es un delta en la unidad de PRESENTACION del insumo:
- * positiva repone (compra), negativa consume (merma).
- */
+  
+
+
+
+
+
+
+
+
+
 public class AjusteStockForm {
 
     private List<Long> insumoId = new ArrayList<>();
     private List<BigDecimal> cantidad = new ArrayList<>();
 
-    /** Devuelve solo las filas completas (insumo + cantidad distinta de cero). */
+      
     public List<DetalleAjusteStockCommand> filasValidas() {
         List<DetalleAjusteStockCommand> filas = new ArrayList<>();
         for (int i = 0; i < insumoId.size(); i++) {

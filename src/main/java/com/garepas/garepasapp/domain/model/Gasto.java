@@ -6,13 +6,13 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-/**
- * Egreso de dinero.
- *
- * <p>Los gastos de materia prima que genera una produccion quedan enlazados a
- * ella por relacion real (antes era un {@code produccionId} suelto sin clave
- * foranea), lo que permite borrarlos en cascada al revertir la produccion.
- */
+  
+
+
+
+
+
+
 @Entity
 @Table(name = "gastos", indexes = {
         @Index(name = "idx_gastos_fecha", columnList = "fecha"),
@@ -43,15 +43,15 @@ public class Gasto {
     @Column(nullable = false)
     private LocalDateTime fecha;
 
-    /**
-     * Produccion que origino este gasto (categoria MATERIA_PRIMA).
-     * null = gasto manual registrado desde el modulo de gastos.
-     */
+      
+
+
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "produccion_id")
     private Produccion produccion;
 
-    /** true si el gasto fue generado por una produccion (no se edita a mano). */
+      
     public boolean esAutomatico() {
         return produccion != null;
     }

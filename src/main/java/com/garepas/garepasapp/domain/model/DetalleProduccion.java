@@ -34,10 +34,10 @@ public class DetalleProduccion {
     @Column(precision = 15, scale = 4)
     private BigDecimal cantidadUsada;
 
-    /**
-     * Snapshot del precio por unidad base del insumo al momento de la produccion,
-     * para preservar el costo historico aunque el insumo cambie de precio.
-     */
+      
+
+
+
     @Column(name = "precio_unidad_base_snapshot", precision = 15, scale = 6)
     private BigDecimal precioUnidadBaseSnapshot;
 

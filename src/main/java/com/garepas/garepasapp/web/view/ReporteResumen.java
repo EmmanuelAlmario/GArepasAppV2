@@ -4,9 +4,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-/**
- * Resumen de rentabilidad del negocio en un rango de fechas.
- */
+  
+
+
 public record ReporteResumen(
         LocalDate desde,
         LocalDate hasta,

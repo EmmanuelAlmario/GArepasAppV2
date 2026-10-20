@@ -1,13 +1,13 @@
-/* =============================================================
-   Layout — el armazón de la aplicación
-   Barra lateral (escritorio), barra superior y barra inferior
-   (movil), encabezado de pagina y las pantallas especiales
-   (punto de venta, login, errores).
-   ============================================================= */
+  
 
-/* =============================================================
-   1. Armazon general
-   ============================================================= */
+
+
+
+
+
+  
+
+
 
 .ga-chrome {
     display: contents;
@@ -33,9 +33,9 @@
 .form-card { max-width: 47.5rem; }
 .form-card-lg { max-width: 56.25rem; }
 
-/* =============================================================
-   2. Barra lateral (escritorio)
-   ============================================================= */
+  
+
+
 
 .ga-sidebar {
     position: fixed;
@@ -54,7 +54,7 @@
     overscroll-behavior: contain;
 }
 
-/* --- Marca --- */
+  
 
 .ga-marca {
     display: flex;
@@ -96,7 +96,7 @@
     color: rgba(254, 208, 95, .75);
 }
 
-/* --- Navegacion --- */
+  
 
 .ga-nav {
     flex: 1 1 auto;
@@ -168,7 +168,7 @@
     color: var(--ga-gold);
 }
 
-/* Activo: velo ambar translucido, no un bloque naranja que grita. */
+  
 .ga-nav__link.is-active {
     color: var(--ga-gold);
     font-weight: 600;
@@ -192,7 +192,7 @@
     transform: translateY(-50%);
 }
 
-/* --- Pie: usuario --- */
+  
 
 .ga-sidebar__pie {
     margin-top: 1.5rem;
@@ -232,9 +232,9 @@
     border-radius: 50%;
 }
 
-/* =============================================================
-   3. Movil: barra superior y barra inferior
-   ============================================================= */
+  
+
+
 
 .ga-topbar {
     position: sticky;
@@ -311,9 +311,9 @@
     transform: translateY(-1px);
 }
 
-/* =============================================================
-   4. Encabezado de pagina
-   ============================================================= */
+  
+
+
 
 .ga-page-header {
     display: flex;
@@ -349,7 +349,7 @@
     gap: .5rem;
 }
 
-/* Kicker: pequena linea de color sobre el titulo */
+  
 .ga-kicker {
     display: flex;
     align-items: center;
@@ -364,16 +364,16 @@
 
 .ga-kicker::before {
     content: "";
-    /* Acento de marca: la barrita naranja que abre cada pantalla. */
+      
     width: 2.5rem;
     height: .25rem;
     background: var(--ga-orange);
     border-radius: var(--ga-radius-pill);
 }
 
-/* =============================================================
-   5. Tablas en movil: cada fila se convierte en tarjeta
-   ============================================================= */
+  
+
+
 
 @media (max-width: 767.98px) {
     .table-responsive > table > thead {
@@ -445,9 +445,9 @@
     }
 }
 
-/* =============================================================
-   6. Punto de venta
-   ============================================================= */
+  
+
+
 
 .ga-pos {
     display: grid;
@@ -539,7 +539,7 @@
     color: var(--ga-text-soft);
 }
 
-/* --- Panel del pedido --- */
+  
 
 .ga-pedido {
     position: sticky;
@@ -707,7 +707,7 @@
     border-color: var(--ga-danger);
 }
 
-/* --- Jornada --- */
+  
 
 .ga-jornada .card-body {
     display: flex;
@@ -723,9 +723,9 @@
     --ga-btn-bd: rgba(25, 135, 84, .35);
 }
 
-/* =============================================================
-   7. Login
-   ============================================================= */
+  
+
+
 
 .ga-login {
     display: grid;
@@ -742,23 +742,27 @@
     gap: 2rem;
     padding: 3rem;
     color: #FFF8EC;
-    background:
-        radial-gradient(38% 26% at 22% 28%, rgba(254, 208, 95, .2) 0%, rgba(254, 208, 95, 0) 70%),
-        radial-gradient(30% 22% at 72% 62%, rgba(246, 125, 20, .22) 0%, rgba(246, 125, 20, 0) 70%),
-        linear-gradient(150deg, #56241C 0%, #3A1610 55%, #2A0F0A 100%);
+      
+    background-image:
+        radial-gradient(rgba(254, 208, 95, .14) 1.5px, transparent 1.6px),
+        radial-gradient(46rem 46rem at -15% -25%, rgba(254, 208, 95, .16), transparent 60%),
+        radial-gradient(52rem 52rem at 125% 135%, rgba(192, 67, 11, .38), transparent 58%);
+    background-size: 1.6rem 1.6rem, auto, auto;
+    background-color: var(--ga-sidebar);
     overflow: hidden;
 }
 
-/* Textura de arepa: circles concatenados muy sutiles. */
+  
 .ga-login__marca::after {
     content: "";
     position: absolute;
-    inset: 0;
-    background-image:
-        radial-gradient(circle at 50% 50%, rgba(255, 253, 249, .04) 0 42%, transparent 43%),
-        radial-gradient(circle at 50% 50%, transparent 0 46%, rgba(254, 208, 95, .045) 47% 49%, transparent 50%);
-    background-size: 170px 170px;
-    opacity: .5;
+    right: -6.5rem;
+    bottom: -9.5rem;
+    width: 22rem;
+    height: 22rem;
+    border: 2px solid rgba(254, 208, 95, .32);
+    border-radius: 50%;
+    box-shadow: 0 0 0 1.1rem rgba(254, 208, 95, .07);
     pointer-events: none;
 }
 
@@ -768,10 +772,6 @@
     width: 3.25rem;
     height: 3.25rem;
     object-fit: contain;
-    padding: .25rem;
-    background: rgba(253, 244, 227, .1);
-    border: 1px solid rgba(254, 208, 95, .4);
-    border-radius: var(--ga-radius-lg);
 }
 
 .ga-login__sub {
@@ -822,24 +822,35 @@
     display: grid;
     place-items: center;
     flex: none;
-    width: 2rem;
-    height: 2rem;
-    font-size: .9rem;
+    width: 2.35rem;
+    height: 2.35rem;
+    font-size: 1.05rem;
     color: var(--ga-gold);
-    background: rgba(253, 244, 227, .08);
-    border-radius: var(--ga-radius-sm);
+    background: rgba(254, 208, 95, .16);
+    border-radius: 50%;
 }
 
 .ga-login__panel {
     display: grid;
     place-items: center;
     padding: 2.5rem 1.5rem;
-    background: var(--ga-surface);
+      
+    background-color: var(--ga-bg);
+    background-image:
+        radial-gradient(rgba(var(--ga-ink-rgb), .06) 1px, transparent 1px),
+        linear-gradient(180deg, #F8F3EA 0%, var(--ga-bg) 42%);
+    background-size: 22px 22px, auto;
 }
 
+  
 .ga-login__caja {
     width: 100%;
     max-width: 23rem;
+    padding: 2.25rem 2rem;
+    background: var(--ga-surface);
+    border: 1px solid var(--ga-border);
+    border-radius: var(--ga-radius-xl);
+    box-shadow: var(--ga-shadow-md);
 }
 
 .ga-login__caja h2 {
@@ -849,9 +860,9 @@
     letter-spacing: -.02em;
 }
 
-/* =============================================================
-   8. Errores y estados de pagina
-   ============================================================= */
+  
+
+
 
 .ga-error-container {
     margin: 4rem auto;
@@ -865,11 +876,11 @@
     color: var(--ga-brick);
 }
 
-/* =============================================================
-   8. Recibo imprimible
-   ============================================================= */
+  
 
-/* Fila de cobro (estado de cuenta del cliente) */
+
+
+  
 .ga-fila-cobro > td {
     padding-top: 0 !important;
     border-bottom: 1px solid var(--ga-border) !important;
@@ -1026,9 +1037,9 @@
     }
 }
 
-/* =============================================================
-   9. Aviso de instalacion (iOS)
-   ============================================================= */
+  
+
+
 
 .ios-install-hint {
     position: fixed;
@@ -1050,9 +1061,9 @@
 
 .ios-install-hint__texto { flex: 1 1 auto; }
 
-/* =============================================================
-   10. Adaptacion a movil
-   ============================================================= */
+  
+
+
 
 @media (max-width: 991.98px) {
     .ga-sidebar { display: none; }
@@ -1075,7 +1086,7 @@
     .ga-page-header__acciones { width: 100%; }
     .ga-page-header__acciones .btn { flex: 0 1 auto; }
 
-    /* Punto de venta: el pedido pasa a hoja inferior. */
+      
     .ga-pos { grid-template-columns: minmax(0, 1fr); }
 
     .ga-pedido {
@@ -1110,7 +1121,7 @@
 
     .ga-pedido__cuerpo { max-height: 60vh; }
 
-    /* Login: una sola columna. */
+      
     .ga-login { grid-template-columns: 1fr; }
 
     .ga-login__marca {
@@ -1132,7 +1143,7 @@
     .ga-kpi__valor { font-size: 1.625rem; }
 }
 
-/* Espacio util extra: la barra lateral no debe cortar el contenido. */
+  
 @media (min-width: 992px) {
     body { padding-left: env(safe-area-inset-left); }
 }

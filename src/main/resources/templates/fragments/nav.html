@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body>
-<!--
-  Navegación del sistema.
-  Escritorio: barra lateral fija con las secciones agrupadas por área.
-  Móvil: barra superior de marca, barra inferior con los accesos diarios y
-  un menú completo ("Más"). El enlace activo lleva aria-current="page" usando
-  la sección que envía el layout. Las secciones visibles dependen del rol
-  (ver SecurityConfig).
--->
+
+
+
+
+
+
+
+
 <div th:fragment="nav(seccion)" class="ga-chrome" sec:authorize="isAuthenticated()">
 
     <aside class="ga-sidebar" aria-label="Menú principal">
@@ -36,7 +36,7 @@
         </div>
     </aside>
 
-    <!-- Móvil: barra superior de marca -->
+    
     <header class="ga-topbar">
         <a class="ga-marca" th:href="@{/}">
             <img th:src="@{/images/gordo_arepas_logo.png}" alt="" width="32" height="32">
@@ -50,7 +50,7 @@
         </form>
     </header>
 
-    <!-- Móvil: accesos diarios -->
+    
     <nav class="ga-tabbar" aria-label="Accesos rápidos">
         <a class="ga-tab" th:href="@{/ventas}"
            th:classappend="${seccion == 'ventas'} ? 'is-active'"
@@ -69,7 +69,7 @@
         </button>
     </nav>
 
-    <!-- Móvil: menú completo -->
+    
     <div class="offcanvas offcanvas-start ga-offcanvas" tabindex="-1" id="gaMenuMovil"
          aria-labelledby="gaMenuMovilTitulo">
         <div class="offcanvas-header">
@@ -95,8 +95,8 @@
     </div>
 </div>
 
-<!-- Enlaces por secciones: se reutiliza en la barra lateral y en el menú móvil.
-     El Punto de venta es para todos; el resto de áreas solo para ADMIN. -->
+
+
 <div th:fragment="enlaces(seccion)" class="ga-nav">
     <div class="ga-nav__seccion">
         <p class="ga-nav__grupo">Venta</p>

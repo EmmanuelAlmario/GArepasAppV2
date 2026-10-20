@@ -1,13 +1,13 @@
-/* =============================================================
-   Componentes — Bootstrap reestilizado + piezas propias
-   Se conservan las clases de Bootstrap (btn, card, table, badge,
-   form-control...) para no romper las plantillas, pero su aspecto
-   es nuevo.
-   ============================================================= */
+  
 
-/* =============================================================
-   1. Botones
-   ============================================================= */
+
+
+
+
+
+  
+
+
 
 .btn {
     --ga-btn-bg: transparent;
@@ -24,9 +24,9 @@
     letter-spacing: .005em;
     line-height: 1.2;
     color: var(--ga-btn-fg);
-    /* `background` (y no `background-color`) porque el valor puede ser un
-       degradado: con background-color la declaración se descarta y el boton
-       se queda sin fondo. */
+      
+
+
     background: var(--ga-btn-bg);
     border: 1.5px solid var(--ga-btn-bd);
     border-radius: var(--ga-radius-md);
@@ -47,14 +47,14 @@
 
 .btn i { font-size: 1.05em; line-height: 1; }
 
-/* Primario: ladrillo solido. La app se siente tostada, no neon. */
+  
 .btn-primary {
     --ga-btn-bg: var(--ga-brick);
     --ga-btn-fg: #FFF8F0;
     border-color: transparent;
     box-shadow: 0 10px 20px -12px rgba(var(--ga-brick-rgb), .9);
-    /* Bootstrap usa sus propias variables: sin mapearlas, el estado
-       deshabilitado se pinta del azul por defecto de la libreria. */
+      
+
     --bs-btn-color: #FFF8F0;
     --bs-btn-bg: var(--ga-brick);
     --bs-btn-border-color: var(--ga-brick);
@@ -84,7 +84,7 @@
     box-shadow: 0 14px 26px -12px rgba(var(--ga-brick-rgb), .95);
 }
 
-/* Secundario: contorno sobrio. */
+  
 .btn-outline-secondary {
     --ga-btn-bg: var(--ga-surface);
     --ga-btn-fg: var(--ga-ink);
@@ -98,7 +98,7 @@
     box-shadow: var(--ga-shadow-xs);
 }
 
-/* Contorno claro (sobre fondo oscuro). */
+  
 .btn-outline-light {
     --ga-btn-bg: rgba(255, 253, 249, .06);
     --ga-btn-fg: var(--ga-on-ink);
@@ -111,7 +111,7 @@
     --ga-btn-bd: rgba(253, 244, 227, .6);
 }
 
-/* Contorno de marca (Brick): el borde se ve, el relleno solo al pasar el raton. */
+  
 .btn-outline-primary {
     --ga-btn-bg: var(--ga-surface);
     --ga-btn-fg: var(--ga-brick);
@@ -136,7 +136,7 @@
     --ga-btn-bd: var(--ga-success);
 }
 
-/* Fantasma: sin borde, se apoya en el fondo. */
+  
 .btn-ghost {
     --ga-btn-bg: transparent;
     --ga-btn-fg: var(--ga-text-muted);
@@ -148,7 +148,7 @@
     --ga-btn-fg: var(--ga-ink);
 }
 
-/* Peligro: tinta roja suave (no un bloque rojo chillón). */
+  
 .btn-outline-danger {
     --ga-btn-bg: var(--ga-danger-soft);
     --ga-btn-fg: var(--ga-danger-text);
@@ -193,9 +193,9 @@
     border-radius: var(--ga-radius-sm);
 }
 
-/* =============================================================
-   2. Tarjetas
-   ============================================================= */
+  
+
+
 
 .card {
     border: 1px solid var(--ga-border);
@@ -234,9 +234,9 @@
     border-radius: 0 0 var(--ga-radius-lg) var(--ga-radius-lg);
 }
 
-/* =============================================================
-   3. Tablas
-   ============================================================= */
+  
+
+
 
 .table {
     --bs-table-bg: transparent;
@@ -284,9 +284,9 @@
     border-radius: 0 0 var(--ga-radius-lg) var(--ga-radius-lg);
 }
 
-/* =============================================================
-   4. Formularios
-   ============================================================= */
+  
+
+
 
 .form-label {
     margin-bottom: .35rem;
@@ -370,7 +370,7 @@
 .input-group > :first-child { border-radius: var(--ga-radius-md) 0 0 var(--ga-radius-md); }
 .input-group > :last-child { border-radius: 0 var(--ga-radius-md) var(--ga-radius-md) 0; }
 
-/* Selector de rango (segmentado) */
+  
 .ga-segmentos {
     display: inline-flex;
     gap: .25rem;
@@ -405,9 +405,9 @@
     box-shadow: var(--ga-shadow-xs);
 }
 
-/* =============================================================
-   5. Insignias (badges y chips)
-   ============================================================= */
+  
+
+
 
 .badge {
     display: inline-flex;
@@ -447,7 +447,7 @@
     background: var(--ga-info-bg) !important;
 }
 
-/* Chip de marca (arena con texto burdeos) */
+  
 .ga-chip {
     display: inline-flex;
     align-items: center;
@@ -471,9 +471,9 @@
     background: currentColor;
 }
 
-/* =============================================================
-   6. Alertas
-   ============================================================= */
+  
+
+
 
 .alert {
     display: flex;
@@ -517,9 +517,9 @@
 
 .alert .btn-close { margin-left: auto; opacity: .55; }
 
-/* =============================================================
-   7. Indicadores (KPIs)
-   ============================================================= */
+  
+
+
 
 .ga-kpi {
     position: relative;
@@ -589,8 +589,8 @@
 .ga-kpi--verde { --ga-kpi-color: var(--ga-success); --ga-kpi-soft: var(--ga-success-soft); }
 .ga-kpi--neutro { --ga-kpi-color: var(--ga-text-soft); --ga-kpi-soft: var(--ga-surface-muted); }
 
-/* Los indicadores de cabecera van rellenos con color de marca:
-   son el acento de la pantalla, no cuatro cajas iguales. */
+  
+
 .ga-kpi--brick,
 .ga-kpi--ink,
 .ga-kpi--gold {
@@ -650,9 +650,9 @@
 
 .ga-kpi--neutro.is-negativa .ga-kpi__valor { color: var(--ga-danger-text); }
 
-/* =============================================================
-   8. Barras de datos (top de productos, gastos por categoria)
-   ============================================================= */
+  
+
+
 
 .ga-barra-fila {
     display: grid;
@@ -695,9 +695,9 @@
 
 .ga-barra__relleno--ink { background: linear-gradient(90deg, var(--ga-sidebar), var(--ga-burdeos)); }
 
-/* =============================================================
-   9. Estado vacio
-   ============================================================= */
+  
+
+
 
 .ga-empty-state {
     display: flex;
@@ -735,9 +735,9 @@
     color: var(--ga-text-muted);
 }
 
-/* =============================================================
-   10. Modal de confirmacion
-   ============================================================= */
+  
+
+
 
 .modal-content {
     border: 1px solid var(--ga-border);
@@ -759,9 +759,9 @@
     font-size: 1.1875rem;
 }
 
-/* =============================================================
-   11. Paginacion
-   ============================================================= */
+  
+
+
 
 .pagination {
     gap: .25rem;
@@ -797,9 +797,9 @@
     background: var(--ga-surface-muted);
 }
 
-/* =============================================================
-   12. Offcanvas (menu movil)
-   ============================================================= */
+  
+
+
 
 .offcanvas {
     background: var(--ga-sidebar);
@@ -816,9 +816,9 @@
     color: var(--ga-on-ink);
 }
 
-/* =============================================================
-   13. Spinner y estados de carga
-   ============================================================= */
+  
+
+
 
 .spinner-border {
     border-width: .14em;

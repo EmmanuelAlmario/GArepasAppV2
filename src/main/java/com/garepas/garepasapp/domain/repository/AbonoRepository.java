@@ -13,7 +13,7 @@ public interface AbonoRepository extends JpaRepository<Abono, Long> {
 
     List<Abono> findByVentaIdOrderByFechaDesc(Long ventaId);
 
-    /** Todos los cobros recibidos de un cliente (estado de cuenta). */
+      
     @Query("select a from Abono a where a.venta.cliente.id = :clienteId order by a.fecha desc")
     List<Abono> findByClienteId(@Param("clienteId") Long clienteId);
 }

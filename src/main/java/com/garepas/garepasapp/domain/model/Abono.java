@@ -6,12 +6,12 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-/**
- * Abono: pago recibido de una venta a credito.
- *
- * <p>Cada abono baja el saldo de la venta. Cuando el saldo llega a cero, la
- * venta queda pagada. La bitacora completa de cobros queda en esta tabla.
- */
+  
+
+
+
+
+
 @Entity
 @Table(name = "abonos", indexes = {
         @Index(name = "idx_abonos_venta_id", columnList = "venta_id"),

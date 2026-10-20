@@ -24,7 +24,7 @@ import java.math.RoundingMode;
 @RequiredArgsConstructor
 public class ProductoController {
 
-    /** Margen por defecto para la sugerencia de precio (40%). */
+      
     private static final BigDecimal MARGEN_SUGERIDO = new BigDecimal("40");
 
     private final ProductoService productoService;
@@ -106,11 +106,11 @@ public class ProductoController {
         return "redirect:/productos";
     }
 
-    /**
-     * Calcula el precio sugerido a partir del costo unitario de la receta
-     * (ya dividido por su rendimiento) y el margen objetivo. No guarda: el
-     * usuario debe pulsar Guardar.
-     */
+      
+
+
+
+
     @PostMapping("/sugerir-precio")
     public String sugerirPrecio(@ModelAttribute("form") ProductoForm form, Model model) {
         cargarRecetas(model);

@@ -32,10 +32,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-/**
- * Produccion: consumo de insumos, gasto de materia prima, produccion
- * pendiente y reversion simetrica.
- */
+  
+
+
+
 class ProduccionServiceTest {
 
     private ProduccionRepository produccionRepository;
@@ -143,12 +143,12 @@ class ProduccionServiceTest {
         verify(gastoRepository, never()).save(any());
     }
 
-    /**
-     * REGRESION: antes la suficiencia se evaluaba fila por fila. Un insumo
-     * repetido en dos filas (60 g + 60 g con 100 g de stock) pasaba las dos
-     * como suficiente y el descuento dejaba el stock en -20. Ahora los
-     * ingredientes se consolidan por insumo antes de calcular.
-     */
+      
+
+
+
+
+
     @Test
     void consolidaLosIngredientesRepetidosAlCalcularLaSuficiencia() {
         Insumo harina = insumo(1L, "Harina", "100", "2.00");

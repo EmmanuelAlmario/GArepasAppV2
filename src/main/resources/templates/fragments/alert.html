@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <body>
-<!-- Mensajes flash enviados desde los controladores (RedirectAttributes):
-     "mensaje" con el texto, "tipo" opcional: success | danger | warning | info -->
+
+
 <div th:fragment="alert">
     <div th:if="${mensaje}" class="alert alert-dismissible fade show"
          th:classappend="'alert-' + (${tipo} != null ? ${tipo} : 'success')" role="alert">

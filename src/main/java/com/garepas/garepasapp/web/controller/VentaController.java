@@ -35,11 +35,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-/**
- * Punto de venta (UC20-UC24): jornada de operacion, registro de ventas,
- * historial paginado (solo ADMIN, ver SecurityConfig) y anulacion con
- * reversion de stock.
- */
+  
+
+
+
+
 @Controller
 @RequestMapping("/ventas")
 @RequiredArgsConstructor
@@ -73,11 +73,11 @@ public class VentaController {
             VentaResponse venta = ventaService.registrar(form.toCommand());
             redirect.addFlashAttribute("mensaje",
                     "Venta registrada por " + formato.moneda(venta.total()) + ".");
-            // Enlace al comprobante de la venta recien registrada.
+              
             redirect.addFlashAttribute("ultimaVentaId", venta.id());
         } catch (OperacionInvalidaException | RecursoNoEncontradoException ex) {
-            // Se vuelve a mostrar el punto de venta con el pedido y el cliente
-            // conservados para que el usuario pueda corregir sin rearmar todo.
+              
+              
             model.addAttribute("error", ex.getMessage());
             return cargarPos(model, form, detalles);
         }
@@ -111,11 +111,11 @@ public class VentaController {
         return "redirect:/ventas";
     }
 
-    /**
-     * Historial de ventas: busqueda y filtro por estado resueltos en base de
-     * datos, con paginacion. Antes se cargaban TODAS las ventas con sus
-     * detalles y se filtraba en memoria.
-     */
+      
+
+
+
+
     @GetMapping("/historial")
     public String historial(@RequestParam(required = false) String q,
                             @RequestParam(required = false) EstadoVenta estado,
@@ -140,10 +140,10 @@ public class VentaController {
         return "redirect:/ventas/historial";
     }
 
-    /**
-     * Formulario de cobro de una venta a credito: el monto va precargado con
-     * el saldo pendiente, asi un cobro total es un solo clic.
-     */
+      
+
+
+
     @GetMapping("/{id}/cobrar")
     public String cobrar(@PathVariable Long id, Model model) {
         VentaResponse venta = ventaService.buscarPorId(id);
@@ -159,7 +159,7 @@ public class VentaController {
         return "ventas/cobrar";
     }
 
-    /** Registra el cobro: baja el saldo de la venta y deja el abono anotado. */
+      
     @PostMapping("/{id}/cobrar")
     public String registrarCobro(@PathVariable Long id, @ModelAttribute("form") AbonoForm form,
                                  BindingResult result, Model model, RedirectAttributes redirect) {
@@ -180,25 +180,25 @@ public class VentaController {
         }
     }
 
-    /**
-     * Comprobante de venta: los datos del negocio, el desglose y el total.
-     * Se imprime desde el navegador (el POS tiene un boton "Recibo").
-     */
+      
+
+
+
     @GetMapping("/{id}/recibo")
     public String recibo(@PathVariable Long id, Model model) {
-        // Se pasa la vista (no la entidad): los detalles ya vienen resueltos
-        // y no hay que forzar la sesion de JPA desde la plantilla.
+          
+          
         model.addAttribute("v", ventaService.buscarPorId(id));
         model.addAttribute("config", configuracionNegocioService.obtener());
         model.addAttribute("abonos", abonoService.listarPorVenta(id));
         return "ventas/recibo";
     }
 
-    /**
-     * Carga el catalogo, la jornada, los clientes de la cartera y (si hay) el
-     * pedido que se estaba armando. El pedido se expone como JSON para que
-     * pos-cart.js reconstruya el carrito.
-     */
+      
+
+
+
+
     private String cargarPos(Model model, VentaForm form, List<DetalleVentaCommand> detalles) {
         List<ProductoResponse> productos = productoService.listarActivos().stream()
                 .filter(p -> Boolean.TRUE.equals(p.bajoPedido())

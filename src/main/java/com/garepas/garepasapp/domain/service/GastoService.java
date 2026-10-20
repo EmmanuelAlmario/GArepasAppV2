@@ -16,19 +16,19 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * Gastos del negocio.
- *
- * <p><b>Reglas del rediseño:</b>
- * <ul>
- *   <li>Los gastos generados por una produccion NO se editan ni se borran a
- *       mano: se gestionan desde la produccion. Antes solo la edicion estaba
- *       protegida y el borrado dejaba el reporte descuadrado.</li>
- *   <li>El monto debe ser positivo: un gasto negativo hacia crecer la
- *       utilidad del reporte.</li>
- *   <li>Se respeta la fecha indicada en el comando (por defecto, hoy).</li>
- * </ul>
- */
+  
+
+
+
+
+
+
+
+
+
+
+
+
 @Service
 @RequiredArgsConstructor
 public class GastoService {
@@ -45,7 +45,7 @@ public class GastoService {
         return gastoRepository.findAllByOrderByFechaDesc(pageable).map(GastoResponse::desde);
     }
 
-    /** Busqueda del historial de gastos en base de datos. */
+      
     @Transactional(readOnly = true)
     public Page<GastoResponse> buscar(String texto, CategoriaGasto categoria, Pageable pageable) {
         String q = texto == null ? "" : texto.trim();

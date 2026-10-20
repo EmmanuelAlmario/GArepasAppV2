@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <body>
-<!--
-  Mensajes de un formulario devuelto por el servidor:
-  "error" (danger) y "aviso" (info). Los flash globales los muestra
-  fragments/alert.
--->
+
+
+
+
+
 <div th:fragment="formAlerts" class="mb-3" th:if="${error != null or aviso != null}">
     <div th:if="${error}" class="alert alert-danger mb-2" role="alert" th:text="${error}">Error</div>
     <div th:if="${aviso}" class="alert alert-info mb-2" role="status" th:text="${aviso}">Aviso</div>

@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.Duration;
 import java.util.List;
 
-/**
- * API publica de solo lectura para el menu de clientes (GArepasMenu).
- *
- * Sin autenticacion, solo GET. Respuesta con lista blanca de campos
- * (ver MenuPublicoItemResponse) y cache corta del lado del navegador.
- * La restriccion de origen se configura en CorsConfig.
- */
+  
+
+
+
+
+
+
 @RestController
 @RequestMapping("/api/public")
 @RequiredArgsConstructor

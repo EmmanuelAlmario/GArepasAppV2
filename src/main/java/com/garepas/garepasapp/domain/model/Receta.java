@@ -31,16 +31,16 @@ public class Receta {
     @Builder.Default
     private List<DetalleReceta> detalles = new ArrayList<>();
 
-    /**
-     * Insumo que esta receta fabrica (ej.: masa preparada). Si es null, la receta
-     * es de producto. Si tiene valor, el precio por gramo de ese insumo se calcula
-     * automaticamente como costo de la receta / rendimiento.
-     */
+      
+
+
+
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "insumo_producido_id")
     private Insumo insumoProducido;
 
-    /** Cantidad que rinde un lote, en la unidad base del insumo producido (g / ml / u). */
+      
     @Column(precision = 15, scale = 4)
     private BigDecimal rendimiento;
 }

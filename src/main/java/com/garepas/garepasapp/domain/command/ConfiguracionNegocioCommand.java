@@ -7,10 +7,10 @@ import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 
-/**
- * Configuracion del negocio: identidad, datos fiscales, impuesto y mensaje
- * del recibo.
- */
+  
+
+
+
 public record ConfiguracionNegocioCommand(
         @NotBlank(message = "El nombre comercial es obligatorio")
         @Size(max = 80, message = "El nombre no puede superar los 80 caracteres")

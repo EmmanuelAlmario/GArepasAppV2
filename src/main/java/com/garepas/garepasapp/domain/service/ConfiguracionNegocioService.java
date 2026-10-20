@@ -10,13 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-/**
- * Configuracion del negocio (fila unica).
- *
- * <p>Si no existe todavia (base nueva sin la migracion V3), se crea con los
- * valores por defecto la primera vez que se pide. Asi la aplicacion nunca
- * se queda sin nombre comercial ni impuesto.
- */
+  
+
+
+
+
+
+
 @Service
 @RequiredArgsConstructor
 public class ConfiguracionNegocioService {
@@ -43,7 +43,7 @@ public class ConfiguracionNegocioService {
         return repository.save(config);
     }
 
-    /** Impuesto aplicable a una venta, en porcentaje. */
+      
     @Transactional(readOnly = true)
     public BigDecimal impuestoPorcentaje() {
         return obtener().getImpuestoPorcentaje();

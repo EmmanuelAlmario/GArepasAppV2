@@ -63,23 +63,23 @@ import static com.garepas.garepasapp.domain.enums.UnidadMedida.LITRO;
 import static com.garepas.garepasapp.domain.enums.UnidadMedida.MILILITRO;
 import static com.garepas.garepasapp.domain.enums.UnidadMedida.UNIDAD;
 
-/**
- * Datos de prueba para desarrollo y demos.
- *
- * Solo se activa con el perfil `dev` (@Profile("dev")): en produccion la
- * clase no se registra. Además exige app.seed.demo-data=true y que la base
- * todavia no tenga productos, para no duplicar nada en un redeploy.
- *
- * Estrategia:
- * - Historial retroactivo (últimos 9 días): entidades creadas directamente
- *   con fechas pasadas, replicando manualmente los mismos efectos que aplican
- *   los servicios (descuento de stock, snapshot de precio por gramo y gasto
- *   automático de materia prima). Así los reportes por rango (hoy / 7 días /
- *   mes) muestran una serie real.
- * - Día de hoy: usa la lógica de negocio real (JornadaService,
- *   ProduccionService, VentaService, GastoService), con una jornada abierta,
- *   ventas asociadas a ella y una producción PENDIENTE de ejemplo.
- */
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @Component
 @Order(2)
 @Profile("dev")
@@ -110,13 +110,13 @@ public class DataSeeder implements CommandLineRunner {
     @Value("${app.seed.demo-cajero-password}")
     private String cajeroPassword;
 
-    /** Insumos de trabajo, con el stock actualizado en memoria durante el sembrado. */
+      
     private Map<String, Insumo> insumos;
-    /** Recetas de trabajo por nombre. */
+      
     private Map<String, Receta> recetas;
-    /** Productos de trabajo por nombre. */
+      
     private Map<String, Producto> productos;
-    /** Clientes de trabajo por nombre. */
+      
     private Map<String, Cliente> clientes;
 
     @Override
@@ -129,9 +129,9 @@ public class DataSeeder implements CommandLineRunner {
             return;
         }
         log.info("Sembrando datos de prueba (insumos, recetas, productos, jornadas, ventas y gastos)...");
-        // Una sola transaccion: las entidades quedan gestionadas durante todo
-        // el sembrado (sin choques de @Version entre saves sueltos) y si algo
-        // falla la base queda vacia para reintentar en el proximo arranque.
+          
+          
+          
         new TransactionTemplate(transactionManager).executeWithoutResult(estado -> sembrar());
         log.info("Datos de prueba de desarrollo listos (perfil dev).");
     }
@@ -146,7 +146,7 @@ public class DataSeeder implements CommandLineRunner {
         sembrarHoy();
     }
 
-    /* ============================ Catálogo ============================ */
+      
 
     private void crearUsuarioCajero() {
         if (usuarioRepository.findByUsernameIgnoreCase("cajero1").isEmpty()) {
@@ -159,14 +159,14 @@ public class DataSeeder implements CommandLineRunner {
         }
     }
 
-    /**
-     * Insumos con stock y precio expresados en unidad base (g / ml / u),
-     * igual que lo haría el controlador convirtiendo la presentación con
-     * UnidadUtil. La unidad guardada es la de presentación (kg, L, u...).
-     */
-    /* ============================ Clientes ============================ */
+      
 
-    /** Clientes de la cartera: los que fian y a los que se les manda a cobrar. */
+
+
+
+      
+
+      
     private void crearClientes() {
         clientes = new LinkedHashMap<>();
         clientes.put("Maria Rodriguez", cliente("Maria Rodriguez", "3105554433", "Cra 12 #4-56"));
@@ -226,10 +226,10 @@ public class DataSeeder implements CommandLineRunner {
                 .build();
     }
 
-    /**
-     * Recetas con cantidades por unidad de producto, ya convertidas a la
-     * unidad base (g / ml / u), tal como las guarda RecetaForm.filasValidas().
-     */
+      
+
+
+
     private void crearRecetas() {
         recetas = new LinkedHashMap<>();
         recetas.put("Arepa de queso asada", receta("Arepa de queso asada",
@@ -261,12 +261,12 @@ public class DataSeeder implements CommandLineRunner {
     private Receta receta(String nombre, String descripcion, DetalleReceta... detalles) {
         Receta receta = Receta.builder().nombre(nombre).descripcion(descripcion).build();
         for (DetalleReceta d : detalles) {
-            // Igual que RecetaService: el detalle debe apuntar a su receta
-            // para que el cascade persista la FK.
+              
+              
             d.setReceta(receta);
             receta.getDetalles().add(d);
         }
-        // cascade = ALL en Receta.detalles: se guardan junto con la receta.
+          
         return recetaRepository.save(receta);
     }
 
@@ -283,9 +283,9 @@ public class DataSeeder implements CommandLineRunner {
         productos.put("Arepa plana", producto("Arepa plana", "Arepa plana", 2500, 10, true));
         productos.put("Arepa de huevo", producto("Arepa de huevo", "Arepa de huevo", 4000, 8, true));
         productos.put("Chocolate caliente", producto("Chocolate caliente", "Chocolate caliente", 3000, 5, true));
-        // Comprada lista para vender: no tiene receta, el stock se ingresa directo.
+          
         productos.put("Gaseosa 400 ml", producto("Gaseosa 400 ml", null, 2000, null, true, 24));
-        // Producto antiguo desactivado: sirve para ver el estado "Inactivo" en el catalogo.
+          
         productos.put("Combo familiar", producto("Combo familiar", null, 18000, null, false, 0));
         productoRepository.saveAll(productos.values());
     }
@@ -311,17 +311,17 @@ public class DataSeeder implements CommandLineRunner {
         return builder.build();
     }
 
-    /* ====================== Historial (últimos 9 días) ====================== */
+      
 
-    /**
-     * Producciones, ventas y gastos operativos de los últimos 9 días. Las
-     * fechas retroactivas se construyen a mano porque los servicios sellan
-     * LocalDateTime.now(); aquí se replican exactamente los mismos efectos.
-     */
+      
+
+
+
+
     private void sembrarHistorial() {
         LocalDate hoy = LocalDate.now();
 
-        // ---- Día -9 ----
+          
         LocalDate d = hoy.minusDays(9);
         Jornada j = jornadaPasada(d);
         produccionCompletada("Arepa de queso asada", 40, d.atTime(6, 30));
@@ -330,7 +330,7 @@ public class DataSeeder implements CommandLineRunner {
         ventaPasada(d.atTime(10, 15), j, null, linea("Arepa de queso asada", 5));
         ventaPasada(d.atTime(12, 30), j, null, linea("Gaseosa 400 ml", 2));
 
-        // ---- Día -8 ----
+          
         d = hoy.minusDays(8);
         j = jornadaPasada(d);
         produccionCompletada("Arepa plana", 50, d.atTime(6, 30));
@@ -338,42 +338,42 @@ public class DataSeeder implements CommandLineRunner {
         ventaPasada(d.atTime(11, 0), j, "Laura Gómez", linea("Arepa plana", 8));
         ventaPasada(d.atTime(15, 45), j, null, linea("Arepa de queso asada", 4));
 
-        // ---- Día -7 ----
+          
         d = hoy.minusDays(7);
         j = jornadaPasada(d);
         ventaPasada(d.atTime(10, 0), j, null, linea("Arepa de queso asada", 6));
         ventaPasada(d.atTime(13, 20), j, null, linea("Arepa plana", 5));
         ventaPasada(d.atTime(17, 0), j, "Andrés Ruiz", linea("Arepa de huevo", 4));
 
-        // ---- Día -6 ----
+          
         d = hoy.minusDays(6);
         j = jornadaPasada(d);
         gastoOperativo(CategoriaGasto.TRANSPORTE, "Pasajes para recoger insumos", 6500, d.atTime(9, 0));
         ventaPasada(d.atTime(9, 45), j, "Pedro Ruiz", linea("Arepa de huevo", 6));
         ventaPasada(d.atTime(16, 30), j, null, linea("Arepa plana", 10));
 
-        // ---- Día -5 ----
+          
         d = hoy.minusDays(5);
         j = jornadaPasada(d);
         produccionCompletada("Arepa de queso asada", 40, d.atTime(6, 30));
         ventaPasada(d.atTime(11, 30), j, null, linea("Arepa de queso asada", 10));
         ventaPasada(d.atTime(14, 0), j, "Marta Salas", linea("Arepa de huevo", 5));
 
-        // ---- Día -4 ----
+          
         d = hoy.minusDays(4);
         j = jornadaPasada(d);
         gastoOperativo(CategoriaGasto.MANTENIMIENTO, "Reparación de la plancha de asar", 15000, d.atTime(8, 0));
         ventaPasada(d.atTime(10, 30), j, null, linea("Arepa plana", 12));
         ventaPasada(d.atTime(18, 15), j, "Camilo Duarte", linea("Gaseosa 400 ml", 6));
 
-        // ---- Día -3 ----
+          
         d = hoy.minusDays(3);
         j = jornadaPasada(d);
         produccionCompletada("Arepa de huevo", 30, d.atTime(6, 30));
         ventaPasada(d.atTime(12, 0), j, null, linea("Arepa de huevo", 7));
         ventaPasada(d.atTime(16, 40), j, null, linea("Arepa de queso asada", 6));
 
-        // ---- Día -2 ----
+          
         d = hoy.minusDays(2);
         j = jornadaPasada(d);
         gastoOperativo(CategoriaGasto.OTROS, "Bolsas de papel y servilletas", 10000, d.atTime(9, 0));
@@ -382,7 +382,7 @@ public class DataSeeder implements CommandLineRunner {
         ventaPasada(d.atTime(17, 30), j, "Andrés Bedoya",
                 linea("Arepa de huevo", 6), linea("Gaseosa 400 ml", 4));
 
-        // ---- Día -1 ----
+          
         d = hoy.minusDays(1);
         j = jornadaPasada(d);
         produccionCompletada("Arepa plana", 50, d.atTime(6, 30));
@@ -402,11 +402,11 @@ public class DataSeeder implements CommandLineRunner {
                 .build());
     }
 
-    /**
-     * Producción COMPLETADA retroactiva: replica ProduccionService.registrar +
-     * aplicarProduccion (descuento de insumos, aumento de producto y gasto de
-     * materia prima con snapshot de precio y produccionId de referencia).
-     */
+      
+
+
+
+
     private void produccionCompletada(String productoNombre, int cantidad, LocalDateTime fecha) {
         Producto producto = productos.get(productoNombre);
         Receta receta = producto.getReceta();
@@ -476,7 +476,7 @@ public class DataSeeder implements CommandLineRunner {
                 .build());
     }
 
-    /** Venta retroactiva: replica VentaService.registrar con fecha fija. */
+      
     private void ventaPasada(LocalDateTime fecha, Jornada jornada, String cliente,
                              DetalleVentaCommand... lineas) {
         Venta venta = Venta.builder()
@@ -527,13 +527,13 @@ public class DataSeeder implements CommandLineRunner {
                         "Producto no encontrado en el sembrado: id " + productoId));
     }
 
-    /* ============================ Día de hoy ============================ */
+      
 
-    /**
-     * Operación del día de hoy usando los servicios reales: abre jornada,
-     * repone producto, registra ventas y un gasto, y deja una producción
-     * PENDIENTE (chocolate en cero) para probar el flujo de verificación.
-     */
+      
+
+
+
+
     private void sembrarHoy() {
         jornadaService.abrir("admin");
 
@@ -549,8 +549,8 @@ public class DataSeeder implements CommandLineRunner {
                 new DetalleVentaCommand(productos.get("Arepa de huevo").getId(), 1),
                 new DetalleVentaCommand(productos.get("Arepa de queso asada").getId(), 2))));
 
-        // Venta a credito a un cliente de la cartera: queda con saldo pendiente
-        // para probar el flujo de cobro (abonos) y el reporte de cartera.
+          
+          
         VentaResponse ventaCredito = ventaService.registrar(new VentaCommand(
                 null, clientes.get("Maria Rodriguez").getId(), FormaPago.CREDITO,
                 LocalDate.now().plusDays(15), List.of(
@@ -561,8 +561,8 @@ public class DataSeeder implements CommandLineRunner {
         gastoService.registrar(new GastoCommand(
                 "Combustible para domicilios", BigDecimal.valueOf(7000), CategoriaGasto.TRANSPORTE, null));
 
-        // Queda PENDIENTE porque el chocolate está en cero: permite probar el
-        // flujo "Verificar stock" desde el detalle de la producción.
+          
+          
         produccionService.registrar(new ProduccionCommand(
                 productos.get("Chocolate caliente").getId(), 20));
     }

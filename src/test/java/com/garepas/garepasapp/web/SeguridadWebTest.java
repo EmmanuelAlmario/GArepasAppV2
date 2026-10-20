@@ -21,13 +21,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/**
- * Pruebas de seguridad web (auditoria basica, hallazgo A-09):
- * login, CSRF, autorizacion por rol, API publica y healthcheck.
- *
- * Usa el perfil `dev` (H2 en memoria + datos de prueba) con contrasenas
- * fijas para que el resultado no dependa del entorno.
- */
+  
+
+
+
+
+
+
 @SpringBootTest(properties = {
         "app.seed.demo-data=true",
         "app.seed.admin-password=admin123",
@@ -40,7 +40,7 @@ class SeguridadWebTest {
     @Autowired
     private MockMvc mockMvc;
 
-    /* ---------- Login con formulario y CSRF ---------- */
+      
 
     @Test
     void loginConCredencialesValidasAutentica() throws Exception {
@@ -77,7 +77,7 @@ class SeguridadWebTest {
                 .andExpect(status().isForbidden());
     }
 
-    /* ---------- Autorizacion por rol ---------- */
+      
 
     @Test
     void anonimoEsRedirigidoAlLogin() throws Exception {
@@ -119,7 +119,7 @@ class SeguridadWebTest {
         mockMvc.perform(get("/ventas/historial")).andExpect(status().isOk());
     }
 
-    /* ---------- Buscador de insumos ---------- */
+      
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
@@ -142,7 +142,7 @@ class SeguridadWebTest {
                 .andExpect(content().string(containsString("Sin resultados")));
     }
 
-    /* ---------- Healthcheck ---------- */
+      
 
     @Test
     void healthcheckRespondeSinAutenticacionYSinDetalles() throws Exception {

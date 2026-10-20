@@ -1,17 +1,17 @@
-/*
- * Feedback compartido para la interfaz Thymeleaf.
- *
- * 1. Confirmacion previa: cualquier form con data-confirm="mensaje" pide
- *    confirmacion antes de enviarse. Usa el modal Bootstrap (#modalConfirmacion)
- *    y, si Bootstrap no esta disponible (por ejemplo sin conexion y sin la
- *    libreria en cache), cae a window.confirm del navegador.
- *    Antes, si el CDN de Bootstrap no cargaba, el modal no existia y la
- *    condicion `&& modal` hacia que el formulario se enviara SIN preguntar:
- *    todas las acciones destructivas (eliminar insumo, receta, venta, gasto,
- *    usuario, produccion) se ejecutaban sin confirmacion.
- * 2. Estado de carga: al enviar un formulario se deshabilitan sus botones de
- *    submit para evitar dobles envios. Se puede omitir con data-sin-carga.
- */
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
 document.addEventListener('DOMContentLoaded', () => {
     const modalEl = document.getElementById('modalConfirmacion');
     const mensajeEl = document.getElementById('modalConfirmacionMensaje');
@@ -39,8 +39,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const form = formPendiente;
             formPendiente = null;
             modal.hide();
-            // requestSubmit dispara submit (y la validacion nativa) para que
-            // el formulario siga el flujo normal con el estado de carga.
+              
+              
             form.requestSubmit();
         });
     }
@@ -64,8 +64,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Sin Bootstrap: se pregunta con el confirm nativo. Jamas se
-            // envia una accion destructiva sin confirmacion.
+              
+              
             if (!window.confirm(mensaje)) {
                 evento.preventDefault();
                 return;

@@ -11,18 +11,18 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-/**
- * Manejo global de errores de dominio.
- *
- * <p>Antes, una excepcion de negocio que escapaba de un controlador terminaba
- * en la pagina 500 (con el mensaje tecnico o vacio) y el usuario no entendia
- * que habia pasado ni que hacer. Ahora cada error de dominio vuelve a la
- * aplicacion con un mensaje util.
- *
- * <p>Los formularios validan con {@code @Valid} y los controladores capturan
- * las excepciones para re-renderizar el formulario; este advice es la red de
- * seguridad para lo que se escape de ahi.
- */
+  
+
+
+
+
+
+
+
+
+
+
+
 @ControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
@@ -48,10 +48,10 @@ public class GlobalExceptionHandler {
         return "redirect:/";
     }
 
-    /**
-     * Los errores de seguridad no se traducen a un mensaje: se relanzan para
-     * que Spring los trate como corresponde (403 / reautenticacion).
-     */
+      
+
+
+
     @ExceptionHandler(AccessDeniedException.class)
     public String accesoDenegado(AccessDeniedException ex) {
         throw ex;
@@ -62,17 +62,17 @@ public class GlobalExceptionHandler {
         throw ex;
     }
 
-    /**
-     * Cualquier otro error se registra completo en el log (para el que
-     * administra) pero al usuario solo se le muestra un mensaje generico:
-     * ni trazas ni detalles internos.
-     */
+      
+
+
+
+
     @ExceptionHandler(Exception.class)
     public String inesperado(Exception ex, HttpServletResponse response, RedirectAttributes redirect) {
         log.error("Error no controlado en la aplicacion", ex);
-        // Si la respuesta ya empezo a escribirse (por ejemplo, un fallo de
-        // Thymeleaf a media pagina) no se puede redirigir: se deja el log y
-        // no se intenta escribir nada mas sobre una respuesta comprometida.
+          
+          
+          
         if (response.isCommitted()) {
             return null;
         }

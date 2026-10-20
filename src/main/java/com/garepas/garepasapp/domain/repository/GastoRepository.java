@@ -28,7 +28,7 @@ public interface GastoRepository extends JpaRepository<Gasto, Long> {
 
     void deleteByProduccionId(Long produccionId);
 
-    /** Importes por dia para el reporte (solo fecha y monto, sin relaciones). */
+      
     @Query("select g.fecha, g.monto from Gasto g where g.fecha >= :desde and g.fecha < :hasta")
     List<Object[]> findImportesPorFecha(@Param("desde") LocalDateTime desde,
                                          @Param("hasta") LocalDateTime hasta);
@@ -41,7 +41,7 @@ public interface GastoRepository extends JpaRepository<Gasto, Long> {
     @Query("select COALESCE(SUM(g.monto), 0) from Gasto g where g.fecha >= :desde and g.fecha < :hasta")
     BigDecimal sumMontoPorFecha(@Param("desde") LocalDateTime desde, @Param("hasta") LocalDateTime hasta);
 
-    /** Busqueda del historial de gastos en base de datos. */
+      
     @Query(value = """
             select g from Gasto g
             where lower(g.descripcion) like lower(concat('%', :q, '%'))

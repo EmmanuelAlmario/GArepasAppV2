@@ -8,9 +8,9 @@ import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 
-/**
- * Formulario de abono (cobro de una venta a credito).
- */
+  
+
+
 public class AbonoForm {
 
     @NotNull(message = "El monto es obligatorio")

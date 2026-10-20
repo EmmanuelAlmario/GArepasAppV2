@@ -6,14 +6,14 @@ import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 
-/**
- * Formulario de insumo.
- *
- * <p>El usuario escribe el stock y el precio en la unidad de PRESENTACION que
- * elige (kg, L, u). El formulario NO convierte: solo arma el comando. La
- * conversion a unidad base ocurre en el servicio, que es el unico punto del
- * sistema donde se hace. Asi el formulario y la API producen el mismo dato.
- */
+  
+
+
+
+
+
+
+
 public class InsumoForm {
 
     private Long id;
@@ -30,22 +30,22 @@ public class InsumoForm {
     @Size(max = 30, message = "La marca no puede superar 30 caracteres")
     private String marca;
 
-    /** Stock en la unidad de presentacion elegida. */
+      
     @NotNull(message = "El stock actual es obligatorio")
     @DecimalMin(value = "0.0", message = "El stock no puede ser negativo")
     private BigDecimal stockActual;
 
-    /** Stock minimo en la unidad de presentacion elegida. */
+      
     @DecimalMin(value = "0.0", message = "El stock minimo no puede ser negativo")
     private BigDecimal stockMinimo;
 
-    /** Precio de compra por unidad de presentacion (pesos). */
+      
     @NotNull(message = "El precio de compra es obligatorio")
     @DecimalMin(value = "0.0", inclusive = false, message = "El precio debe ser mayor a cero")
     @Digits(integer = 12, fraction = 0, message = "El precio debe ser un valor en pesos, sin decimales")
     private BigDecimal precioCompra;
 
-    /** Unidad de presentacion del insumo (kg, L, u, g, ml). */
+      
     @NotNull(message = "La unidad de medida es obligatoria")
     private UnidadMedida unidadMedida;
 

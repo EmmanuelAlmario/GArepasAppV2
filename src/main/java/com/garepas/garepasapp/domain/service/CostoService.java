@@ -17,19 +17,19 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
-/**
- * Costos y margenes.
- *
- * <p><b>Rediseño del rendimiento:</b> {@code receta.rendimiento} significa
- * "cuantas unidades produce un lote de esta receta" (para una receta de
- * producto: cuantas arepas; para una receta de insumo fabricating: cuantos
- * gramos de masa). Antes el margen se calculaba como si una receta rindiera
- * siempre una unidad, y el costo de un insumo fabricado se dividia por un
- * rendimiento que podia venir nulo.
- *
- * <p>El costo SIEMPRE se calcula sobre cantidades en unidad base y precios
- * por unidad base, que es como esta guardado todo el sistema.
- */
+  
+
+
+
+
+
+
+
+
+
+
+
+
 @Service
 @RequiredArgsConstructor
 public class CostoService {
@@ -40,9 +40,9 @@ public class CostoService {
     private final RecetaRepository recetaRepository;
     private final ProductoRepository productoRepository;
 
-    /**
-     * Costo total de una receta (en unidad base de cada insumo).
-     */
+      
+
+
     public static BigDecimal costoDeReceta(Receta receta) {
         if (receta == null || receta.getDetalles() == null) {
             return BigDecimal.ZERO;
@@ -52,7 +52,7 @@ public class CostoService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    /** Costo de una linea de receta (cantidad base x precio por unidad base). */
+      
     public static BigDecimal subtotalDetalle(DetalleReceta detalle) {
         if (detalle.getInsumo() == null || detalle.getInsumo().getPrecioPorUnidadBase() == null) {
             return BigDecimal.ZERO;
@@ -60,10 +60,10 @@ public class CostoService {
         return detalle.getCantidad().multiply(detalle.getInsumo().getPrecioPorUnidadBase());
     }
 
-    /**
-     * Rendimiento de la receta: cuantas unidades produce un lote.
-     * Si no se informo, se asume 1 (una receta de producto describe una unidad).
-     */
+      
+
+
+
     public static BigDecimal rendimientoDe(Receta receta) {
         if (receta == null || receta.getRendimiento() == null
                 || receta.getRendimiento().compareTo(BigDecimal.ZERO) <= 0) {
@@ -72,10 +72,10 @@ public class CostoService {
         return receta.getRendimiento();
     }
 
-    /**
-     * Costo por unidad de producto: costo de la receta dividido por su
-     * rendimiento.
-     */
+      
+
+
+
     public static BigDecimal costoUnitarioProducto(Producto producto) {
         if (producto == null || producto.getReceta() == null) {
             return BigDecimal.ZERO;
@@ -110,11 +110,11 @@ public class CostoService {
                 costoUnitario, precioVenta, margen, margenPct);
     }
 
-    /**
-     * Sugiere un precio de venta a partir del costo y un margen porcentual
-     * objetivo. El margen se interpreta como PORCENTAJE (30 = 30%), no como
-     * factor (0.30), que es como se leia antes y multiplicaba el precio por 31.
-     */
+      
+
+
+
+
     @Transactional(readOnly = true)
     public BigDecimal sugerirPrecioVenta(Long productoId, BigDecimal margenPorcentaje) {
         if (margenPorcentaje == null || margenPorcentaje.compareTo(BigDecimal.ZERO) < 0) {

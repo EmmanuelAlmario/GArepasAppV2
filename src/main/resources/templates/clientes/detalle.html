@@ -14,7 +14,7 @@
     <th:block th:replace="~{fragments/page-header :: pageHeader('Cliente: ' + ${cliente.nombre}, ${cliente.telefono} ?: 'Sin datos de contacto', 'Panel', ~{::acciones})}"></th:block>
 
     <div class="row g-3 mb-3">
-        <!-- Datos de contacto -->
+        
         <div class="col-12 col-md-6">
             <div class="card h-100">
                 <div class="card-header">
@@ -46,7 +46,7 @@
             </div>
         </div>
 
-        <!-- Saldo -->
+        
         <div class="col-12 col-md-6">
             <div class="card h-100">
                 <div class="card-body">
@@ -63,7 +63,7 @@
         </div>
     </div>
 
-    <!-- Ventas del cliente -->
+    
     <div class="card shadow-sm mb-3">
         <div class="card-header">
             <h2>Ventas</h2>
@@ -114,7 +114,7 @@
                            th:aria-label="'Recibo de la venta ' + ${v.id}">Recibo</a>
                     </td>
                 </tr>
-                <!-- Cobro de una venta pendiente: lleva al formulario de cobro -->
+                
                 <tr th:if="${v.saldo != null and v.saldo.signum() > 0}" class="ga-fila-cobro">
                     <td colspan="6">
                         <div class="ga-cobro">
@@ -134,7 +134,7 @@
         </div>
     </div>
 
-    <!-- Abonos recibidos -->
+    
     <div class="card shadow-sm">
         <div class="card-header">
             <h2>Abonos recibidos</h2>

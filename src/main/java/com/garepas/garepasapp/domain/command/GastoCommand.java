@@ -9,10 +9,10 @@ import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-/**
- * Gasto manual. Los gastos generados por una produccion no se editan a mano:
- * se gestionan desde la produccion que los origino.
- */
+  
+
+
+
 public record GastoCommand(
         @NotBlank(message = "La descripcion es obligatoria")
         @Size(max = 150, message = "La descripcion no puede superar los 150 caracteres")

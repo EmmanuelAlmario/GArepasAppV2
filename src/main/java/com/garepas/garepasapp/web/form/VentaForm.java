@@ -9,25 +9,25 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Formulario del punto de venta. El carrito (JavaScript) envia listas
- * paralelas repetidas: productoId y cantidad.
- *
- * <p>Ademas del pedido se elige a quien se le vende (cliente de la cartera o
- * consumidor final) y como se paga (de contado o a credito).
- */
+  
+
+
+
+
+
+
 public class VentaForm {
 
     @Size(max = 100, message = "El nombre del cliente es demasiado largo")
     private String nombreCliente;
 
-    /** Cliente de la cartera. null = consumidor final. */
+      
     private Long clienteId;
 
-    /** Forma de pago. */
+      
     private FormaPago formaPago = FormaPago.EFECTIVO;
 
-    /** Fecha limite de pago (solo si es a credito). */
+      
     private LocalDate fechaVencimiento;
 
     private List<Long> productoId = new ArrayList<>();

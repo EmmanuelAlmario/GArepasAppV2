@@ -1,6 +1,6 @@
-/* =============================================================
-   Base — lienzo, tipografía y elementos globales
-   ============================================================= */
+  
+
+
 
 *,
 *::before,
@@ -21,8 +21,8 @@ body {
     line-height: 1.55;
     color: var(--ga-text);
     background-color: var(--ga-bg);
-    /* Lienzo de la marca: punteado fino (textura de arepa) sobre el
-       lavado calido. El punteado es lo que da el aire artesanal. */
+      
+
     background-image:
         radial-gradient(rgba(var(--ga-ink-rgb), .06) 1px, transparent 1px),
         radial-gradient(120% 60% at 100% 0%, rgba(254, 208, 95, .16) 0%, rgba(254, 208, 95, 0) 55%),
@@ -32,13 +32,13 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* ---------- Titulos ---------- */
+  
 
 h1, h2, h3, h4, h5, h6 {
     font-family: var(--ga-font-display);
     font-weight: 600;
     letter-spacing: -.015em;
-    /* Titulos en el burdeos de marca: jerarquia calida, no negro plano. */
+      
     color: var(--ga-burdeos);
 }
 
@@ -49,12 +49,12 @@ h4 { font-size: 1.0625rem; }
 h5 { font-size: .9375rem; }
 h6 { font-size: .8125rem; }
 
-/* Texto de apoyo en el cuerpo: sans, no display. */
+  
 p, li, td, th, label, span, dd, dt, figcaption {
     font-family: var(--ga-font-ui);
 }
 
-/* ---------- Enlaces ---------- */
+  
 
 a {
     color: var(--ga-link);
@@ -68,7 +68,7 @@ a:hover {
     text-decoration-color: currentColor;
 }
 
-/* ---------- Cifras ---------- */
+  
 
 table, .ga-kpi__valor, .ga-precio, .ga-total, .ga-cifra {
     font-variant-numeric: tabular-nums;
@@ -79,7 +79,7 @@ strong, b {
     font-weight: 650;
 }
 
-/* ---------- Formularios ---------- */
+  
 
 label {
     font-size: .8125rem;
@@ -88,7 +88,7 @@ label {
     color: #4A3A34;
 }
 
-/* ---------- Foco visible (accesibilidad) ---------- */
+  
 
 :focus-visible {
     outline: 2px solid var(--ga-brick);
@@ -96,14 +96,14 @@ label {
     border-radius: var(--ga-radius-sm);
 }
 
-/* ---------- Seleccion ---------- */
+  
 
 ::selection {
     background: var(--ga-gold);
     color: var(--ga-ink);
 }
 
-/* ---------- Scrollbars discretas ---------- */
+  
 
 * {
     scrollbar-width: thin;
@@ -127,7 +127,7 @@ label {
     background-clip: content-box;
 }
 
-/* ---------- Utilidades propias ---------- */
+  
 
 .ga-texto-suave { color: var(--ga-text-muted); }
 .ga-texto-mini { font-size: .75rem; color: var(--ga-text-muted); }
@@ -140,7 +140,7 @@ label {
 }
 .ga-numero { font-variant-numeric: tabular-nums; font-weight: 600; }
 
-/* ---------- Accesibilidad: movimiento reducido ---------- */
+  
 
 @media (prefers-reduced-motion: reduce) {
     *,

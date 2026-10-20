@@ -16,12 +16,12 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * Cobros de las ventas a credito.
- *
- * <p>Cada abono baja el saldo de la venta. Cuando el saldo llega a cero, la
- * venta queda pagada y deja de contar en la cartera.
- */
+  
+
+
+
+
+
 @Service
 @RequiredArgsConstructor
 public class AbonoService {
@@ -34,16 +34,16 @@ public class AbonoService {
         return abonoRepository.findByVentaIdOrderByFechaDesc(ventaId);
     }
 
-    /** Todos los cobros recibidos de un cliente. */
+      
     @Transactional(readOnly = true)
     public List<Abono> listarPorCliente(Long clienteId) {
         return abonoRepository.findByClienteId(clienteId);
     }
 
-    /**
-     * Registra un abono. No se puede abonar mas de lo pendiente ni a una venta
-     * ya pagada.
-     */
+      
+
+
+
     @Transactional
     public Abono registrar(Long ventaId, AbonoCommand command) {
         Venta venta = ventaRepository.findById(ventaId)

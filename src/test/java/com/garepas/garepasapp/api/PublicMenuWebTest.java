@@ -16,13 +16,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/**
- * Pruebas de la API publica del menu (/api/public/menu): acceso sin sesion,
- * lista blanca de campos, CORS restringido y solo lectura.
- *
- * Perfil dev (H2 + datos de prueba). El origen permitido por defecto en dev
- * es http://localhost:5173.
- */
+  
+
+
+
+
+
+
 @SpringBootTest(properties = {
         "app.seed.demo-data=true",
         "app.seed.admin-password=admin123",
@@ -62,7 +62,7 @@ class PublicMenuWebTest {
 
     @Test
     void menuNoIncluyeProductosInactivos() throws Exception {
-        // "Combo familiar" es inactivo en los datos demo (DataSeeder).
+          
         mockMvc.perform(get("/api/public/menu"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(not(containsString("Combo familiar"))));
@@ -89,8 +89,8 @@ class PublicMenuWebTest {
 
     @Test
     void menuEsSoloLectura() throws Exception {
-        // Sin token CSRF, cualquier escritura es rechazada: no hay forma de
-        // modificar el catalogo desde la API publica.
+          
+          
         mockMvc.perform(post("/api/public/menu"))
                 .andExpect(status().is4xxClientError());
     }

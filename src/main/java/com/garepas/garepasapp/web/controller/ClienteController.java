@@ -22,10 +22,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Clientes y cartera: quien fia, cuanto debe y el estado de cuenta de cada
- * uno. Ver tambien {@link AbonoController}, que registra los cobros.
- */
+  
+
+
+
 @Controller
 @RequestMapping("/clientes")
 @RequiredArgsConstructor
@@ -106,7 +106,7 @@ public class ClienteController {
         return "redirect:/clientes";
     }
 
-    /** Estado de cuenta: ventas del cliente y abonos recibidos. */
+      
     @GetMapping("/{id}")
     public String detalle(@PathVariable Long id, Model model) {
         Cliente cliente = clienteService.buscarPorId(id);

@@ -8,10 +8,10 @@ import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 
-/**
- * Formulario de configuracion del negocio: identidad, datos fiscales,
- * impuesto por defecto y mensaje del recibo.
- */
+  
+
+
+
 public class ConfiguracionForm {
 
     @NotBlank(message = "El nombre comercial es obligatorio")

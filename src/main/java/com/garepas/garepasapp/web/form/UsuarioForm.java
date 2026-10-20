@@ -14,11 +14,11 @@ public class UsuarioForm {
     @Size(max = 50, message = "El usuario no puede superar 50 caracteres")
     private String username;
 
-    /**
-     * Obligatoria al crear; opcional al editar (vacia = no cambiar).
-     * El minimo de 6 caracteres se valida en el servicio: en edicion el
-     * campo vacio es legitimo y no debe frenar el guardado.
-     */
+      
+
+
+
+
     @Size(max = 100, message = "La contrasena no puede superar 100 caracteres")
     private String password;
 

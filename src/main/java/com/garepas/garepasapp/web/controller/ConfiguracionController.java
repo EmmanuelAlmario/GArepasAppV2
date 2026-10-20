@@ -10,10 +10,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-/**
- * Configuracion del negocio: nombre, datos fiscales, impuesto y mensaje del
- * recibo. Es lo que hace que el POS y el comprobante pertenezcan al negocio.
- */
+  
+
+
+
 @Controller
 @RequestMapping("/configuracion")
 @RequiredArgsConstructor

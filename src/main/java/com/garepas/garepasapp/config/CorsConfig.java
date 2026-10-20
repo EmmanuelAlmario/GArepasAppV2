@@ -9,15 +9,15 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
-/**
- * CORS restringido a la API publica del menu (/api/public/**).
- *
- * - Solo los origenes listados en CORS_ORIGINS (lista separada por comas).
- *   Si la variable esta vacia, ningun origen cruzado recibe cabeceras CORS
- *   y el navegador bloquea la lectura: el valor por defecto es denegar.
- * - Solo metodo GET, sin credenciales (ni cookies ni Authorization).
- * - No aplica al resto de la aplicacion (Thymeleaf y /api/** privado).
- */
+  
+
+
+
+
+
+
+
+
 @Configuration
 public class CorsConfig {
 

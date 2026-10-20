@@ -9,6 +9,6 @@ import java.util.Optional;
 @Repository
 public interface ConfiguracionNegocioRepository extends JpaRepository<ConfiguracionNegocio, Long> {
 
-    /** La configuracion es una fila unica: se toma la de menor id. */
+      
     Optional<ConfiguracionNegocio> findTopByOrderByIdAsc();
 }

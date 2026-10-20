@@ -1,8 +1,8 @@
 package com.garepas.garepasapp.domain.enums;
 
-/**
- * Categorias de un gasto operativo del negocio.
- */
+  
+
+
 public enum CategoriaGasto {
     MATERIA_PRIMA("Materia Prima"),
     SERVICIOS("Servicios"),

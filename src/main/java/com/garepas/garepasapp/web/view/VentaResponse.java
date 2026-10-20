@@ -9,12 +9,12 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.List;
 
-/**
- * Vista de una venta.
- *
- * <p>Incluye el desglose de importes (subtotal, impuestos, total) y el saldo
- * pendiente, para que el historial y el recibo muestren lo mismo que se cobro.
- */
+  
+
+
+
+
+
 public record VentaResponse(
         Long id,
         OffsetDateTime fecha,
@@ -58,12 +58,12 @@ public record VentaResponse(
         );
     }
 
-    /** true si la venta sigue vigente (las anuladas no cuentan). */
+      
     public boolean activa() {
         return estado == null || estado.activa();
     }
 
-    /** true si quedo pendiente de cobro. */
+      
     public boolean pendiente() {
         return saldo != null && saldo.signum() > 0;
     }

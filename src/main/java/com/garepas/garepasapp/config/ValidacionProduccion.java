@@ -10,12 +10,12 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-/**
- * En produccion (cualquier perfil que no sea `dev`) exige las variables de
- * entorno obligatorias y detiene el arranque con un mensaje claro si falta
- * alguna. Sin esto, un placeholder no resuelto en application.properties
- * termina como un error criptico de Hikari al intentar conectar.
- */
+  
+
+
+
+
+
 @Component
 @Profile("!dev")
 public class ValidacionProduccion implements BeanFactoryPostProcessor, EnvironmentAware {

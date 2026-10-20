@@ -19,10 +19,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-/**
- * Jornadas: apertura, cierre y arqueo. El arqueo se resuelve con una consulta
- * agregada (no cargando la tabla de ventas).
- */
+  
+
+
+
 class JornadaServiceTest {
 
     private JornadaRepository jornadaRepository;
@@ -76,7 +76,7 @@ class JornadaServiceTest {
         assertEquals(4, respuesta.nroVentas());
         assertEquals(0, new BigDecimal("42000").compareTo(respuesta.totalVentas()));
         verify(ventaRepository).arqueoPorJornada(EstadoVenta.ACTIVA);
-        // No se carga la tabla de ventas para contar.
+          
         verify(ventaRepository, never()).findAllByOrderByFechaDesc();
     }
 

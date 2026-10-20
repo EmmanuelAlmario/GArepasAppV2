@@ -14,9 +14,9 @@
 
 <div th:replace="~{fragments/confirm-modal :: confirmModal}"></div>
 
-<!-- Guía de instalación en iPhone: Safari no dispara ningún prompt, el usuario
-     instala desde Compartir -> Agregar a pantalla de inicio. Solo se muestra en
-     Safari (no en la app ya instalada) y se puede descartar. -->
+
+
+
 <div id="iosInstallHint" class="ios-install-hint" role="status" hidden>
     <span class="ios-install-hint__texto">
         Para instalar la app: toca <strong>Compartir</strong> y elige
@@ -26,8 +26,8 @@
             aria-label="Ocultar aviso"></button>
 </div>
 
-<!-- Bootstrap servido desde el propio servidor: sin CDN la app no depende
-         de internet y el modal de confirmacion siempre funciona. -->
+
+
     <script th:src="@{/vendor/js/bootstrap.bundle.min.js?v=5}"></script>
 <script th:src="@{/js/ui-feedback.js?v=5}"></script>
 <script th:src="@{/js/tablas-moviles.js?v=5}"></script>

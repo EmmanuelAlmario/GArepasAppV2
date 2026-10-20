@@ -18,10 +18,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-/**
- * Costos: costo por unidad considerando el rendimiento de la receta y
- * sugerencia de precio con margen porcentual.
- */
+  
+
+
+
 class CostoServiceTest {
 
     private RecetaRepository recetaRepository;
@@ -63,15 +63,15 @@ class CostoServiceTest {
 
         BigDecimal costo = CostoService.costoDeReceta(receta);
 
-        // 120 x 4.50 = 540 ; 40 x 14 = 560 -> 1100
+          
         assertEquals(0, new BigDecimal("1100").compareTo(costo));
     }
 
-    /**
-     * REGRESION: el margen no tenia en cuenta el rendimiento de la receta.
-     * Una receta que rinde 10 unidades por lote costaba 10 veces lo que
-     * costaba realmente cada unidad.
-     */
+      
+
+
+
+
     @Test
     void elCostoUnitarioDividePorElRendimientoDeLaReceta() {
         Receta receta = receta("Lote", new BigDecimal("10"),
@@ -103,11 +103,11 @@ class CostoServiceTest {
         assertEquals(0, BigDecimal.ZERO.compareTo(CostoService.costoUnitarioProducto(producto)));
     }
 
-    /**
-     * REGRESION: el margen se interpretaba como factor (0.30 = 30%) cuando en
-     * realidad es un porcentaje (30 = 30%). Con 30 el precio salia 31 veces
-     * el costo.
-     */
+      
+
+
+
+
     @Test
     void elMargenDeSugerenciaSeInterpretaComoPorcentaje() {
         Producto producto = Producto.builder().id(1L).nombre("Arepa").precioVenta(new BigDecimal("3500"))
@@ -127,7 +127,7 @@ class CostoServiceTest {
                 .receta(receta).stockActual(0).activo(true).build();
         when(productoRepository.findById(1L)).thenReturn(Optional.of(producto));
 
-        // Costo 100 x 5 = 500 ; con 30% -> 650
+          
         BigDecimal sugerido = costoService.sugerirPrecioVenta(1L, new BigDecimal("30"));
 
         assertEquals(0, new BigDecimal("650.00").compareTo(sugerido));

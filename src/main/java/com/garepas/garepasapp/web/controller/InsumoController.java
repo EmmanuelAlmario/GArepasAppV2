@@ -58,7 +58,7 @@ public class InsumoController {
         form.setNombre(insumo.nombre());
         form.setCategoria(insumo.categoria());
         form.setMarca(insumo.marca());
-        // El formulario trabaja siempre en la unidad de presentacion.
+          
         form.setUnidadMedida(insumo.unidadPresentacion());
         form.setStockActual(formato.limpiar(insumo.stockPresentacion()));
         form.setStockMinimo(insumo.stockMinimoPresentacion() == null
@@ -118,7 +118,7 @@ public class InsumoController {
     @GetMapping("/ajustar-stock")
     public String ajustarStockForm(Model model) {
         AjusteStockForm form = new AjusteStockForm();
-        // Una fila vacia inicial para que el formulario muestre los selectores.
+          
         form.getInsumoId().add(null);
         form.getCantidad().add(null);
         model.addAttribute("form", form);

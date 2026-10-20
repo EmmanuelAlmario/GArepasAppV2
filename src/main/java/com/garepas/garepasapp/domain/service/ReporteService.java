@@ -19,21 +19,21 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Reporte de rentabilidad (ingresos vs gastos) de un rango de fechas.
- *
- * <p><b>Rediseño del calculo:</b>
- * <ul>
- *   <li>El rango es SEMIABIERTO [desde 00:00, hasta+1 00:00). Antes se usaba
- *       un BETWEEN inclusivo con el limite en la medianoche del dia
- *       siguiente: ese dia fantasma entrava en los totales pero no aparecia en
- *       la serie diaria, y el reporte no cuadraba consigo mismo.</li>
- *   <li>Todo se agrega en SQL: series diarias, top de productos y gastos por
- *       categoria. Antes se cargaban las ventas con sus detalles y sus
- *       productos (2 queries por venta) para sumar en memoria.</li>
- *   <li>Las ventas ANULADAS no cuentan en ningun total.</li>
- * </ul>
- */
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @Service
 @RequiredArgsConstructor
 public class ReporteService {
@@ -49,7 +49,7 @@ public class ReporteService {
         LocalDate ini = (desde == null || desde.isAfter(fin)) ? fin.minusDays(6) : desde;
 
         LocalDateTime inicio = ini.atStartOfDay();
-        LocalDateTime cierre = fin.plusDays(1).atStartOfDay(); // exclusivo
+        LocalDateTime cierre = fin.plusDays(1).atStartOfDay();   
 
         Map<LocalDate, BigDecimal> ingresosPorDia = new LinkedHashMap<>();
         Map<LocalDate, BigDecimal> gastosPorDia = new LinkedHashMap<>();

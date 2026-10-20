@@ -36,11 +36,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-/**
- * Reglas del punto de venta: precio del servidor, consolidacion de lineas,
- * descuento de stock, rechazo de productos inactivos o sin stock, produccion
- * automatica para productos bajo pedido y anulacion con devolucion de stock.
- */
+  
+
+
+
+
 class VentaServiceTest {
 
     private VentaRepository ventaRepository;
@@ -85,7 +85,7 @@ class VentaServiceTest {
                 .build();
     }
 
-    /** El inventario bloquea los productos en una sola consulta (ordenada por id). */
+      
     private void MockearProductos(Producto... productos) {
         when(productoRepository.findAllByIdConLock(any())).thenReturn(List.of(productos));
     }
@@ -106,12 +106,12 @@ class VentaServiceTest {
         assertEquals(EstadoVenta.ACTIVA, respuesta.estado());
     }
 
-    /**
-     * REGRESION: antes la validacion de stock era linea por linea. Dos lineas
-     * del mismo producto (5 + 5 con 8 disponibles) pasaban las dos y el
-     * inventario quedaba en -2. Ahora las lineas se consolidan antes de
-     * validar.
-     */
+      
+
+
+
+
+
     @Test
     void rechazaVentaConElMismoProductoRepetidoQueExcedeElStock() {
         Producto arepa = producto(1L, "Arepa", 8, "3500", true);
@@ -231,10 +231,10 @@ class VentaServiceTest {
         verify(produccionService).registrarParaVenta(eq(arepaDeCerdo), eq(5), any(Venta.class));
     }
 
-    /**
-     * La venta ya no se borra: se anula. El stock vuelve, las producciones
-     * automaticas se revierten y la venta queda como historia.
-     */
+      
+
+
+
     @Test
     void anularDevuelveElStockYMarcaLaVentaComoAnulada() {
         Producto arepa = producto(1L, "Arepa", 5, "3500", true);

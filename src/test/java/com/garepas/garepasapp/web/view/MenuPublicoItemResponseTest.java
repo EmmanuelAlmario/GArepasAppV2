@@ -9,10 +9,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/**
- * Regla de disponibilidad del menu publico: igual que en el punto de venta.
- * Bajo pedido siempre disponible; los demas solo con stock terminado.
- */
+  
+
+
+
 class MenuPublicoItemResponseTest {
 
     private Producto producto(int stock, Boolean bajoPedido) {

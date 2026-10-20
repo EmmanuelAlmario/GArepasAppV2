@@ -5,13 +5,13 @@ import com.garepas.garepasapp.domain.model.DetalleProduccion;
 
 import java.math.BigDecimal;
 
-/**
- * Linea de una produccion vista desde la web.
- *
- * <p>Las cantidades estan en unidad BASE para que el calculo de faltantes
- * (requerido - disponible) sea exactamente el mismo que usa el descuento de
- * stock.
- */
+  
+
+
+
+
+
+
 public record DetalleProduccionResponse(
         Long id,
         Long insumoId,
@@ -41,21 +41,21 @@ public record DetalleProduccionResponse(
         );
     }
 
-    /** Cantidad requerida expresada en la unidad de presentacion del insumo. */
+      
     public BigDecimal cantidadRequeridaPresentacion() {
         return insumoUnidadPresentacion == null
                 ? cantidadRequerida
                 : insumoUnidadPresentacion.desdeBase(cantidadRequerida);
     }
 
-    /** Stock disponible expresado en la unidad de presentacion del insumo. */
+      
     public BigDecimal stockDisponiblePresentacion() {
         return insumoUnidadPresentacion == null
                 ? stockDisponible
                 : insumoUnidadPresentacion.desdeBase(stockDisponible);
     }
 
-    /** Etiqueta de la unidad base (g, ml, u). */
+      
     public String unidadEtiqueta() {
         return switch (insumoUnidadBase()) {
             case GRAMO -> "g";

@@ -9,15 +9,15 @@ import org.springframework.test.context.ActiveProfiles;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/**
- * Verifica que las migraciones (V1 esquema inicial + V2 redisenio del
- * dominio) crean una base valida para las entidades JPA.
- *
- * <p>Flyway ejecuta los scripts sobre una H2 vacia (modo PostgreSQL) y
- * Hibernate la valida con ddl-auto=validate: si una entidad no coincide con
- * el esquema, el contexto no arranca y la prueba falla. La base usa un nombre
- * propio para no mezclarse con la de otros contextos de prueba.
- */
+  
+
+
+
+
+
+
+
+
 @SpringBootTest(properties = {
         "app.seed.demo-data=false",
         "app.seed.admin-password=admin123",
@@ -35,7 +35,7 @@ class EsquemaFlywayTest {
 
     @Test
     void lasMigracionesSeAplicanYRegistran() {
-        // Solo migraciones SQL: Flyway tambien registra una fila de marcador (tipo SCHEMA).
+          
         Integer migracionesAplicadas = jdbcTemplate.queryForObject(
                 "select count(*) from flyway_schema_history where type = 'SQL' and success = true",
                 Integer.class);

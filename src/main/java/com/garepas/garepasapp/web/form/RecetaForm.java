@@ -11,14 +11,14 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Formulario de receta. Los detalles llegan como listas paralelas
- * (insumoId, cantidad, unidadMedida repetidos por fila) para poder agregar
- * filas dinamicamente sin manejar indices.
- *
- * <p>Las cantidades NO se convierten aqui: llegan en la unidad que escribio
- * el usuario y el servicio las lleva a unidad base.
- */
+  
+
+
+
+
+
+
+
 public class RecetaForm {
 
     private Long id;
@@ -34,14 +34,14 @@ public class RecetaForm {
     private List<BigDecimal> cantidad = new ArrayList<>();
     private List<UnidadMedida> unidadMedida = new ArrayList<>();
 
-    /** Opcional: insumo que fabrica la receta (ej.: masa preparada). */
+      
     private Long insumoProducidoId;
 
-    /** Cuantas unidades rinde un lote de la receta. */
+      
     @DecimalMin(value = "0.0001", message = "El rendimiento debe ser mayor a cero")
     private BigDecimal rendimiento;
 
-    /** Filas completas: insumo + cantidad mayor que cero + unidad. */
+      
     public List<DetalleRecetaCommand> filasValidas() {
         List<DetalleRecetaCommand> detalles = new ArrayList<>();
         for (int i = 0; i < insumoId.size(); i++) {

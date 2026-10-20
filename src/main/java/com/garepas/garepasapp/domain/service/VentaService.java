@@ -29,26 +29,26 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Punto de venta.
- *
- * <p><b>Reglas del rediseño:</b>
- * <ul>
- *   <li>Las lineas del mismo producto se CONSOLIDAN antes de validar el
- *       stock. Antes se validaba linea por linea contra el stock original, de
- *       modo que dos lineas del mismo producto (5 + 5 con 8 disponibles)
- *       pasaban las dos y el inventario quedaba en -2.</li>
- *   <li>Los productos se bloquean ordenados por id, igual que los insumos:
- *       dos cajas registrando ventas a la vez no se bloquean en orden distinto
- *       y se produce un deadlock.</li>
- *   <li>Una venta no se borra: se ANULA. Se conserva el historico (el
- *       reporte ya emitido no debe cambiar) pero deja de contar en ingresos,
- *       reportes y arqueo de jornada.</li>
- *   <li>El importe se descompone en subtotal + impuestos (segun la
- *       configuracion del negocio) y una venta a CREDITO queda con saldo
- *       pendiente de cobro.</li>
- * </ul>
- */
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @Service
 @RequiredArgsConstructor
 public class VentaService {
@@ -82,7 +82,7 @@ public class VentaService {
         return page.map(VentaResponse::desde);
     }
 
-    /** Historial con busqueda y filtro por estado, resuelto en base de datos. */
+      
     @Transactional(readOnly = true)
     public Page<VentaResponse> buscar(String texto, EstadoVenta estado, Pageable pageable) {
         String q = texto == null ? "" : texto.trim();
@@ -96,20 +96,20 @@ public class VentaService {
                 .orElseThrow(() -> new RecursoNoEncontradoException("Venta", id));
     }
 
-    /** La venta con sus abonos, para el estado de cuenta y el recibo. */
+      
     @Transactional(readOnly = true)
     public Venta buscarEntidad(Long id) {
         return ventaRepository.findById(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Venta", id));
     }
 
-    /** Ventas de un cliente (estado de cuenta). */
+      
     @Transactional(readOnly = true)
     public List<Venta> ventasDeCliente(Long clienteId) {
         List<Venta> ventas = ventaRepository.findByClienteIdAndEstado(clienteId, EstadoVenta.ACTIVA);
-        // Los detalles se cargan aparte (mismo patron que listarPaginado): el
-        // estado de cuenta los muestra y "open-in-view" esta desactivado, asi
-        // que la vista no puede inicializar la coleccion perezosa.
+          
+          
+          
         List<Long> ids = ventas.stream().map(Venta::getId).toList();
         if (!ids.isEmpty()) {
             Map<Long, List<DetalleVenta>> detallesPorVenta =
@@ -121,17 +121,17 @@ public class VentaService {
         return ventas;
     }
 
-    /**
-     * Registra una venta. Es atomica: si algo falla, no queda ni stock
-     * movido ni venta guardada.
-     */
+      
+
+
+
     @Transactional
     public VentaResponse registrar(VentaCommand command) {
         if (command.detalles() == null || command.detalles().isEmpty()) {
             throw new OperacionInvalidaException("La venta debe incluir al menos un detalle");
         }
 
-        // 1) Cliente: puede ser uno de la cartera o un consumidor final.
+          
         Cliente cliente = null;
         String nombreEnVenta = command.nombreCliente();
         if (command.clienteId() != null) {
@@ -143,7 +143,7 @@ public class VentaService {
             nombreEnVenta = cliente.getNombre();
         }
 
-        // 2) Forma de pago: a credito exige cliente y deja saldo pendiente.
+          
         FormaPago formaPago = command.formaPago() == null ? FormaPago.EFECTIVO : command.formaPago();
         if (formaPago.esCredito() && cliente == null) {
             throw new OperacionInvalidaException("Una venta a credito necesita un cliente de la cartera");
@@ -152,7 +152,7 @@ public class VentaService {
                 ? command.fechaVencimiento().atStartOfDay()
                 : null;
 
-        // 3) Consolidar: el mismo producto puede repetirse en varias lineas.
+          
         Map<Long, Integer> consolidado = new LinkedHashMap<>();
         for (DetalleVentaCommand detalle : command.detalles()) {
             if (detalle.productoId() == null) {
@@ -164,7 +164,7 @@ public class VentaService {
             consolidado.merge(detalle.productoId(), detalle.cantidad(), Integer::sum);
         }
 
-        // 4) Bloquear y validar los productos (stock ya consolidado).
+          
         Map<Long, Producto> productos = inventarioService.bloquearProductos(consolidado.keySet());
         for (Map.Entry<Long, Integer> entry : consolidado.entrySet()) {
             Producto producto = productos.get(entry.getKey());
@@ -179,8 +179,8 @@ public class VentaService {
             }
         }
 
-        // 5) Cabecera. Se persiste primero para que las producciones automaticas
-        //    puedan enlazarse a la venta.
+          
+          
         Jornada jornada = jornadaRepository.findFirstByActivaTrueOrderByFechaAperturaDesc().orElse(null);
         Venta venta = ventaRepository.save(Venta.builder()
                 .fecha(LocalDateTime.now())
@@ -196,22 +196,22 @@ public class VentaService {
                 .estado(EstadoVenta.ACTIVA)
                 .build());
 
-        // 6) Detalle y efectos sobre el inventario.
+          
         List<DetalleVenta> detalles = new ArrayList<>();
         BigDecimal subtotal = BigDecimal.ZERO;
         for (DetalleVentaCommand detalle : command.detalles()) {
             Producto producto = productos.get(detalle.productoId());
 
             if (esBajoPedido(producto)) {
-                // Producto sin existencias: se elabora al momento. La produccion
-                // automatica consume los insumos de la receta y lanza si no
-                // alcanzan (la venta entera se revierte).
+                  
+                  
+                  
                 produccionService.registrarParaVenta(producto, detalle.cantidad(), venta);
             } else {
                 inventarioService.descontarProducto(producto, detalle.cantidad());
             }
 
-            // Precio del servidor (snapshot); nunca el que envia el cliente.
+              
             BigDecimal precioUnitario = producto.getPrecioVenta();
             BigDecimal subtotalLinea = precioUnitario.multiply(BigDecimal.valueOf(detalle.cantidad()));
 
@@ -225,7 +225,7 @@ public class VentaService {
             subtotal = subtotal.add(subtotalLinea);
         }
 
-        // 7) Importes: subtotal + impuestos segun la configuracion del negocio.
+          
         BigDecimal impuestoPct = configuracionNegocioService.impuestoPorcentaje();
         BigDecimal impuestos = subtotal.multiply(impuestoPct)
                 .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
@@ -234,16 +234,16 @@ public class VentaService {
         venta.setSubtotal(subtotal);
         venta.setImpuestos(impuestos);
         venta.setTotal(total);
-        // A credito queda pendiente de cobro; el resto se cobra al contado.
+          
         venta.setSaldo(formaPago.esCredito() ? total : BigDecimal.ZERO);
         venta.setDetalles(detalles);
         return VentaResponse.desde(ventaRepository.save(venta));
     }
 
-    /**
-     * Anula una venta: devuelve el stock, revierte las producciones automaticas
-     * y marca la venta como ANULADA. El registro se conserva como historia.
-     */
+      
+
+
+
     @Transactional
     public VentaResponse anular(Long id) {
         Venta venta = ventaRepository.findById(id)
@@ -266,7 +266,7 @@ public class VentaService {
             }
         }
 
-        // Revierte las producciones automaticas (devuelve insumos y borra su gasto).
+          
         produccionService.revertirDeVenta(venta);
 
         venta.setEstado(EstadoVenta.ANULADA);
@@ -274,7 +274,7 @@ public class VentaService {
         return VentaResponse.desde(ventaRepository.save(venta));
     }
 
-    /** Anula una venta (alias semantico usado por la capa web). */
+      
     @Transactional
     public void eliminar(Long id) {
         anular(id);

@@ -11,19 +11,19 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-/**
- * Crea el usuario de respaldo "admin" si todavia no existe.
- *
- * <p><b>Rediseño:</b> antes este seeder reescribia la contraseña (y el rol)
- * del admin en CADA arranque, asi que cualquier cambio hecho desde la
- * aplicacion se perdia en el siguiente redespliegue. Ahora solo crea el
- * usuario la primera vez: si ya existe, se respeta la clave que el negocio
- * haya cambiado.
- *
- * <p>Para rotar la clave inicial basta con la variable de entorno
- * {@code ADMIN_PASSWORD} en el PRIMER arranque, o cambiar la clave desde el
- * modulo de usuarios.
- */
+  
+
+
+
+
+
+
+
+
+
+
+
+
 @Component
 @Order(1)
 @RequiredArgsConstructor

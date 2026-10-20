@@ -4,13 +4,13 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
 
-/**
- * Cliente del negocio.
- *
- * <p>Sustituye al nombre suelto que antes se escribia en la venta. Permite
- * fiar (venta a credito), llevar el saldo por cliente y mandar recordatorios
- * de cobro.
- */
+  
+
+
+
+
+
+
 @Entity
 @Table(name = "clientes", uniqueConstraints = {
         @UniqueConstraint(name = "uk_clientes_nombre", columnNames = "nombre")

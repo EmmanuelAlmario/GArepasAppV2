@@ -33,7 +33,7 @@ public class RecetaController {
     @GetMapping("/nuevo")
     public String nueva(Model model) {
         RecetaForm form = new RecetaForm();
-        // Una fila vacia inicial para que el formulario muestre los selectores.
+          
         form.getInsumoId().add(null);
         form.getCantidad().add(null);
         form.getUnidadMedida().add(null);
@@ -53,8 +53,8 @@ public class RecetaController {
         form.setRendimiento(receta.rendimiento());
         for (DetalleRecetaResponse detalle : receta.detalles()) {
             form.getInsumoId().add(detalle.insumoId());
-            // La cantidad se muestra en la unidad de presentacion del insumo
-            // (lo que el usuario maneja); el servicio la lleva a unidad base.
+              
+              
             form.getCantidad().add(detalle.cantidadEnPresentacion());
             form.getUnidadMedida().add(detalle.insumoUnidadPresentacion());
         }

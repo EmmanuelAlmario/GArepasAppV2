@@ -14,6 +14,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     boolean existsByUsernameIgnoreCase(String username);
 
-    /** Numero de administradores activos: el sistema no puede quedarse sin ninguno. */
+      
     long countByRolAndActivoTrue(Rol rol);
 }

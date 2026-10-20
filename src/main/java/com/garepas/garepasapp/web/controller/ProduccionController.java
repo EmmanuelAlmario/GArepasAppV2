@@ -15,10 +15,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-/**
- * Producciones: registrar (UC16), re-verificar pendientes (UC17),
- * ver insumos faltantes (UC18) y eliminar (UC19).
- */
+  
+
+
+
 @Controller
 @RequestMapping("/producciones")
 @RequiredArgsConstructor
@@ -71,8 +71,8 @@ public class ProduccionController {
         long insumosOk = produccion.detalles().stream()
                 .filter(d -> Boolean.TRUE.equals(d.suficiente()))
                 .count();
-        // Compara el stock actual con lo requerido: si ya alcanza, se invita a re-verificar
-        // sin presentar como vigente el resultado de una verificacion anterior.
+          
+          
         boolean tieneStockAhora = !produccion.detalles().isEmpty() && produccion.detalles().stream()
                 .allMatch(d -> d.stockDisponible() != null && d.cantidadRequerida() != null
                         && d.stockDisponible().compareTo(d.cantidadRequerida()) >= 0);
@@ -102,7 +102,7 @@ public class ProduccionController {
         return "redirect:/producciones";
     }
 
-    /** Solo los productos con receta asignada pueden producirse. */
+      
     private void cargarProductos(Model model) {
         model.addAttribute("productos", productoService.listarActivos().stream()
                 .filter(p -> p.recetaId() != null)

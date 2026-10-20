@@ -31,23 +31,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- * Produccion: transforma insumos en producto terminado.
- *
- * <p><b>Reglas del rediseño:</b>
- * <ul>
- *   <li>Los ingredientes de una receta se CONSOLIDAN por insumo antes de
- *       calcular. Antes la suficiencia se evaluaba fila por fila: un insumo
- *       repetido en dos filas (60 g + 60 g con 100 g de stock) pasaba las dos
- *       como suficiente y el descuento dejaba el stock en -20.</li>
- *   <li>Los insumos se bloquean ordenados por id (ver InventarioService).</li>
- *   <li>El precio de los insumos queda CONGELADO al crear la produccion. Al
- *       reverificar una produccion pendiente no se recalcula con el precio
- *       actual: el snapshot es justamente para eso.</li>
- *   <li>Descontar y devolver usan la misma cantidad (la usada), de modo que
- *       revertir una produccion devuelve exactamente lo que se desconto.</li>
- * </ul>
- */
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @Service
 @RequiredArgsConstructor
 public class ProduccionService {
@@ -77,10 +77,10 @@ public class ProduccionService {
                 .orElseThrow(() -> new RecursoNoEncontradoException("Produccion", id));
     }
 
-    /**
-     * Produccion manual. Si faltan insumos queda PENDIENTE (no se descuenta
-     * stock ni se genera gasto) para completarla mas tarde.
-     */
+      
+
+
+
     @Transactional
     public ProduccionResponse registrar(ProduccionCommand command) {
         if (command.cantidad() == null || command.cantidad() <= 0) {
@@ -101,12 +101,12 @@ public class ProduccionService {
         return ProduccionResponse.desde(crearYAplicar(producto, command.cantidad(), null, false));
     }
 
-    /**
-     * Produccion automatica generada al vender un producto bajo pedido.
-     * Comparte el mismo pipeline de costo y descuento que la produccion manual
-     * (una sola fuente de verdad para el consumo de insumos), pero exige
-     * insumos suficientes: una venta no puede quedar PENDIENTE.
-     */
+      
+
+
+
+
+
     @Transactional
     public Produccion registrarParaVenta(Producto producto, Integer cantidad, Venta venta) {
         if (cantidad == null || cantidad <= 0) {
@@ -119,11 +119,11 @@ public class ProduccionService {
         return crearYAplicar(producto, cantidad, venta, true);
     }
 
-    /**
-     * Revierte las producciones automaticas de una venta anulada: devuelve los
-     * insumos y elimina el gasto de materia prima. No devuelve stock de
-     * producto porque la produccion automatica nunca lo sumo.
-     */
+      
+
+
+
+
     @Transactional
     public void revertirDeVenta(Venta venta) {
         for (Produccion produccion : produccionRepository.findByVentaId(venta.getId())) {
@@ -178,13 +178,13 @@ public class ProduccionService {
                 + ". Reabastece el inventario antes de vender.";
     }
 
-    /**
-     * Reverifica el stock de insumos de una produccion PENDIENTE. Si alcanza,
-     * descuenta stock, genera el gasto y marca la produccion COMPLETADA.
-     *
-     * <p>Los precios ya congelados en el snapshot NO se recalculan: la
-     * produccion conserva el costo con el que fue creada.
-     */
+      
+
+
+
+
+
+
     @Transactional
     public ProduccionResponse verificarYCompletar(Long id) {
         Produccion produccion = produccionRepository.findById(id)
@@ -215,15 +215,15 @@ public class ProduccionService {
         return ProduccionResponse.desde(produccionRepository.save(produccion));
     }
 
-    /**
-     * Construye los detalles de la produccion: consolida los ingredientes de
-     * la receta por insumo, calcula la cantidad requerida, la suficiencia con
-     * el stock actual y el costo con el precio congelado (o el actual si la
-     * produccion es nueva).
-     */
+      
+
+
+
+
+
     private List<DetalleProduccion> construirDetalles(Produccion produccion, Producto producto,
                                                       Integer cantidad, Produccion previa) {
-        // Consolidar ingredientes por insumo (una receta puede repetir un insumo).
+          
         Map<Long, BigDecimal> requeridosPorInsumo = new LinkedHashMap<>();
         for (DetalleReceta detalleReceta : producto.getReceta().getDetalles()) {
             requeridosPorInsumo.merge(
@@ -234,7 +234,7 @@ public class ProduccionService {
 
         Map<Long, Insumo> insumos = inventarioService.bloquearInsumos(requeridosPorInsumo.keySet());
 
-        // Precios congelados de una produccion previa (si existe).
+          
         Map<Long, BigDecimal> preciosCongelados = new LinkedHashMap<>();
         if (previa != null) {
             for (DetalleProduccion detalle : previa.getDetalles()) {
@@ -265,19 +265,19 @@ public class ProduccionService {
         return detalles;
     }
 
-    /**
-     * Aplica los efectos de una produccion completada: descuenta el stock de
-     * los insumos, aumenta el stock del producto (solo en produccion manual) y
-     * genera el gasto automatico de materia prima.
-     */
+      
+
+
+
+
     private void aplicarProduccion(Produccion produccion) {
         for (DetalleProduccion detalle : produccion.getDetalles()) {
             Insumo insumo = inventarioService.bloquearInsumo(detalle.getInsumo().getId());
             inventarioService.descontarInsumo(insumo, detalle.getCantidadRequerida());
         }
 
-        // Las producciones automaticas de ventas no tocan el stock del producto:
-        // el inventario real de un producto bajo pedido son sus insumos.
+          
+          
         if (!produccion.esAutomatica()) {
             Producto producto = inventarioService.bloquearProducto(produccion.getProducto().getId());
             producto.setStockActual(producto.getStockActual() + produccion.getCantidad());
@@ -311,10 +311,10 @@ public class ProduccionService {
         produccionRepository.deleteById(id);
     }
 
-    /**
-     * Revierte los efectos de una produccion completada. Devuelve exactamente
-     * la cantidad que se descontó (cantidadUsada) y elimina el gasto asociado.
-     */
+      
+
+
+
     private void revertirCompletada(Produccion produccion, boolean devolverProducto) {
         for (DetalleProduccion detalle : produccion.getDetalles()) {
             Insumo insumo = inventarioService.bloquearInsumo(detalle.getInsumo().getId());

@@ -17,14 +17,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Jornadas de operacion (apertura, arqueo y cierre).
- *
- * <p><b>Rediseño del arqueo:</b> antes cada arqueo cargaba la tabla COMPLETA
- * de ventas con sus detalles y filtraba en memoria, y el punto de venta pide
- * el arqueo en cada render. Ahora el arqueo es una consulta agregada por
- * jornada: una sola query, sin trafico de filas.
- */
+  
+
+
+
+
+
+
+
 @Service
 @RequiredArgsConstructor
 public class JornadaService {
@@ -32,7 +32,7 @@ public class JornadaService {
     private final JornadaRepository jornadaRepository;
     private final VentaRepository ventaRepository;
 
-    /** Arqueo de todas las jornadas con ventas: id -> (ventas, total). */
+      
     private Map<Long, Object[]> arqueoGlobal() {
         Map<Long, Object[]> arqueo = new HashMap<>();
         for (Object[] fila : ventaRepository.arqueoPorJornada(EstadoVenta.ACTIVA)) {

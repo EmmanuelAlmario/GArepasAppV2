@@ -65,11 +65,11 @@ public class ProductoService {
         return ProductoResponse.desde(productoRepository.save(producto));
     }
 
-    /**
-     * Actualiza la ficha del producto. El stock se ajusta por DELTA (comparado
-     * con el stock actual) para no pisar las ventas que ocurren en paralelo:
-     * antes se sobrescribia con el valor del formulario y se perdian unidades.
-     */
+      
+
+
+
+
     @Transactional
     public ProductoResponse actualizar(Long id, ProductoCommand command) {
         Producto producto = inventarioService.bloquearProducto(id);
@@ -100,11 +100,11 @@ public class ProductoService {
         return ProductoResponse.desde(productoRepository.save(producto));
     }
 
-    /**
-     * Un producto bajo pedido se elabora al momento de la venta: la venta
-     * dispara una produccion automatica que descuenta los insumos de la
-     * receta. Sin receta no hay nada que descontar, por eso se exige receta.
-     */
+      
+
+
+
+
     private Boolean validarBajoPedido(boolean bajoPedido, Receta receta, String nombre) {
         if (bajoPedido && receta == null) {
             throw new OperacionInvalidaException(
@@ -113,10 +113,10 @@ public class ProductoService {
         return bajoPedido;
     }
 
-    /**
-     * Ajuste manual de stock (conciliaciones fisicas / mermas). El flujo
-     * normal es Venta / Produccion.
-     */
+      
+
+
+
     @Transactional
     public ProductoResponse ajustarStock(Long id, Integer delta, String motivo) {
         if (delta == null || delta == 0) {

@@ -10,7 +10,7 @@
 <div th:fragment="contenido">
     <th:block th:replace="~{fragments/page-header :: pageHeader('Reportes', 'Ingresos, gastos y utilidad del periodo seleccionado.', 'Panel', ~{::acciones})}"></th:block>
 
-    <!-- Selector de rango -->
+    
     <div class="card mb-3">
         <div class="card-body">
             <div class="row g-3 align-items-end">
@@ -52,7 +52,7 @@
         </div>
     </div>
 
-    <!-- Indicadores -->
+    
     <div class="row g-3 mb-3">
         <div class="col-6 col-lg-3">
             <div class="ga-kpi ga-kpi--brick">
@@ -96,7 +96,7 @@
         </div>
     </div>
 
-    <!-- Serie diaria -->
+    
     <div class="card mb-3">
         <div class="card-header">
             <h2>Ingresos vs gastos por día</h2>
@@ -132,7 +132,7 @@
     </div>
 
     <div class="row g-3">
-        <!-- Top de productos -->
+        
         <div class="col-12 col-lg-6">
             <div class="card h-100">
                 <div class="card-header">
@@ -159,7 +159,7 @@
             </div>
         </div>
 
-        <!-- Gastos por categoria -->
+        
         <div class="col-12 col-lg-6">
             <div class="card h-100">
                 <div class="card-header">
@@ -187,7 +187,7 @@
         </div>
     </div>
 
-    <!-- Chart.js 4.5.1 servido desde el propio servidor (sin CDN). -->
+    
     <script th:src="@{/vendor/js/chart.umd.min.js?v=5}"></script>
     <script th:inline="javascript">
         const fechas = /*[[${serieFechas}]]*/ [];

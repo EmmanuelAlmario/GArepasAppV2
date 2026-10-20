@@ -27,16 +27,16 @@ public interface InsumoRepository extends JpaRepository<Insumo, Long> {
     @Query("select i from Insumo i where i.id = :id")
     Optional<Insumo> findByIdConLock(@Param("id") Long id);
 
-    /**
-     * Bloquea varios insumos en una sola consulta. El servicio los pide siempre
-     * ordenados por id para que dos transacciones que compartan insumos
-     * enganchen los bloqueos en el mismo orden (si no, se produce un deadlock).
-     */
+      
+
+
+
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select i from Insumo i where i.id in :ids order by i.id")
     List<Insumo> findAllByIdConLock(@Param("ids") Collection<Long> ids);
 
-    /** Recetas que usan este insumo como ingrediente. */
+      
     @Query("select distinct r from Receta r join r.detalles d where d.insumo.id = :insumoId")
     List<com.garepas.garepasapp.domain.model.Receta> findRecetasQueUsan(@Param("insumoId") Long insumoId);
 

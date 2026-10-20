@@ -24,25 +24,25 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Recetas: que insumos y en que cantidad forman un producto (o un insumo
- * fabricado).
- *
- * <p><b>Reglas del rediseño:</b>
- * <ul>
- *   <li>La conversion a unidad base ocurre aqui, no en el formulario ni en el
- *       controlador. Antes el formulario convertia y el camino de la API no:
- *       una receta creada por API con "1 KILOGRAMO" guardaba 1 gramo y
- *       costs y descuentos de stock salian mil veces mal.</li>
- *   <li>Los ingredientes repetidos se CONSOLIDAN en una sola linea. Si no,
- *       la suficiencia se evaluaba por fila y el descuento podia dejar el
- *       stock en negativo.</li>
- *   <li>El precio de un insumo fabricado es SIEMPRE derivado de su receta
- *       (costo / rendimiento). Es la unica fuente de verdad: antes cada
- *       actualizacion de un insumo reescribia los precios de todos los insumos
- *       fabricados y pisaba el ajuste manual del usuario.</li>
- * </ul>
- */
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @Service
 @RequiredArgsConstructor
 public class RecetaService {
@@ -90,14 +90,14 @@ public class RecetaService {
         return RecetaResponse.desde(recetaRepository.save(receta));
     }
 
-    /**
-     * Aplica los ingredientes y el insumo producido de un comando sobre la
-     * receta: consolida, convierte a unidad base y valida las reglas.
-     */
+      
+
+
+
     private void aplicar(Receta receta, RecetaCommand command) {
         List<DetalleRecetaCommand> comandos = command.detalles() == null ? List.of() : command.detalles();
 
-        // Consolidar por insumo (un insumo no puede quedar partido en varias lineas).
+          
         Map<Long, BigDecimal> cantidades = new LinkedHashMap<>();
         Map<Long, UnidadConUnidad> unidades = new LinkedHashMap<>();
         for (DetalleRecetaCommand detalle : comandos) {
@@ -115,7 +115,7 @@ public class RecetaService {
             throw new OperacionInvalidaException("La receta debe incluir al menos un ingrediente");
         }
 
-        // Insumo producido (opcional) y rendimiento.
+          
         Insumo insumoProducido = null;
         if (command.insumoProducidoId() != null) {
             insumoProducido = insumoRepository.findById(command.insumoProducidoId())
@@ -138,8 +138,8 @@ public class RecetaService {
                                 + insumo.getNombre() + "' (se maneja en " + insumo.unidadBase().getEtiqueta() + ")");
             }
 
-            // Una receta que fabrica insumos no puede usar otro insumo fabricado:
-            // el grafo de costos se volveria circular.
+              
+              
             if (insumoProducido != null && insumo.getId().equals(insumoProducido.getId())) {
                 throw new OperacionInvalidaException(
                         "Un insumo no puede ser ingrediente de la receta que lo fabrica");
@@ -167,15 +167,15 @@ public class RecetaService {
         recalcularPrecioProducido(receta);
     }
 
-    /** true si el insumo es fabricado por alguna receta. */
+      
     private boolean esInsumoFabricado(Long insumoId) {
         return !recetaRepository.findByInsumoProducidoId(insumoId).isEmpty();
     }
 
-    /**
-     * Recalcula el precio del insumo fabricado por esta receta
-     * (costo de la receta / rendimiento). Es la unica fuente de ese precio.
-     */
+      
+
+
+
     private void recalcularPrecioProducido(Receta receta) {
         if (receta.getInsumoProducido() == null) {
             return;
@@ -191,14 +191,14 @@ public class RecetaService {
         }
     }
 
-    /**
-     * Recalcula los precios de los insumos fabricados cuyas recetas usan el
-     * insumo indicado, y tambien del insumo indicado si el mismo es
-     * fabricado por alguna receta.
-     *
-     * <p>Antes se recalculaban TODOS los insumos fabricados en cada
-     * actualizacion de un insumo (O(n) escrituras y precios pisados).
-     */
+      
+
+
+
+
+
+
+
     @Transactional
     public void recalcularInsumosProducidos(Long insumoAfectado) {
         if (insumoAfectado == null) {
@@ -207,10 +207,10 @@ public class RecetaService {
             }
             return;
         }
-        // Recetas que usan el insumo como ingrediente y que fabrican otro.
+          
         List<Receta> recetas = new ArrayList<>(insumoRepository.findRecetasQueUsan(insumoAfectado));
-        // Receta que fabrica este mismo insumo: su precio es derivado y no
-        // puede quedar editado a mano.
+          
+          
         recetas.addAll(recetaRepository.findByInsumoProducidoId(insumoAfectado));
         for (Receta receta : recetas) {
             if (receta.getInsumoProducido() != null) {
@@ -234,7 +234,7 @@ public class RecetaService {
         recetaRepository.deleteById(id);
     }
 
-    /** Par auxiliar: conserva la unidad original de la ultima fila de un insumo. */
+      
     private record UnidadConUnidad(BigDecimal cantidad, com.garepas.garepasapp.domain.enums.UnidadMedida unidad) {
     }
 }

@@ -22,7 +22,7 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
     @EntityGraph(attributePaths = {"receta", "receta.detalles", "receta.detalles.insumo"})
     List<Producto> findByActivoTrue();
 
-    // Menu publico: solo columnas escalares, sin cargar recetas.
+      
     List<Producto> findByActivoTrueOrderByNombreAsc();
 
     @EntityGraph(attributePaths = {"receta", "receta.detalles", "receta.detalles.insumo"})
@@ -32,10 +32,10 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
     @Query("select p from Producto p where p.id = :id")
     Optional<Producto> findByIdConLock(@Param("id") Long id);
 
-    /**
-     * Bloquea varios productos en una sola consulta y en orden por id, para
-     * que el punto de venta enganche siempre los bloqueos en el mismo orden.
-     */
+      
+
+
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select p from Producto p where p.id in :ids order by p.id")
     List<Producto> findAllByIdConLock(@Param("ids") Collection<Long> ids);
@@ -44,7 +44,7 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
 
     List<Producto> findByRecetaId(Long recetaId);
 
-    /** Productos que se elaboran al momento (bajo pedido) y por lo tanto no se almacenan. */
+      
     @Query("select p from Producto p where p.bajoPedido = true and p.activo = true order by p.nombre")
     List<Producto> findBajoPedidoActivos();
 

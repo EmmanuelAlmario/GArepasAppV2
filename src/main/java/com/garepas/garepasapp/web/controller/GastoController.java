@@ -14,10 +14,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-/**
- * Gastos operativos (UC25-UC28). Los gastos generados automáticamente por una
- * produccion (categoria MATERIA_PRIMA) no se editan ni eliminan desde aqui.
- */
+  
+
+
+
 @Controller
 @RequestMapping("/gastos")
 @RequiredArgsConstructor

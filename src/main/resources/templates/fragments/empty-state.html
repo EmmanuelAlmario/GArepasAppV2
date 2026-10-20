@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <body>
-<!--
-  Estado vacío o sin resultados.
-  Uso: th:replace="~{fragments/empty-state :: empty('Sin registros', 'Detalle opcional', 'bi-inbox')}"
--->
+
+
+
+
 <div th:fragment="empty(titulo, detalle, icono)" class="ga-empty-state">
     <span class="ga-empty-state__icono" aria-hidden="true">
         <i class="bi" th:classappend="${icono != null and !#strings.isEmpty(icono)} ? ${icono} : 'bi-inbox'"></i>

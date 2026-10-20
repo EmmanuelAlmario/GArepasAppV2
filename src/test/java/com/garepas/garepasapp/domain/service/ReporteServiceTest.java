@@ -18,10 +18,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-/**
- * Reporte de rentabilidad: rango semiabierto, serie diaria cuadrada con los
- * totales y agregaciones hechas en base de datos.
- */
+  
+
+
+
 class ReporteServiceTest {
 
     private VentaRepository ventaRepository;
@@ -37,12 +37,12 @@ class ReporteServiceTest {
         reporteService = new ReporteService(ventaRepository, gastoRepository, detalleVentaRepository);
     }
 
-    /**
-     * REGRESION del rango: antes se usaba un BETWEEN inclusivo con el limite
-     * en la medianoche del dia siguiente. Ese dia fantasma entrava en los
-     * totales pero no aparecia en la serie diaria y el reporte no cuadraba
-     * consigo mismo. Ahora el rango es semiabierto [desde, hasta).
-     */
+      
+
+
+
+
+
     @Test
     void elRangoEsSemiabiertoYNoIncluyeLaMedianocheDelDiaSiguiente() {
         when(ventaRepository.findImportesPorFecha(any(), any(), any())).thenReturn(List.of());

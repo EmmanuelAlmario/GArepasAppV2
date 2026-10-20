@@ -15,10 +15,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-/**
- * Resumen de rentabilidad del negocio (UC29).
- * Es la pagina inicial del administrador tras iniciar sesion.
- */
+  
+
+
+
 @Controller
 @RequestMapping("/reportes")
 @RequiredArgsConstructor
@@ -73,7 +73,7 @@ public class ReporteController {
         model.addAttribute("serieIngresos", serie.stream().map(ReporteResumen.SerieDia::ingresos).toList());
         model.addAttribute("serieGastos", serie.stream().map(ReporteResumen.SerieDia::gastos).toList());
 
-        // Rankings con el porcentaje ya calculado (para el ancho de las barras).
+          
         model.addAttribute("topProductosView", ranking(
                 resumen.topProductos().stream().map(p -> new Fila(p.nombre(), p.ingreso(), p.unidades() + " unidades")).toList(),
                 true));
@@ -84,7 +84,7 @@ public class ReporteController {
         return "reportes/resumen";
     }
 
-    /** Convierte las filas de un ranking en vistas con su porcentaje relativo al mayor. */
+      
     private List<RankingFila> ranking(List<Fila> filas, boolean conNota) {
         BigDecimal max = filas.stream().map(Fila::monto)
                 .max(java.util.Comparator.naturalOrder())
@@ -99,7 +99,7 @@ public class ReporteController {
                         : 0)).toList();
     }
 
-    /** Fila intermedia del ranking, antes de convertirla en vista. */
+      
     private record Fila(String nombre, BigDecimal monto, String nota) {
     }
 }

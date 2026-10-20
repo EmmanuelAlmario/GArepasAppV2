@@ -24,10 +24,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-/**
- * Inventario de insumos: ajuste bidireccional, conversion de unidades y
- * bitacora de movimientos.
- */
+  
+
+
+
 class InsumoServiceTest {
 
     private InsumoRepository insumoRepository;
@@ -101,11 +101,11 @@ class InsumoServiceTest {
         verify(insumoRepository, never()).save(any());
     }
 
-    /**
-     * REGRESION: el ajuste se captura en la unidad de PRESENTACION del insumo
-     * y se convierte a unidad base en un solo punto (el servicio). Antes lo
-     * hacia el formulario y el camino de la API no lo hacia.
-     */
+      
+
+
+
+
     @Test
     void convierteElAjusteDeKilogramosAGramos() {
         Insumo harina = insumo(1L, "Harina", "1000", UnidadMedida.KILOGRAMO);
@@ -134,11 +134,11 @@ class InsumoServiceTest {
         assertEquals(0, new BigDecimal("150").compareTo(asiento.getStockResultante()));
     }
 
-    /**
-     * REGRESION de unidades: al crear, el stock y el precio se capturan en la
-     * unidad de presentacion y se GUARDAN en unidad base. La vista los vuelve
-     * a mostrar en la unidad de presentacion.
-     */
+      
+
+
+
+
     @Test
     void alCrearConvierteStockYPrecioDePresentacionABase() {
         when(insumoRepository.existsByNombreIgnoreCase(any())).thenReturn(false);
@@ -159,7 +159,7 @@ class InsumoServiceTest {
                 "4500 por kilo es 4.5 por gramo");
         assertEquals(UnidadMedida.KILOGRAMO, guardada.getUnidadPresentacion());
 
-        // La vista lo muestra en la unidad de presentacion.
+          
         assertEquals(0, new BigDecimal("5").compareTo(respuesta.stockActual()));
         assertEquals(0, new BigDecimal("4500").compareTo(respuesta.precioPorUnidad()));
         assertEquals(UnidadMedida.GRAMO, respuesta.unidadBase());

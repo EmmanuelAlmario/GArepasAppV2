@@ -3,9 +3,9 @@ package com.garepas.garepasapp.domain.command;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-/**
- * Alta o edicion de un cliente.
- */
+  
+
+
 public record ClienteCommand(
         @NotBlank(message = "El nombre es obligatorio")
         @Size(max = 80, message = "El nombre no puede superar los 80 caracteres")

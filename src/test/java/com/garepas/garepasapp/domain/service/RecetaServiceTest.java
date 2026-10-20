@@ -23,10 +23,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-/**
- * Recetas: conversion a unidad base, consolidacion de ingredientes y precio
- * del insumo fabricado como funcion del costo de su receta.
- */
+  
+
+
+
 class RecetaServiceTest {
 
     private RecetaRepository recetaRepository;
@@ -61,12 +61,12 @@ class RecetaServiceTest {
         return insumo;
     }
 
-    /**
-     * REGRESION de unidades: la cantidad se convierte a unidad base en el
-     * servicio. Antes el formulario lo hacia y el camino de la API no: una
-     * receta creada por API con "1 KILOGRAMO" guardaba 1 gramo y los costos
-     * y descuentos de stock salian mil veces mal.
-     */
+      
+
+
+
+
+
     @Test
     void convierteLaCantidadDeKilogramosAGramos() {
         insumo(1L, "Harina", "4.5", UnidadMedida.KILOGRAMO);
@@ -107,7 +107,7 @@ class RecetaServiceTest {
                 List.of(new DetalleRecetaCommand(1L, new BigDecimal("200"), UnidadMedida.GRAMO)),
                 2L, new BigDecimal("100")));
 
-        // Costo 200 g x 2.50 = 500; rendimiento 100 -> 5.00 por gramo de masa.
+          
         assertEquals(0, new BigDecimal("5.000000").compareTo(masa.getPrecioPorUnidadBase()));
     }
 

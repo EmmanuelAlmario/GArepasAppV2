@@ -1,16 +1,16 @@
-/*
- * Carrito del punto de venta (UC21).
- *
- * - Toma los productos del catalogo mediante atributos data-*.
- * - Mantiene el pedido en memoria y lo dibuja en #carrito con nodos seguros
- *   (textContent; nunca innerHTML con datos del servidor).
- * - Filtra el catalogo por nombre.
- * - En movil el pedido es una hoja inferior: #pedidoToggle la abre y la cierra.
- * - Si el servidor devuelve un error, reconstruye el pedido desde
- *   window.carritoInicial para no perder el trabajo del usuario.
- * - Al enviar el formulario agrega campos ocultos repetidos
- *   (productoId / cantidad), que Spring enlaza como listas.
- */
+  
+
+
+
+
+
+
+
+
+
+
+
+
 document.addEventListener('DOMContentLoaded', () => {
     const catalogo = document.getElementById('catalogo');
     const lista = document.getElementById('carrito');
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
         style: 'currency', currency: 'COP', maximumFractionDigits: 0
     });
 
-    // El contenedor del mensaje nunca se oculta: asi los lectores de pantalla anuncian los cambios.
+      
     function mostrarMensaje(texto, tipo) {
         if (!mensaje) return;
         mensaje.textContent = texto;
@@ -180,8 +180,8 @@ document.addEventListener('DOMContentLoaded', () => {
             catalogo.querySelectorAll('[data-producto]').forEach((producto) => {
                 const columna = producto.closest('[data-producto-col]');
                 if (!columna) return;
-                // data-nombre puede faltar si el servidor no lo envio: no se
-                // rompe el filtro por ello.
+                  
+                  
                 const nombre = (producto.dataset.nombre || '').toLowerCase();
                 const coincide = texto === '' || nombre.includes(texto);
                 columna.hidden = !coincide;
@@ -191,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // En movil, el resumen del pedido abre y cierra la hoja inferior.
+      
     if (abrir && pedido) {
         abrir.addEventListener('click', () => {
             const abierto = pedido.classList.toggle('is-abierto');
@@ -214,13 +214,13 @@ document.addEventListener('DOMContentLoaded', () => {
             campoCantidad.value = item.cantidad;
             campos.appendChild(campoCantidad);
         });
-        // El boton de cobro esta en la cabecera del pedido, fuera del formulario:
-        // se bloquea aqui para evitar dobles envios.
+          
+          
         boton.disabled = true;
         boton.textContent = 'Registrando...';
     });
 
-    // Pedido conservado por el servidor tras un error de validacion.
+      
     if (Array.isArray(window.carritoInicial)) {
         window.carritoInicial.forEach((dato) => {
             if (!dato || dato.id == null) return;

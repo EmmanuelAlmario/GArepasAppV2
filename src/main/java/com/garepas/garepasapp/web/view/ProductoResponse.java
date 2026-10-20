@@ -24,7 +24,7 @@ public record ProductoResponse(
 ) {
     public static ProductoResponse desde(Producto producto) {
         Receta receta = producto.getReceta();
-        // Costo por unidad: el rendimiento de la receta se tiene en cuenta.
+          
         BigDecimal costo = CostoService.costoUnitarioProducto(producto);
         BigDecimal precioVenta = producto.getPrecioVenta() != null ? producto.getPrecioVenta() : BigDecimal.ZERO;
         BigDecimal margen = precioVenta.subtract(costo);

@@ -22,22 +22,22 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Insumos del inventario.
- *
- * <p><b>Reglas del rediseño:</b>
- * <ul>
- *   <li>El stock y el precio se capturan en la unidad de PRESENTACION y aqui
- *       se convierten a unidad base. Antes cada forma de entrada lo hacia por
- *       su cuenta y el mismo dato significaba cosas distintas.</li>
- *   <li>Al editar, el stock se ajusta por DELTA (lo que el usuario cambio
- *       respecto al valor actual), no se sobrescribe: antes una edicion
- *       simultanea con una venta pisaba el stock y perdia unidades.</li>
- *   <li>Los ajustes dejan bitacora en {@code ajustes_inventario}.</li>
- *   <li>No se puede borrar un insumo que este en uso: antes reventaba con un
- *       error 500 por violacion de clave foranea.</li>
- * </ul>
- */
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @Service
 @RequiredArgsConstructor
 public class InsumoService {
@@ -97,8 +97,8 @@ public class InsumoService {
         UnidadMedida unidad = command.unidadPresentacion() == null
                 ? insumo.getUnidadPresentacion() : command.unidadPresentacion();
 
-        // El stock llega como valor absoluto en unidad de presentacion: se
-        // convierte el delta para no pisar ventas concurrentes.
+          
+          
         BigDecimal stockSolicitado = aBase(command.stockActual(), unidad);
         BigDecimal delta = stockSolicitado.subtract(insumo.getStockActual());
 
@@ -111,15 +111,15 @@ public class InsumoService {
         insumo.setActivo(Boolean.TRUE.equals(command.activo()));
 
         if (delta.compareTo(BigDecimal.ZERO) != 0) {
-            // El delta esta en unidad base: ajustarInsumo lo aplica y deja bitacora.
+              
             insumoRepository.save(insumo);
             inventarioService.ajustarInsumo(insumo, delta, "Edicion de ficha de insumo", "sistema");
         } else {
             insumoRepository.save(insumo);
         }
 
-        // Si cambio el precio de un insumo, los insumos fabricados derivados de
-        // sus recetas cambian de precio tambien.
+          
+          
         recetaService.recalcularInsumosProducidos(id);
 
         return InsumoResponse.desde(insumo);
@@ -145,23 +145,23 @@ public class InsumoService {
         insumoRepository.deleteById(id);
     }
 
-    /**
-     * Ajusta el stock de varios insumos en una sola transaccion atomica.
-     *
-     * <p>La cantidad es un delta en la unidad de PRESENTACION del insumo:
-     * positiva repone (compra), negativa consume (merma). Si algun insumo
-     * quedaria en negativo, no se aplica NINGUNO de los ajustes.
-     *
-     * <p>Un ajuste de compra no genera gasto: el gasto de materia prima se
-     * reconoce cuando el insumo se consume en una produccion.
-     */
+      
+
+
+
+
+
+
+
+
+
     @Transactional
     public AjusteStockResponse ajustarStock(AjusteStockCommand command, String usuario) {
         if (command.detalles() == null || command.detalles().isEmpty()) {
             throw new OperacionInvalidaException("Debe incluir al menos un insumo para ajustar");
         }
 
-        // Consolidar deltas por insumo (el formulario puede repetir un insumo).
+          
         Map<Long, BigDecimal> deltasPresentacion = new LinkedHashMap<>();
         for (DetalleAjusteStockCommand detalle : command.detalles()) {
             if (detalle.insumoId() == null) {
@@ -173,10 +173,10 @@ public class InsumoService {
             deltasPresentacion.merge(detalle.insumoId(), detalle.cantidad(), BigDecimal::add);
         }
 
-        // Bloquear los insumos (siempre ordenados por id).
+          
         Map<Long, Insumo> insumos = inventarioService.bloquearInsumos(deltasPresentacion.keySet());
 
-        // Convertir a unidad base y validar antes de tocar nada.
+          
         Map<Long, BigDecimal> deltasBase = new LinkedHashMap<>();
         List<String> errores = new ArrayList<>();
         for (Map.Entry<Long, BigDecimal> entry : deltasPresentacion.entrySet()) {

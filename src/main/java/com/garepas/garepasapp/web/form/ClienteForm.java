@@ -4,9 +4,9 @@ import com.garepas.garepasapp.domain.command.ClienteCommand;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-/**
- * Formulario de cliente (fiado, cobro y datos de contacto).
- */
+  
+
+
 public class ClienteForm {
 
     private Long id;

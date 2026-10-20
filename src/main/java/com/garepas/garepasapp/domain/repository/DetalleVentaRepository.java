@@ -17,10 +17,10 @@ public interface DetalleVentaRepository extends JpaRepository<DetalleVenta, Long
 
     List<DetalleVenta> findByProductoId(Long productoId);
 
-    /**
-     * Productos mas vendidos en el rango: id, nombre, unidades e ingreso.
-     * Se agrega en SQL para no traer cada venta con sus detalles.
-     */
+      
+
+
+
     @Query("select d.producto.id, d.producto.nombre, sum(d.cantidad), sum(d.subtotal) "
             + "from DetalleVenta d "
             + "where d.venta.estado = :estado and d.venta.fecha >= :desde and d.venta.fecha < :hasta "

@@ -6,13 +6,13 @@ import com.garepas.garepasapp.domain.service.CostoService;
 
 import java.math.BigDecimal;
 
-/**
- * Linea de una receta vista desde la web.
- *
- * <p>La cantidad esta en unidad BASE (g, ml, u): es la misma magnitud con la
- * que el sistema descuenta el stock, asi que no hay forma de que el costo
- * mostrado y el descuento aplicado discrepen.
- */
+  
+
+
+
+
+
+
 public record DetalleRecetaResponse(
         Long id,
         Long insumoId,
@@ -38,14 +38,14 @@ public record DetalleRecetaResponse(
         );
     }
 
-    /** Cantidad del ingrediente expresada en la unidad de presentacion del insumo. */
+      
     public BigDecimal cantidadEnPresentacion() {
         return insumoUnidadPresentacion == null
                 ? cantidad
                 : insumoUnidadPresentacion.desdeBase(cantidad);
     }
 
-    /** Etiqueta de la unidad base (g, ml, u). */
+      
     public String unidadEtiqueta() {
         return switch (unidadBase()) {
             case GRAMO -> "g";

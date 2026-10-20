@@ -35,10 +35,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-/**
- * Funcionalidad de Treinta aplicada al negocio: clientes, venta a credito,
- * abonos, cartera e impuestos.
- */
+  
+
+
+
 class CarteraTest {
 
     private VentaRepository ventaRepository;
