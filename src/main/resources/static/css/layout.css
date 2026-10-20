@@ -150,17 +150,13 @@
 }
 
 .ga-nav__link i {
-    display: grid;
+    display: inline-grid;
     place-items: center;
     flex: none;
     width: 1.85rem;
-    height: 1.85rem;
-    font-size: .95rem;
+    font-size: 1.05rem;
     color: rgba(254, 208, 95, .8);
-    background: rgba(253, 244, 227, .06);
-    border-radius: var(--ga-radius-sm);
-    transition: background-color var(--ga-fast) var(--ga-ease),
-                color var(--ga-fast) var(--ga-ease);
+    transition: color var(--ga-fast) var(--ga-ease);
 }
 
 .ga-nav__link:hover {
@@ -169,20 +165,19 @@
 }
 
 .ga-nav__link:hover i {
-    background: rgba(254, 208, 95, .18);
     color: var(--ga-gold);
 }
 
+/* Activo: velo ambar translucido, no un bloque naranja que grita. */
 .ga-nav__link.is-active {
-    color: #FFF8EC;
+    color: var(--ga-gold);
     font-weight: 600;
-    background: linear-gradient(100deg, rgba(192, 67, 11, .95) 0%, rgba(246, 125, 20, .78) 130%);
-    box-shadow: 0 10px 22px -14px rgba(192, 67, 11, .95);
+    background: var(--ga-sidebar-activo);
+    box-shadow: none;
 }
 
 .ga-nav__link.is-active i {
     color: var(--ga-gold);
-    background: rgba(20, 8, 4, .35);
 }
 
 .ga-nav__link.is-active::before {
@@ -338,7 +333,7 @@
     font-weight: 700;
     line-height: 1.1;
     letter-spacing: -.02em;
-    color: var(--ga-ink);
+    color: var(--ga-burdeos);
 }
 
 .ga-page-header__subtitulo {
@@ -369,9 +364,10 @@
 
 .ga-kicker::before {
     content: "";
-    width: 1.4rem;
-    height: 3px;
-    background: linear-gradient(90deg, var(--ga-brick), var(--ga-orange));
+    /* Acento de marca: la barrita naranja que abre cada pantalla. */
+    width: 2.5rem;
+    height: .25rem;
+    background: var(--ga-orange);
     border-radius: var(--ga-radius-pill);
 }
 
