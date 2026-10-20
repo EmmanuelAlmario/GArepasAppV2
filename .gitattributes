@@ -15,6 +15,12 @@
 *.puml text eol=crlf
 *.txt text eol=crlf
 
+# Los scripts de shell necesitan LF: con CRLF el shebang queda roto
+# y Linux responde "./mvnw: not found".
+mvnw text eol=lf
+*.sh text eol=lf
+mvnw.cmd text eol=crlf
+
 *.png binary
 *.woff binary
 *.woff2 binary

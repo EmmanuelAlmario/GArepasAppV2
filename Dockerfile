@@ -10,7 +10,7 @@ WORKDIR /app
 COPY . .
 
 
-RUN chmod +x mvnw && ./mvnw -B -DskipTests -Pproduccion package
+RUN sed -i 's/\r$//' mvnw && chmod +x mvnw && ./mvnw -B -DskipTests -Pproduccion package
 
 
 FROM eclipse-temurin:21-jre
