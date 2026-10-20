@@ -21,10 +21,13 @@ body {
     line-height: 1.55;
     color: var(--ga-text);
     background-color: var(--ga-bg);
-    /* Lavado calido: la pagina respira sin el punteado anterior. */
+    /* Lienzo de la marca: punteado fino (textura de arepa) sobre el
+       lavado calido. El punteado es lo que da el aire artesanal. */
     background-image:
-        radial-gradient(120% 60% at 100% 0%, rgba(254, 208, 95, .18) 0%, rgba(254, 208, 95, 0) 55%),
+        radial-gradient(rgba(var(--ga-ink-rgb), .06) 1px, transparent 1px),
+        radial-gradient(120% 60% at 100% 0%, rgba(254, 208, 95, .16) 0%, rgba(254, 208, 95, 0) 55%),
         linear-gradient(180deg, #F8F3EA 0%, var(--ga-bg) 42%);
+    background-size: 22px 22px, auto, auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
@@ -35,7 +38,8 @@ h1, h2, h3, h4, h5, h6 {
     font-family: var(--ga-font-display);
     font-weight: 600;
     letter-spacing: -.015em;
-    color: var(--ga-ink);
+    /* Titulos en el burdeos de marca: jerarquia calida, no negro plano. */
+    color: var(--ga-burdeos);
 }
 
 h1 { font-size: 2rem; line-height: 1.15; }
