@@ -47,17 +47,39 @@
 
 .btn i { font-size: 1.05em; line-height: 1; }
 
-/* Primario: ladrillo con degradado a naranja, como la arepa al fuego. */
+/* Primario: ladrillo solido. La app se siente tostada, no neon. */
 .btn-primary {
-    --ga-btn-bg: linear-gradient(135deg, var(--ga-brick) 0%, var(--ga-orange) 135%);
+    --ga-btn-bg: var(--ga-brick);
     --ga-btn-fg: #FFF8F0;
     border-color: transparent;
-    box-shadow: var(--ga-shadow-brand);
+    box-shadow: 0 10px 20px -12px rgba(var(--ga-brick-rgb), .9);
+    /* Bootstrap usa sus propias variables: sin mapearlas, el estado
+       deshabilitado se pinta del azul por defecto de la libreria. */
+    --bs-btn-color: #FFF8F0;
+    --bs-btn-bg: var(--ga-brick);
+    --bs-btn-border-color: var(--ga-brick);
+    --bs-btn-hover-color: #FFF8F0;
+    --bs-btn-hover-bg: var(--ga-brick-oscuro);
+    --bs-btn-hover-border-color: var(--ga-brick-oscuro);
+    --bs-btn-active-color: #FFF8F0;
+    --bs-btn-active-bg: var(--ga-brick-activo);
+    --bs-btn-active-border-color: var(--ga-brick-activo);
+    --bs-btn-disabled-color: #FFF8F0;
+    --bs-btn-disabled-bg: var(--ga-brick);
+    --bs-btn-disabled-border-color: var(--ga-brick);
+}
+
+.btn-primary:disabled,
+.btn-primary.disabled {
+    background: var(--ga-brick);
+    color: #FFF8F0;
+    opacity: .78;
+    box-shadow: none;
 }
 
 .btn-primary:hover,
 .btn-primary:focus {
-    --ga-btn-bg: linear-gradient(135deg, var(--ga-brick-oscuro) 0%, var(--ga-brick) 135%);
+    --ga-btn-bg: var(--ga-brick-oscuro);
     color: #FFF8F0;
     box-shadow: 0 14px 26px -12px rgba(var(--ga-brick-rgb), .95);
 }
