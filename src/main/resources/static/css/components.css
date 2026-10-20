@@ -548,7 +548,7 @@
 }
 
 .ga-kpi__valor {
-    font-family: var(--ga-font-ui);
+    font-family: var(--ga-font-display);
     font-size: 1.875rem;
     font-weight: 700;
     line-height: 1.05;
@@ -566,6 +566,65 @@
 .ga-kpi--gold { --ga-kpi-color: #B07A00; --ga-kpi-soft: rgba(254, 208, 95, .45); }
 .ga-kpi--verde { --ga-kpi-color: var(--ga-success); --ga-kpi-soft: var(--ga-success-soft); }
 .ga-kpi--neutro { --ga-kpi-color: var(--ga-text-soft); --ga-kpi-soft: var(--ga-surface-muted); }
+
+/* Los indicadores de cabecera van rellenos con color de marca:
+   son el acento de la pantalla, no cuatro cajas iguales. */
+.ga-kpi--brick,
+.ga-kpi--ink,
+.ga-kpi--gold {
+    box-shadow: 0 18px 34px -22px rgba(var(--ga-ink-rgb), .75);
+}
+
+.ga-kpi--brick {
+    background: var(--ga-brick);
+    border-color: var(--ga-brick-oscuro);
+    color: var(--ga-on-brand);
+}
+
+.ga-kpi--ink {
+    background: var(--ga-sidebar);
+    border-color: var(--ga-ink);
+    color: var(--ga-on-ink);
+}
+
+.ga-kpi--gold {
+    background: var(--ga-gold);
+    border-color: #E5B539;
+    color: var(--ga-ink);
+}
+
+.ga-kpi--brick::before,
+.ga-kpi--ink::before,
+.ga-kpi--gold::before {
+    background: rgba(255, 253, 249, .3);
+}
+
+.ga-kpi--brick .ga-kpi__etiqueta,
+.ga-kpi--ink .ga-kpi__etiqueta,
+.ga-kpi--gold .ga-kpi__etiqueta {
+    color: inherit;
+    opacity: .85;
+}
+
+.ga-kpi--brick .ga-kpi__nota,
+.ga-kpi--ink .ga-kpi__nota,
+.ga-kpi--gold .ga-kpi__nota {
+    color: inherit;
+    opacity: .75;
+}
+
+.ga-kpi--brick .ga-kpi__valor,
+.ga-kpi--ink .ga-kpi__valor,
+.ga-kpi--gold .ga-kpi__valor {
+    color: inherit;
+}
+
+.ga-kpi--brick .ga-kpi__icono,
+.ga-kpi--ink .ga-kpi__icono,
+.ga-kpi--gold .ga-kpi__icono {
+    color: inherit;
+    background: rgba(255, 253, 249, .18);
+}
 
 .ga-kpi--neutro.is-negativa .ga-kpi__valor { color: var(--ga-danger-text); }
 
